@@ -10,10 +10,12 @@ import {
 	Image, InputGroup, InputRightElement, IconButton,
 } from "@chakra-ui/react";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
-import {useState} from "react";
+import {useContext, useState} from "react";
+import {UserCtx, db, auth} from "../../App.jsx";
 
 function Login() {
 	const [show, setShow] = useState(false);
+	const {user, setUser} = useContext(UserCtx)
 
 	return (
 		<Center h="100vh" bg={"#f4f4f4"}>
