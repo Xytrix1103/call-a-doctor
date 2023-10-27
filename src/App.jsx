@@ -60,6 +60,10 @@ function App() {
 					<Route path="/login" element={<Login/>}/>
 					<Route path="/register" element={<></>}/>
 					<Route path="/forgot" element={<></>}/>
+					<Route path="/admin" element={<></>}>
+						<Route path="/doctors" element={<></>}/>
+						<Route path="/patients" element={<></>}/>
+					</Route>
 				</Routes>
 			</UserCtx.Provider>
 		</ChakraProvider>
