@@ -1,16 +1,18 @@
 import {
 	Box,
-	Center,
-	Text,
-	Input,
-	Checkbox,
 	Button,
+	Center,
+	Checkbox,
 	Flex,
-	Spacer,
-	Image, InputGroup, InputRightElement, IconButton,
+	IconButton,
+	Image,
+	Input,
+	InputGroup,
+	InputRightElement,
+	Text,
 } from "@chakra-ui/react";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
-import {useContext, useState} from "react";
+import {useState} from "react";
 import {useAuth} from "../../components/AuthCtx.jsx";
 
 function Login() {

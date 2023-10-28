@@ -1,5 +1,4 @@
-import React, {useContext} from "react";
-import {Route, Navigate} from "react-router-dom";
+import {Navigate, Route} from "react-router-dom";
 import {useAuth} from "./AuthCtx.jsx";
 
 const GuardedRoute = ({ component: Component, ...rest }) => {

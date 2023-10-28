@@ -1,13 +1,11 @@
-import {createContext, useState} from 'react'
-import {Routes, Route, Outlet} from "react-router-dom";
-import Login from "./pages/auth/Login.jsx";
+import {Outlet} from "react-router-dom";
 import {ChakraProvider, extendTheme} from '@chakra-ui/react'
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, onValue } from "firebase/database";
-import {getAuth, onAuthStateChanged, signInWithEmailAndPassword} from "firebase/auth";
-import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import GuardedRoute from './components/GuardedRoute.jsx';
+import {initializeApp} from "firebase/app";
+import {getDatabase} from "firebase/database";
+import {getAuth} from "firebase/auth";
+import {getStorage} from "firebase/storage";
 import {AuthProvider} from "./components/AuthCtx.jsx";
+import {FirebaseProvider} from "./components/FirebaseCtx.jsx";
 
 const firebaseConfig = {
 	apiKey: "AIzaSyDZYAUmSWuZ26oY-FYcfLGtP4DhyQLaSWA",
@@ -45,7 +43,9 @@ function App() {
 	return (
 		<ChakraProvider theme={theme}>
 			<AuthProvider>
-				<Outlet/>
+				<FirebaseProvider>
+					<Outlet/>
+				</FirebaseProvider>
 			</AuthProvider>
 		</ChakraProvider>
 	)
