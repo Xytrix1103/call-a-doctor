@@ -1,22 +1,22 @@
 import {
     Box,
+    Button,
+    Center,
     Flex,
+    FormControl,
+    FormLabel,
     Heading,
+    IconButton,
+    Image,
     Input,
     InputGroup,
     InputRightElement,
-    Button,
-    Text,
     Link,
-    FormControl,
-    FormLabel,
-    Center,
-    VStack,
-    Textarea,
+    Text,
+    VStack
 } from '@chakra-ui/react';
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
-import {useContext, useState} from "react";
-import {UserCtx, db, auth} from "../../App.jsx";
+import {useState} from "react";
 
 function Register() {
     const [showPassword, setShowPassword] = useState(false);
@@ -30,11 +30,11 @@ function Register() {
                         Call A Doctor
                     </Heading>
                     <Box textAlign="center">
-                        <img
-                        src="/static/svg/register-doctor.svg"
-                        alt="Login"
-                        w="96"
-                        h="96"
+                        <Image
+                            src="/src/assets/svg/login-doctor.svg"
+                            alt="Login"
+                            w="96"
+                            h="96"
                         />
                     </Box>
                     <Text textAlign="center" mt="5">
