@@ -1,12 +1,13 @@
 import {createContext, useState} from 'react'
-import {Routes, Route} from "react-router-dom";
+import {Routes, Route, Outlet} from "react-router-dom";
 import Login from "./pages/auth/Login.jsx";
 import {ChakraProvider, extendTheme} from '@chakra-ui/react'
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, onValue } from "firebase/database";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {getAuth, onAuthStateChanged, signInWithEmailAndPassword} from "firebase/auth";
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import GuardedRoute from './components/GuardedRoute.jsx';
+import {AuthProvider} from "./components/AuthCtx.jsx";
 
 const firebaseConfig = {
 	apiKey: "AIzaSyDZYAUmSWuZ26oY-FYcfLGtP4DhyQLaSWA",
@@ -40,32 +41,12 @@ export const db = getDatabase(app);
 export const auth = getAuth(app);
 export const storage = getStorage(app);
 
-export const UserCtx = createContext({
-	user: null,
-	setUser: (value) => {},
-});
-
 function App() {
-	const [user, setUser] = useState(null);
-	
 	return (
 		<ChakraProvider theme={theme}>
-			<UserCtx.Provider value={{user, setUser}}>
-				<Routes>
-					<Route path="/" element={
-						<GuardedRoute>
-							<></>
-						</GuardedRoute>
-					}/>
-					<Route path="/login" element={<Login/>}/>
-					<Route path="/register" element={<></>}/>
-					<Route path="/forgot" element={<></>}/>
-					<Route path="/admin" element={<></>}>
-						<Route path="doctors" element={<></>}/>
-						<Route path="patients" element={<></>}/>
-					</Route>
-				</Routes>
-			</UserCtx.Provider>
+			<AuthProvider>
+				<Outlet/>
+			</AuthProvider>
 		</ChakraProvider>
 	)
 }

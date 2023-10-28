@@ -1,9 +1,9 @@
 import React, {useContext} from "react";
 import {Route, Navigate} from "react-router-dom";
-import {UserCtx} from "../App.jsx";
+import {useAuth} from "./AuthCtx.jsx";
 
 const GuardedRoute = ({ component: Component, ...rest }) => {
-	const {user} = useContext(UserCtx)
+	const {user} = useAuth();
 	
 	return (
 		<Route {...rest} render={(props) => (
