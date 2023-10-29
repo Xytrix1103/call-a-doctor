@@ -23,110 +23,157 @@ function Register() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     return (
-        <Center minH="100vh">
-            <Flex align="center" justify="space-between" w="100%">
-                <Box p="5" w="50%" bg="white" boxShadow="lg" borderRadius="xl">
-                    <Heading as="h1" size="xl" mb="7">
-                        Call A Doctor
-                    </Heading>
-                    <Box textAlign="center">
-                        <Image
-                            src="/src/assets/svg/login-doctor.svg"
-                            alt="Login"
-                            w="96"
-                            h="96"
-                        />
+        <Center minH="100vh" bg={"#f4f4f4"}>
+            <Box w='67%'>
+                <Flex 	
+                    bg="white"
+                    boxShadow="xl"
+                    rounded="xl"
+                    p={5}
+                    gridGap={4}
+                    gridTemplateColumns="1fr 1fr"
+                >
+                    <Box my={7} ml={5} w="full">
+                        <Box ml={10}>
+							<Text fontSize="xl" fontWeight="bold">
+								Call A Doctor
+							</Text>
+						</Box>
+                        <Box textAlign="center">
+                            <Image
+                                src="/src/assets/svg/register-doctor.svg"
+                                alt="Register"
+                                w="96"
+                                h="96"
+                            />
+                        </Box>
+                        <Text textAlign="center" mt="5">
+                            Registering a clinic?{' '}
+                            <Link color="blue.500" textDecoration="underline" href="/clinic-registry">
+                            Register here
+                            </Link>
+                        </Text>
                     </Box>
-                    <Text textAlign="center" mt="5">
-                        Registering a clinic?{' '}
-                        <Link color="blue.500" textDecoration="underline" href="/clinic-registry">
-                        Register here
-                        </Link>
-                    </Text>
-                </Box>
-                <Box p="5" w="50%">
-                    <Heading as="h1" size="xl" mb="7">
-                        Register
-                    </Heading>
-                    <form action="/api/register" method="post">
-                        <VStack spacing="4">
-                            <FormControl id="name">
-                                <FormLabel>Name</FormLabel>
-                                <Input
-                                type="text"
-                                name="name"
-                                id="name"
-                                placeholder="Username"
-                                isRequired
-                                />
-                            </FormControl>
-                            <FormControl id="email">
-                                <FormLabel>Email</FormLabel>
-                                <Input
-                                type="email"
-                                name="email"
-                                id="email"
-                                placeholder="john.doe@gmail.com"
-                                isRequired
-                                />
-                            </FormControl>
-                            <FormControl id="password">
-                                <FormLabel>Password</FormLabel>
-                                <InputGroup>
+                    <Box my={7} mr={5} w="full">
+                        <Text fontSize="xl" fontWeight="bold" mb={7}>
+								Register
+							</Text>
+                        <form action="/api/register" method="post">
+                            <VStack spacing="4">
+                                <FormControl id="name">
+                                    <FormLabel>Name</FormLabel>
                                     <Input
-                                        type={showPassword ? 'text' : 'password'}
-                                        name="password"
-                                        id="password"
-                                        placeholder="•••••••••"
-                                        isRequired
-                                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                                         variant="filled"
+                                         type="text"
+                                         name="name"
+                                         id="name"
+                                         placeholder="John Doe"
+                                         rounded="xl"
+                                         borderWidth="1px"
+                                         borderColor="gray.300"
+                                         color="gray.900"
+                                         size="md"
+                                         focusBorderColor="blue.500"
+                                         w="full"
+                                         p={2.5}
+                                         isRequired
                                     />
-									<InputRightElement>
-										<IconButton aria-label="Show password" size="lg" variant="ghost"
-										            icon={showPassword ? <IoMdEyeOff/> : <IoMdEye/>}
-										            _focus={{bg: "transparent", borderColor: "transparent", outline: "none"}}
-										            _hover={{bg: "transparent", borderColor: "transparent", outline: "none"}}
-										            _active={{bg: "transparent", borderColor: "transparent", outline: "none"}}
-										            onClick={() => setShow(!showPassword)}/>
-									</InputRightElement>
-                                </InputGroup>
-                            </FormControl>
-                            <FormControl id="confirm_password">
-                                <FormLabel>Confirm Password</FormLabel>
-                                <InputGroup>
+                                </FormControl>
+                                <FormControl id="email">
+                                    <FormLabel>Email</FormLabel>
                                     <Input
-                                        type={showConfirmPassword ? 'text' : 'password'}
-                                        name="confirm_password"
-                                        id="confirm_password"
-                                        placeholder="•••••••••"
+                                        variant="filled"
+                                        type="email"
+                                        name="email"
+                                        id="email"
+                                        placeholder="john.doe@gmail.com"
+                                        rounded="xl"
+                                        borderWidth="1px"
+                                        borderColor="gray.300"
+                                        color="gray.900"
+                                        size="md"
+                                        focusBorderColor="blue.500"
+                                        w="full"
+                                        p={2.5}
                                         isRequired
-                                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
                                     />
-									<InputRightElement>
-										<IconButton aria-label="Show password" size="lg" variant="ghost"
-										            icon={showConfirmPassword ? <IoMdEyeOff/> : <IoMdEye/>}
-										            _focus={{bg: "transparent", borderColor: "transparent", outline: "none"}}
-										            _hover={{bg: "transparent", borderColor: "transparent", outline: "none"}}
-										            _active={{bg: "transparent", borderColor: "transparent", outline: "none"}}
-										            onClick={() => setShow(!showConfirmPassword)}/>
-									</InputRightElement>
-                                </InputGroup>
-                            </FormControl>
-                            <Center>
-                                <Text>
-                                    Already have an account?{' '}
-                                    <Link color="blue.500" textDecoration="underline" href="/login">
-                                        Log in here
-                                    </Link>
-                                </Text>
-                            </Center>
-                            <Button type="submit" colorScheme="blue" size="lg">
-                                Register
-                            </Button>
-                        </VStack>
-                    </form>
-                </Box>
-            </Flex>
+                                </FormControl>
+                                <FormControl id="password">
+                                    <FormLabel>Password</FormLabel>
+                                    <InputGroup>
+                                        <Input
+                                            type={showPassword ? 'text' : 'password'}
+                                            variant="filled"
+                                            name="password"
+                                            id="password"
+                                            placeholder="•••••••••"
+                                            rounded="xl"
+                                            borderWidth="1px"
+                                            borderColor="gray.300"
+                                            color="gray.900"
+                                            size="md"
+                                            focusBorderColor="blue.500"
+                                            w="full"
+                                            p={2.5}
+                                            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                                            isRequired
+                                        />
+                                        <InputRightElement>
+                                            <IconButton aria-label="Show password" size="lg" variant="ghost"
+                                                        icon={showPassword ? <IoMdEyeOff/> : <IoMdEye/>}
+                                                        _focus={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+                                                        _hover={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+                                                        _active={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+                                                        onClick={() => setShowPassword(!showPassword)}/>
+                                        </InputRightElement>
+                                    </InputGroup>
+                                </FormControl>
+                                <FormControl id="confirm_password">
+                                    <FormLabel>Confirm Password</FormLabel>
+                                    <InputGroup>
+                                        <Input
+                                            type={showConfirmPassword ? 'text' : 'password'}
+                                            name="confirm_password"
+                                            id="confirm_password"
+                                            variant="filled"
+                                            placeholder="•••••••••"
+                                            rounded="xl"
+                                            borderWidth="1px"
+                                            borderColor="gray.300"
+                                            color="gray.900"
+                                            size="md"
+                                            focusBorderColor="blue.500"
+                                            w="full"
+                                            p={2.5}
+                                            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                                            isRequired
+                                        />
+                                        <InputRightElement>
+                                            <IconButton aria-label="Show password" size="lg" variant="ghost"
+                                                        icon={showConfirmPassword ? <IoMdEyeOff/> : <IoMdEye/>}
+                                                        _focus={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+                                                        _hover={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+                                                        _active={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+                                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}/>
+                                        </InputRightElement>
+                                    </InputGroup>
+                                </FormControl>
+                                <Center>
+                                    <Text>
+                                        Already have an account?{' '}
+                                        <Link color="blue.500" textDecoration="underline" href="/login">
+                                            Log in here
+                                        </Link>
+                                    </Text>
+                                </Center>
+                                <Button type="submit" colorScheme="blue" size="lg">
+                                    Register
+                                </Button>
+                            </VStack>
+                        </form>
+                    </Box>
+                </Flex>
+            </Box>
         </Center>
     );
 }
