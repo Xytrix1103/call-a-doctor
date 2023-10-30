@@ -4,6 +4,7 @@ import {
     Center,
     Flex,
     FormControl,
+    FormHelperText,
     FormLabel,
     Heading,
     IconButton,
@@ -24,7 +25,7 @@ function Register() {
 
     return (
         <Center minH="100vh" bg={"#f4f4f4"}>
-            <Box w='67%'>
+            <Box w='70%'>
                 <Flex 	
                     bg="white"
                     boxShadow="xl"
@@ -127,6 +128,7 @@ function Register() {
                                                         onClick={() => setShowPassword(!showPassword)}/>
                                         </InputRightElement>
                                     </InputGroup>
+                                    <FormHelperText>Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character</FormHelperText>
                                 </FormControl>
                                 <FormControl id="confirm_password">
                                     <FormLabel>Confirm Password</FormLabel>
@@ -166,7 +168,15 @@ function Register() {
                                         </Link>
                                     </Text>
                                 </Center>
-                                <Button type="submit" colorScheme="blue" size="lg">
+                                <Button
+                                    type="submit"
+                                    colorScheme="blue"
+                                    rounded="xl"
+                                    px={4}
+                                    py={2}
+                                    mt={4}
+                                    w="full"
+                                >
                                     Register
                                 </Button>
                             </VStack>
