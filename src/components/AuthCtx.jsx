@@ -3,7 +3,16 @@ import {createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPa
 import {auth, db} from "../App.jsx";
 import {onValue, ref, set} from "firebase/database";
 
-const AuthContext = createContext(null);
+const AuthContext = createContext({
+	user: null,
+	loading: true,
+	register: () => {},
+	login: () => {},
+	logout: () => {},
+	resetPassword: () => {},
+	updateEmail: () => {},
+	updatePassword: () => {},
+});
 
 export const useAuth = () => {
 	return useContext(AuthContext);
@@ -38,6 +47,7 @@ export const AuthProvider = ({children}) => {
 	
 	const value = {
 		user,
+		loading,
 		register,
 		login,
 		logout,
@@ -54,7 +64,7 @@ export const AuthProvider = ({children}) => {
 }
 
 export const register = async (data) => {
-	const {email, password, name, phone, address, role="Patient"} = data;
+	const {email, password, name, phone = "", address = "", role="Patient"} = data;
 	
 	try {
 		const newUser = await createUserWithEmailAndPassword(auth, email, password);
