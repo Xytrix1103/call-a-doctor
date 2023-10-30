@@ -6,12 +6,14 @@ import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} fr
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
 import DoctorRequestForm from './pages/patient/DoctorRequestForm.jsx';
+import ClinicRegistry from './pages/auth/ClinicRegistry.jsx';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route path="/" element={<App/>}>
 			<Route path="login" element={<Login/>}/>
 			<Route path="register" element={<Register/>}/>
+			<Route path="clinic-registry" element={<ClinicRegistry/>}/>
 			<Route path="doctor-request-form" element={<DoctorRequestForm/>}/>
 			<Route path="forgot" element={<></>}/>
 			<Route path="admin" element={<></>}>
