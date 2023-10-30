@@ -5,7 +5,6 @@ import {
     Flex,
     FormControl,
     FormLabel,
-    Heading,
     IconButton,
     Image,
     Input,
@@ -16,11 +15,37 @@ import {
     VStack
 } from '@chakra-ui/react';
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {useAuth} from "../../components/AuthCtx.jsx";
+import {Navigate} from "react-router-dom";
 
 function Register() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const {user, register} = useAuth();
+    
+    useEffect(() => {
+        if (user) return <Navigate to="/" />;
+    }, [user]);
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        const password = data.get("password");
+        const confirm_password = data.get("confirm_password");
+        
+        if (password !== confirm_password) {
+            alert("Passwords do not match!");
+            return;
+        }
+        const res = await register(Object.fromEntries(data.entries()));
+        
+        if (res.error) {
+            alert(res.error);
+        } else {
+            window.location.href = "/";
+        }
+    }
 
     return (
         <Center minH="100vh" bg={"#f4f4f4"}>
@@ -58,7 +83,7 @@ function Register() {
                         <Text fontSize="xl" fontWeight="bold" mb={7}>
 								Register
 							</Text>
-                        <form action="/api/register" method="post">
+                        <form action="/api/register" method="post" onSubmit={handleSubmit}>
                             <VStack spacing="4">
                                 <FormControl id="name">
                                     <FormLabel>Name</FormLabel>
