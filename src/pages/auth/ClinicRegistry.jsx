@@ -61,6 +61,11 @@ function ClinicRegistry() {
       const reader = new FileReader();
       reader.onload = (event) => {
         setImageSrc(event.target.result);
+        // Set preview image container bg to white
+        const previewImageContainer = document.getElementById(
+            "preview-image-container"
+        );
+        previewImageContainer.style.background = "white";
       };
       reader.readAsDataURL(file);
     }
@@ -73,6 +78,11 @@ function ClinicRegistry() {
       const reader = new FileReader();
       reader.onload = (event) => {
         setImageSrc(event.target.result);
+        // Set preview image container bg to white
+        const previewImageContainer = document.getElementById(
+          "preview-image-container"
+        );
+        previewImageContainer.style.background = "white";
       };
       reader.readAsDataURL(file);
     }
@@ -170,6 +180,7 @@ function ClinicRegistry() {
                                 type="text"
                                 name="name"
                                 id="name"
+                                isRequired
                                 placeholder="John Doe"
                                 rounded="xl"
                                 borderWidth="1px"
@@ -195,6 +206,7 @@ function ClinicRegistry() {
                                         borderWidth="1px"
                                         borderColor="gray.300"
                                         color="gray.900"
+                                        isRequired
                                         size="md"
                                         focusBorderColor="blue.500"
                                     >
@@ -231,6 +243,7 @@ function ClinicRegistry() {
                                         borderWidth="1px"
                                         borderColor="gray.300"
                                         color="gray.900"
+                                        isRequired
                                         size="md"
                                         focusBorderColor="blue.500"
                                     >
@@ -270,6 +283,7 @@ function ClinicRegistry() {
                                         borderColor="gray.300"
                                         color="gray.900"
                                         size="md"
+                                        isRequired
                                         focusBorderColor="blue.500"
                                     >
                                         <option value="Monday">Monday</option>
@@ -296,6 +310,7 @@ function ClinicRegistry() {
                                         borderColor="gray.300"
                                         color="gray.900"
                                         size="md"
+                                        isRequired
                                         focusBorderColor="blue.500"
                                     >
                                         <option value="Monday">Monday</option>
@@ -323,6 +338,7 @@ function ClinicRegistry() {
                                 borderColor="gray.300"
                                 color="gray.900"
                                 size="md"
+                                isRequired
                                 focusBorderColor="blue.500"
                                 w="full"
                                 p={2.5}
@@ -375,6 +391,7 @@ function ClinicRegistry() {
                                 height="100%"
                                 position="absolute"
                                 top={0}
+                                isRequired
                                 left={0}
                                 zIndex={1}
                                 cursor="pointer"
@@ -400,6 +417,7 @@ function ClinicRegistry() {
                         <Box
                             w="full"
                             h="64"
+                            id="preview-image-container"
                             bg="gray.200"
                             rounded="lg"
                             display="flex"
