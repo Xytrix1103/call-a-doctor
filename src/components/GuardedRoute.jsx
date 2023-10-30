@@ -1,13 +1,14 @@
-import {Navigate, Route} from "react-router-dom";
 import {useAuth} from "./AuthCtx.jsx";
+import {Navigate, Outlet, useLocation} from "react-router-dom";
 
-const GuardedRoute = ({ component: Component, ...rest }) => {
-	const {user} = useAuth();
+const GuardedRoute = () => {
+	const {user, loading} = useAuth();
+	const location = useLocation();
 	
 	return (
-		<Route {...rest} render={(props) => (
-			user ? <Component {...props} /> : <Navigate to='/login' />
-		)}/>
+		<>
+			{!user && !loading ? <Navigate to="/login" /> : (location.pathname === "/login" || location.pathname === "/register" ? <Navigate to="/" /> : <Outlet />)}
+		</>
 	)
 }
 
