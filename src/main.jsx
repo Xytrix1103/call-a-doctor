@@ -5,10 +5,12 @@ import './index.css'
 import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from "react-router-dom";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
+import GuardedRoute from "./components/GuardedRoute.jsx";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
-		<Route path="/" element={<App/>}>
+		<Route path="/" element={<GuardedRoute/>}>
+			<Route path="/" element={<App/>}/>
 			<Route path="login" element={<Login/>}/>
 			<Route path="register" element={<Register/>}/>
 			<Route path="forgot" element={<></>}/>
@@ -18,11 +20,14 @@ const router = createBrowserRouter(
 			</Route>
 		</Route>
 	)
-)
+);
 
+router.routes.map((route) => {
+
+});
 
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<RouterProvider router={router}>
-		<App />
+		<App/>
 	</RouterProvider>
 )

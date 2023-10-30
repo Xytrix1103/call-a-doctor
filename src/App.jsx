@@ -6,6 +6,7 @@ import {getAuth} from "firebase/auth";
 import {getStorage} from "firebase/storage";
 import {AuthProvider} from "./components/AuthCtx.jsx";
 import {FirebaseProvider} from "./components/FirebaseCtx.jsx";
+import React from "react";
 
 const firebaseConfig = {
 	apiKey: "AIzaSyDZYAUmSWuZ26oY-FYcfLGtP4DhyQLaSWA",
