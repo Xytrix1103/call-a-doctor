@@ -18,6 +18,7 @@ import {useAuth} from "../../components/AuthCtx.jsx";
 function Login() {
 	const [show, setShow] = useState(false);
 	const {login} = useAuth();
+	const {logout} = useAuth();
 	
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -30,6 +31,10 @@ function Login() {
 			window.location.href = "/";
 		}
 	}
+
+	const handleLogout = () => {
+		logout();
+	};
 
 	return (
 		<Center h="100vh" bg={"#f4f4f4"}>
@@ -128,6 +133,10 @@ function Login() {
 								w="full"
 							>
 								Log In
+							</Button>
+
+							<Button onClick={handleLogout} mt={4} colorScheme="teal" variant="outline">
+								Logout
 							</Button>
 							<Text textAlign="center" mt={5}>
 								Don't have an account?{" "}
