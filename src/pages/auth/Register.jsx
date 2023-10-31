@@ -84,7 +84,7 @@ function Register() {
 								Register
 							</Text>
                         <form action="/api/register" method="post" onSubmit={handleSubmit}>
-                            <VStack spacing="4">
+                            <VStack spacing="5">
                                 <FormControl id="name">
                                     <FormLabel>Name</FormLabel>
                                     <Input
@@ -123,6 +123,25 @@ function Register() {
                                         isRequired
                                     />
                                 </FormControl>
+                                <Text fontSize="sm" fontWeight="medium" color="gray.900">
+                                    Address
+                                </Text>
+                                <Textarea
+                                    variant="filled"
+                                    name="address"
+                                    id="address"
+                                    placeholder="Enter your address here..."
+                                    rounded="xl"
+                                    borderWidth="1px"
+                                    borderColor="gray.300"
+                                    color="gray.900"
+                                    size="md"
+                                    isRequired
+                                    focusBorderColor="blue.500"
+                                    w="full"
+                                    p={2.5}
+                                    rows={5}
+                                />
                                 <FormControl id="password">
                                     <FormLabel>Password</FormLabel>
                                     <InputGroup>
