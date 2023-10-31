@@ -168,13 +168,13 @@ function DoctorRequestForm() {
                         </Flex>
                         <Box>
                             <Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
-                                Patient Name
+                                Patient Description
                             </Text>
                             <Textarea
                                 variant="filled"
-                                name="name"
-                                id="name"
-                                placeholder="John Doe"
+                                name="description"
+                                id="description"
+                                placeholder="Describe your problems here..."
                                 rounded="xl"
                                 borderWidth="1px"
                                 borderColor="gray.300"
