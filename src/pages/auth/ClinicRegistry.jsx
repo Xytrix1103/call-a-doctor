@@ -2,7 +2,6 @@ import {
     Box,
     Flex,
     Avatar,
-    HStack,
     Link,
     Text,
     IconButton,
@@ -18,14 +17,10 @@ import {
     Select,
     InputGroup,
     InputRightElement,
-    Checkbox,
     FormControl,
     FormLabel,
     FormHelperText,
     Textarea,
-    useDisclosure,
-    useColorModeValue,
-    Stack,
 } from '@chakra-ui/react';
 import {useState} from "react";
 import {BiChevronDown} from "react-icons/bi";

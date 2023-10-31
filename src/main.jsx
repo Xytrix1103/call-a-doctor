@@ -5,7 +5,6 @@ import GuardedRoute from "./components/GuardedRoute.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
-import DoctorRequestForm from './pages/patient/DoctorRequestForm.jsx';
 import ClinicRegistry from './pages/auth/ClinicRegistry.jsx';
 import React from "react";
 import App from "./App.jsx";
@@ -22,7 +21,6 @@ const router = createBrowserRouter(
 			<Route path="test" element={<Test/>}/>
 			<Route path="register" element={<Register/>}/>
 			<Route path="clinic-registry" element={<ClinicRegistry/>}/>
-			<Route path="doctor-request-form" element={<DoctorRequestForm/>}/>
 			<Route path="forgot" element={<></>}/>
 			<Route path="admin" element={<></>}>
 				<Route path="doctors" element={<></>}/>
