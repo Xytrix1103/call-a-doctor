@@ -1,0 +1,26 @@
+body {
+    background-color: #f4f4f4;
+}
+
+input:focus {
+    border-color: blue !important;
+}
+
+#dropdownNavbar {
+    position: absolute;
+}
+
+.password-meter {
+    height: 10px;
+    width: 100%;
+    background-color: #e0e0e0;
+}
+.password-meter-bar {
+    height: 100%;
+    width: 0;
+    transition: width 0.3s ease;
+}
+
+.main-content {
+    margin-top: 80px;
+}
