@@ -6,10 +6,10 @@ import {
     FormControl,
     FormHelperText,
     FormLabel,
-    Heading,
     IconButton,
     Image,
     Input,
+    Textarea,
     InputGroup,
     InputRightElement,
     Link,
@@ -17,15 +17,41 @@ import {
     VStack
 } from '@chakra-ui/react';
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {useAuth} from "../../components/AuthCtx.jsx";
+import {Navigate} from "react-router-dom";
 
 function Register() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const {user, register} = useAuth();
+    
+    useEffect(() => {
+        if (user) return <Navigate to="/" />;
+    }, [user]);
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        const password = data.get("password");
+        const confirm_password = data.get("confirm_password");
+        
+        if (password !== confirm_password) {
+            alert("Passwords do not match!");
+            return;
+        }
+        const res = await register(Object.fromEntries(data.entries()));
+        
+        if (res.error) {
+            alert(res.error);
+        } else {
+            window.location.href = "/";
+        }
+    }
 
     return (
         <Center minH="100vh" bg={"#f4f4f4"}>
-            <Box w='70%'>
+            <Box w='67%' my={6}>
                 <Flex 	
                     bg="white"
                     boxShadow="xl"
@@ -59,8 +85,8 @@ function Register() {
                         <Text fontSize="xl" fontWeight="bold" mb={7}>
 								Register
 							</Text>
-                        <form action="/api/register" method="post">
-                            <VStack spacing="4">
+                        <form action="/api/register" method="post" onSubmit={handleSubmit}>
+                            <VStack spacing="5">
                                 <FormControl id="name">
                                     <FormLabel>Name</FormLabel>
                                     <Input
@@ -97,6 +123,25 @@ function Register() {
                                         w="full"
                                         p={2.5}
                                         isRequired
+                                    />
+                                </FormControl>
+                                <FormControl id="address">
+                                    <FormLabel>Address</FormLabel>
+                                    <Textarea
+                                        variant="filled"
+                                        name="address"
+                                        id="address"
+                                        placeholder="Enter your address here..."
+                                        rounded="xl"
+                                        borderWidth="1px"
+                                        borderColor="gray.300"
+                                        color="gray.900"
+                                        size="md"
+                                        isRequired
+                                        focusBorderColor="blue.500"
+                                        w="full"
+                                        p={2.5}
+                                        rows={5}
                                     />
                                 </FormControl>
                                 <FormControl id="password">
@@ -174,7 +219,7 @@ function Register() {
                                     rounded="xl"
                                     px={4}
                                     py={2}
-                                    mt={4}
+                                    mt={7}
                                     w="full"
                                 >
                                     Register

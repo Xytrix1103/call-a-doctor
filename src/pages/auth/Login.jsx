@@ -18,7 +18,17 @@ import {useAuth} from "../../components/AuthCtx.jsx";
 function Login() {
 	const [show, setShow] = useState(false);
 	const {login} = useAuth();
-
+	
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		const data = new FormData(e.target);
+		const res = await login(Object.fromEntries(data.entries()));
+		
+		if (res) {
+			console.log(res);
+		}
+	}
+	
 	return (
 		<Center h="100vh" bg={"#f4f4f4"}>
 			<Box w="70%">
@@ -41,7 +51,7 @@ function Login() {
 						</Center>
 					</Box>
 					<Box my={7} mr={5} w="full">
-						<form action="/api/login" method="post">
+						<form action="/api/login" method="post" onSubmit={handleSubmit}>
 							<Text fontSize="xl" fontWeight="medium">
 								Log In
 							</Text>
@@ -60,6 +70,7 @@ function Login() {
 									borderColor="gray.300"
 									color="gray.900"
 									size="md"
+									isRequired
 									focusBorderColor="blue.500"
 									w="full"
 									p={2.5}
