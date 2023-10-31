@@ -8,6 +8,7 @@ import {
     IconButton,
     Image,
     Input,
+    Textarea,
     InputGroup,
     InputRightElement,
     Link,
@@ -49,7 +50,7 @@ function Register() {
 
     return (
         <Center minH="100vh" bg={"#f4f4f4"}>
-            <Box w='67%'>
+            <Box w='67%' my={6}>
                 <Flex 	
                     bg="white"
                     boxShadow="xl"
@@ -84,7 +85,7 @@ function Register() {
 								Register
 							</Text>
                         <form action="/api/register" method="post" onSubmit={handleSubmit}>
-                            <VStack spacing="4">
+                            <VStack spacing="5">
                                 <FormControl id="name">
                                     <FormLabel>Name</FormLabel>
                                     <Input
@@ -121,6 +122,25 @@ function Register() {
                                         w="full"
                                         p={2.5}
                                         isRequired
+                                    />
+                                </FormControl>
+                                <FormControl id="address">
+                                    <FormLabel>Address</FormLabel>
+                                    <Textarea
+                                        variant="filled"
+                                        name="address"
+                                        id="address"
+                                        placeholder="Enter your address here..."
+                                        rounded="xl"
+                                        borderWidth="1px"
+                                        borderColor="gray.300"
+                                        color="gray.900"
+                                        size="md"
+                                        isRequired
+                                        focusBorderColor="blue.500"
+                                        w="full"
+                                        p={2.5}
+                                        rows={5}
                                     />
                                 </FormControl>
                                 <FormControl id="password">
@@ -191,7 +211,15 @@ function Register() {
                                         </Link>
                                     </Text>
                                 </Center>
-                                <Button type="submit" colorScheme="blue" size="lg">
+                                <Button
+                                    type="submit"
+                                    colorScheme="blue"
+                                    rounded="xl"
+                                    px={4}
+                                    py={2}
+                                    mt={7}
+                                    w="full"
+                                >
                                     Register
                                 </Button>
                             </VStack>
