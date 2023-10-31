@@ -24,10 +24,8 @@ function Login() {
 		const data = new FormData(e.target);
 		const res = await login(Object.fromEntries(data.entries()));
 		
-		if (res.error) {
-			alert(res.error);
-		} else {
-			window.location.href = "/";
+		if (res) {
+			console.log(res);
 		}
 	}
 	
@@ -129,7 +127,6 @@ function Login() {
 							>
 								Log In
 							</Button>
-
 							<Text textAlign="center" mt={5}>
 								Don't have an account?{" "}
 								<Text as="a" href="/register" textColor="blue.500" fontWeight="medium" _hover={{textDecoration: "underline"}}>

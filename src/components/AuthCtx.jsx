@@ -1,26 +1,12 @@
 import {createContext, useContext, useEffect, useState} from 'react';
 import {createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut} from "firebase/auth";
-import {auth, db} from "../App.jsx";
 import {onValue, ref, set} from "firebase/database";
-
-const AuthContext = createContext({
-	user: null,
-	loading: true,
-	register: () => {},
-	login: () => {},
-	logout: () => {},
-	resetPassword: () => {},
-	updateEmail: () => {},
-	updatePassword: () => {},
-});
-
-export const useAuth = () => {
-	return useContext(AuthContext);
-}
+import {auth, db, useFirebase} from "./FirebaseCtx.jsx";
 
 export const AuthProvider = ({children}) => {
 	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const {auth, db} = useFirebase();
 	
 	useEffect(() => {
 		return onAuthStateChanged(auth, (user) => {
@@ -35,13 +21,16 @@ export const AuthProvider = ({children}) => {
 							...user,
 							...data,
 						});
+						setLoading(false);
+					} else {
+						setUser(null);
+						setLoading(false);
 					}
 				});
 			} else {
 				setUser(null);
+				setLoading(false);
 			}
-			
-			setLoading(false);
 		});
 	}, []);
 	
@@ -86,47 +75,50 @@ export const register = async (data) => {
 	return false;
 }
 
-export const login = async (email, password) => {
-	try {
-		return await signInWithEmailAndPassword(auth, email, password);
-	} catch (error) {
+export const login = async (cred) => {
+	const {email, password} = cred;
+	await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+		return userCredential.user;
+	}).catch((error) => {
 		console.log(error);
-	}
-	return false;
+		return {error: error};
+	});
 }
 
 export const logout = async () => {
-	try {
-		return await signOut(auth);
-	} catch (error) {
+	signOut(auth).then(() => {
+		console.log("logged out");
+	}).catch((error) => {
 		console.log(error);
-	}
-	return false;
+	});
 }
 
 export const resetPassword = async (email) => {
-	try {
-		return await auth.sendPasswordResetEmail(email);
-	} catch (error) {
+	auth.sendPasswordResetEmail(email).then(() => {
+		console.log("email sent");
+	}).catch((error) => {
 		console.log(error);
-	}
-	return false;
+	});
 }
 
 export const updateEmail = async (email) => {
-	try {
-		return await auth.currentUser.updateEmail(email);
-	} catch (error) {
+	auth.currentUser.updateEmail(email).then(() => {
+		console.log("email updated");
+	}).catch((error) => {
 		console.log(error);
-	}
-	return false;
+	});
 }
 
 export const updatePassword = async (password) => {
-	try {
-		return await auth.currentUser.updatePassword(password);
-	} catch (error) {
+	auth.currentUser.updatePassword(password).then(() => {
+		console.log("password updated");
+	}).catch((error) => {
 		console.log(error);
-	}
-	return false;
+	});
+}
+
+const AuthContext = createContext(null);
+
+export const useAuth = () => {
+	return useContext(AuthContext);
 }
