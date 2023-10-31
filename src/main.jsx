@@ -8,6 +8,7 @@ import Register from "./pages/auth/Register.jsx";
 import DoctorRequestForm from './pages/patient/DoctorRequestForm.jsx';
 import ClinicRegistry from './pages/auth/ClinicRegistry.jsx';
 import AddDoctorToList from './pages/clinic/AddDoctorToList.jsx';
+import ClinicList from './pages/patient/ClinicList.jsx';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -17,6 +18,7 @@ const router = createBrowserRouter(
 			<Route path="clinic-registry" element={<ClinicRegistry/>}/>
 			<Route path="doctor-request-form" element={<DoctorRequestForm/>}/>
 			<Route path="add-doctor-to-list" element={<AddDoctorToList/>}/>
+			<Route path="list-of-clinic" element={<ClinicList/>}/>
 			<Route path="forgot" element={<></>}/>
 			<Route path="admin" element={<></>}>
 				<Route path="doctors" element={<></>}/>
