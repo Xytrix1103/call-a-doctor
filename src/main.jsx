@@ -6,12 +6,14 @@ import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} fr
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
 import GuardedRoute from "./components/GuardedRoute.jsx";
+import Test from './pages/auth/Test.jsx';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route path="/" element={<GuardedRoute/>}>
 			<Route path="/" element={<App/>}/>
 			<Route path="login" element={<Login/>}/>
+			<Route path="test" element={<Test/>}/>
 			<Route path="register" element={<Register/>}/>
 			<Route path="forgot" element={<></>}/>
 			<Route path="admin" element={<></>}>
