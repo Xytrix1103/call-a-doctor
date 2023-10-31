@@ -178,8 +178,8 @@ function ClinicRegistry() {
                             <Input
                                 variant="filled"
                                 type="text"
-                                name="name"
-                                id="name"
+                                name="clinic_name"
+                                id="clinic_name"
                                 isRequired
                                 placeholder="John Doe"
                                 rounded="xl"
@@ -330,8 +330,8 @@ function ClinicRegistry() {
                             </Text>
                             <Textarea
                                 variant="filled"
-                                name="name"
-                                id="name"
+                                name="address"
+                                id="address"
                                 placeholder="Enter your address here..."
                                 rounded="xl"
                                 borderWidth="1px"
@@ -351,8 +351,8 @@ function ClinicRegistry() {
                             </Text>
                             <Textarea
                                 variant="filled"
-                                name="name"
-                                id="name"
+                                name="panel_firm"
+                                id="panel_firm"
                                 placeholder="Enter your panel firms here..."
                                 rounded="xl"
                                 borderWidth="1px"
@@ -457,8 +457,8 @@ function ClinicRegistry() {
                                 <Input
                                         variant="filled"
                                         type="text"
-                                        name="name"
-                                        id="name"
+                                        name="admin_name"
+                                        id="admin_name"
                                         placeholder="John Doe"
                                         rounded="xl"
                                         borderWidth="1px"
