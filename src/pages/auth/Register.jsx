@@ -191,7 +191,15 @@ function Register() {
                                         </Link>
                                     </Text>
                                 </Center>
-                                <Button type="submit" colorScheme="blue" size="lg">
+                                <Button
+                                    type="submit"
+                                    colorScheme="blue"
+                                    rounded="xl"
+                                    px={4}
+                                    py={2}
+                                    mt={7}
+                                    w="full"
+                                >
                                     Register
                                 </Button>
                             </VStack>

@@ -72,6 +72,7 @@ function Login() {
 									borderColor="gray.300"
 									color="gray.900"
 									size="md"
+									isRequired
 									focusBorderColor="blue.500"
 									w="full"
 									p={2.5}
