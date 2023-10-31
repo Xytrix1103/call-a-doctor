@@ -32,17 +32,16 @@ import {BiChevronDown} from "react-icons/bi";
 
 const clinics = [
     // Define your clinic data here
-    { id: 1, name: 'Clinic 1' },
-    { id: 2, name: 'Clinic 2' },
-    { id: 3, name: 'Clinic 3' },
-    { id: 4, name: 'Clinic 4' },
-    { id: 5, name: 'Clinic 5' },
-    { id: 6, name: 'Clinic 6' },
-    { id: 7, name: 'Clinic 7' },
-    { id: 8, name: 'Clinic 8' },
-    { id: 9, name: 'Clinic 9' },
-    { id: 10, name: 'Clinic 10' },
-    // Add more clinics as needed
+    { id: 1, name: 'Clinic 1', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
+    { id: 2, name: 'Clinic 2', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
+    { id: 3, name: 'Clinic 3', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
+    { id: 4, name: 'Clinic 4', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
+    { id: 5, name: 'Clinic 5', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
+    { id: 6, name: 'Clinic 6', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
+    { id: 7, name: 'Clinic 7', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
+    { id: 8, name: 'Clinic 8', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
+    { id: 9, name: 'Clinic 9', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
+    { id: 10, name: 'Clinic 10', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
   ];
 
 function ClinicList() {
@@ -119,18 +118,24 @@ function ClinicList() {
                         <Flex
                             direction="column"
                             alignItems="center"
-                            justifyContent="center"
+                            justifyContent="flex-end" // Align text to the bottom
                             bg="white"
                             w={64}
                             h={64}
-                            shadow="md"
-                            padding="1rem"
+                            shadow="lg"
                             borderRadius="lg"
                             transition="transform 0.2s"
                             margin={4}
-                            _hover={{ transform: 'scale(1.05)' }}
                         >
-                            <Text fontSize="lg" fontWeight="bold">
+                            <Box
+                                w="100%"
+                                h="100%" // Set the height for the image
+                                bgImage={`url(${clinic.imageUrl})`}
+                                bgSize="cover"
+                                bgPosition="center"
+                                borderTopRadius="8px" // Rounded top corners
+                            />
+                            <Text fontSize="md" fontWeight="bold" margin="0.5rem" maxW={60} isTruncated> {/* Add space between image and text */}
                                 {clinic.name}
                             </Text>
                         </Flex>
