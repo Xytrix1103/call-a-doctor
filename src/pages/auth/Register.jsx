@@ -8,6 +8,7 @@ import {
     IconButton,
     Image,
     Input,
+    Textarea,
     InputGroup,
     InputRightElement,
     Link,
@@ -49,7 +50,7 @@ function Register() {
 
     return (
         <Center minH="100vh" bg={"#f4f4f4"}>
-            <Box w='67%'>
+            <Box w='67%' my={6}>
                 <Flex 	
                     bg="white"
                     boxShadow="xl"
@@ -123,25 +124,25 @@ function Register() {
                                         isRequired
                                     />
                                 </FormControl>
-                                <Text fontSize="sm" fontWeight="medium" color="gray.900">
-                                    Address
-                                </Text>
-                                <Textarea
-                                    variant="filled"
-                                    name="address"
-                                    id="address"
-                                    placeholder="Enter your address here..."
-                                    rounded="xl"
-                                    borderWidth="1px"
-                                    borderColor="gray.300"
-                                    color="gray.900"
-                                    size="md"
-                                    isRequired
-                                    focusBorderColor="blue.500"
-                                    w="full"
-                                    p={2.5}
-                                    rows={5}
-                                />
+                                <FormControl id="address">
+                                    <FormLabel>Address</FormLabel>
+                                    <Textarea
+                                        variant="filled"
+                                        name="address"
+                                        id="address"
+                                        placeholder="Enter your address here..."
+                                        rounded="xl"
+                                        borderWidth="1px"
+                                        borderColor="gray.300"
+                                        color="gray.900"
+                                        size="md"
+                                        isRequired
+                                        focusBorderColor="blue.500"
+                                        w="full"
+                                        p={2.5}
+                                        rows={5}
+                                    />
+                                </FormControl>
                                 <FormControl id="password">
                                     <FormLabel>Password</FormLabel>
                                     <InputGroup>
