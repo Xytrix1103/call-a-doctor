@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, createRoutesFromElements, Outlet, Route, RouterProvider} from "react-router-dom";
 import GuardedRoute from "./components/GuardedRoute.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
@@ -24,15 +24,15 @@ const router = createBrowserRouter(
 			<Route path="register" element={<Register/>}/>
 			<Route path="forgot" element={<></>}/>
 			<Route path="register-clinic" element={<ClinicRegistry/>}/>
-			<Route path="patient" element={<></>}>
+			<Route path="patient" element={<Outlet/>}>
 				<Route path="request" element={<DoctorRequestForm/>}/>
 			</Route>
-			<Route path="clinic" element={<></>}>
+			<Route path="clinic" element={<Outlet/>}>
 				<Route path="doctors" element={<></>}>
 					<Route path="add" element={<AddDoctorToList/>}/>
 				</Route>
 			</Route>
-			<Route path="admin" element={<></>}>
+			<Route path="admin" element={<Outlet/>}>
 				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="doctors" element={<></>}/>
 				<Route path="patients" element={<></>}/>
