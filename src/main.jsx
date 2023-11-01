@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
 import AddDoctorToList from './pages/clinic/AddDoctorToList.jsx';
+import DoctorRequestForm from './pages/patient/DoctorRequestForm.jsx';
 import React from "react";
 import App from "./App.jsx";
 import {FirebaseProvider} from "./components/FirebaseCtx.jsx";
@@ -20,8 +21,15 @@ const router = createBrowserRouter(
 			<Route path="login" element={<Login/>}/>
 			<Route path="test" element={<Test/>}/>
 			<Route path="register" element={<Register/>}/>
-			<Route path="add-doctor-to-list" element={<AddDoctorToList/>}/>
 			<Route path="forgot" element={<></>}/>
+			<Route path="patient" element={<></>}>
+				<Route path="request" element={<DoctorRequestForm/>}/>
+			</Route>
+			<Route path="clinic" element={<></>}>
+				<Route path="doctors" element={<></>}>
+					<Route path="add" element={<AddDoctorToList/>}/>
+				</Route>
+			</Route>
 			<Route path="admin" element={<></>}>
 				<Route path="doctors" element={<></>}/>
 				<Route path="patients" element={<></>}/>
