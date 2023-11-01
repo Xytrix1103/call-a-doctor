@@ -1,47 +1,32 @@
 import {
-    Box,
-    Flex,
     Avatar,
-    HStack,
+    Box,
+    Center,
+    Flex,
+    Grid,
     Link,
-    Text,
-    IconButton,
-    Button,
     Menu,
     MenuButton,
-    MenuList,
-    MenuItem,
-    Grid,
     MenuDivider,
-    Image,
-    Center,
-    Input,
-    Select,
-    InputGroup,
-    InputRightElement,
-    Checkbox,
-    FormControl,
-    FormLabel,
-    Textarea,
-    useDisclosure,
-    useColorModeValue,
-    Stack,
-  } from '@chakra-ui/react'
-import {useState} from "react";
+    MenuItem,
+    MenuList,
+    Text,
+} from '@chakra-ui/react'
 import {BiChevronDown} from "react-icons/bi";
+import {NavLink} from "react-router-dom";
 
 const clinics = [
     // Define your clinic data here
-    { id: 1, name: 'Clinic 1', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
-    { id: 2, name: 'Clinic 2', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
-    { id: 3, name: 'Clinic 3', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
-    { id: 4, name: 'Clinic 4', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
-    { id: 5, name: 'Clinic 5', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
-    { id: 6, name: 'Clinic 6', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
-    { id: 7, name: 'Clinic 7', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
-    { id: 8, name: 'Clinic 8', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
-    { id: 9, name: 'Clinic 9', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
-    { id: 10, name: 'Clinic 10', imageUrl: 'src/assets/images/Picture-Placeholder.jpg' },
+    { id: 1, name: 'Clinic 1', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
+    { id: 2, name: 'Clinic 2', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
+    { id: 3, name: 'Clinic 3', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
+    { id: 4, name: 'Clinic 4', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
+    { id: 5, name: 'Clinic 5', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
+    { id: 6, name: 'Clinic 6', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
+    { id: 7, name: 'Clinic 7', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
+    { id: 8, name: 'Clinic 8', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
+    { id: 9, name: 'Clinic 9', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
+    { id: 10, name: 'Clinic 10', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
   ];
 
 function ClinicList() {
@@ -73,10 +58,10 @@ function ClinicList() {
                 </Flex>
 
                 <Flex alignItems="center">
-                    <Link as={Link} color="#0307fc" to="/" marginRight={6}>
+                    <Link as={NavLink} color="#0307fc" to="/" marginRight={6}>
                         Home
                     </Link>
-                    <Link as={Link} color="teal.500" to="/" marginRight={6}>
+                    <Link as={NavLink} color="teal.500" to="/" marginRight={6}>
                         Clinic List
                     </Link>
                     <Menu marginRight={6}>
@@ -88,17 +73,17 @@ function ClinicList() {
                         </MenuButton>
 
                         <MenuList>
-                            <MenuItem as={Link} to="/" _focus={{ boxShadow: 'none' }}>
+                            <MenuItem as={NavLink} to="/" _focus={{ boxShadow: 'none' }}>
                                 Dashboard
                             </MenuItem>
-                            <MenuItem as={Link} to="/" _focus={{ boxShadow: "none" }}>
+                            <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
                                 Settings
                             </MenuItem>
-                            <MenuItem as={Link} to="/" _focus={{ boxShadow: "none" }}>
+                            <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
                                 Earnings
                             </MenuItem>
                             <MenuDivider />
-                            <MenuItem as={Link} to="/" _focus={{ boxShadow: "none" }}>
+                            <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
                                 Sign out
                             </MenuItem>
                         </MenuList>
@@ -130,7 +115,7 @@ function ClinicList() {
                             <Box
                                 w="100%"
                                 h="100%" // Set the height for the image
-                                bgImage={`url(${clinic.imageUrl})`}
+                                bgImage={`url(${clinic.imageUrl})`} // Set the image
                                 bgSize="cover"
                                 bgPosition="center"
                                 borderTopRadius="8px" // Rounded top corners
@@ -144,6 +129,6 @@ function ClinicList() {
             </Grid>
         </Center>
     );
-};
+}
 
 export default ClinicList;
