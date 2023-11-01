@@ -7,7 +7,7 @@ function App() {
 	return (
 		<Flex display="grid" gridTemplateRows="auto 1fr" w="100%" h="100%" bg="#f4f4f4" overflow="hidden">
 			<PatientNavbar/>
-			<Flex w="100%" h="100%" bg="#f4f4f4" overflow="scroll" p={5}>
+			<Flex w="100%" h="100%" bg="#f4f4f4" overflow="auto" p={5}>
 				<Outlet/>
 			</Flex>
 		</Flex>
