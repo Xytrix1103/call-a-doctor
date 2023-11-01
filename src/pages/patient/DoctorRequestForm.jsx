@@ -54,7 +54,7 @@ function DoctorRequestForm() {
                 <Link as={NavLink} color="#0307fc" to="/" marginRight={6}>
                     Home
                 </Link>
-                <Link as={NavLink} color="teal.500" to="/" marginRight={6}>
+                <Link as={NavLink} color="teal.500" to="/patient/clinics" marginRight={6}>
                     Clinic List
                 </Link>
                 <Menu marginRight={6}>
