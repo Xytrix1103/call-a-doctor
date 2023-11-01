@@ -1,5 +1,4 @@
 import {
-    Avatar,
     Box,
     Button,
     Center,
@@ -12,20 +11,12 @@ import {
     Input,
     InputGroup,
     InputRightElement,
-    Link,
-    Menu,
-    MenuButton,
-    MenuDivider,
-    MenuItem,
-    MenuList,
     Select,
     Text,
 } from '@chakra-ui/react';
 import {useState} from "react";
-import {BiChevronDown} from "react-icons/bi";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
-import {NavLink} from "react-router-dom";
 
 function AddDoctorToList() {
     const [showPassword, setShowPassword] = useState(false);
@@ -94,65 +85,6 @@ function AddDoctorToList() {
 
     return (
         <Center minHeight="100vh" bg={"#f4f4f4"}>
-            <Flex
-                as="nav"
-                align="top"
-                padding="1rem"
-                bg="white"
-                bgColor={"white"}
-                position="fixed"
-                top="0"
-                left="0"
-                right="0"
-                zIndex="999"
-                width="100%"
-                shadow="md"
-                justify="space-between"
-            >
-                <Flex align="center">
-                    <Avatar
-                        size="md"
-                        src="\src\assets\images\Call_A_Doctor_Logo_NoBg.png"
-                    />
-                    <Text fontSize="xl" ml={2} fontWeight="bold">
-                        Call A Doctor
-                    </Text>
-                </Flex>
-
-                <Flex alignItems="center">
-                    <Link as={NavLink} color="#0307fc" to="/" marginRight={6}>
-                        Home
-                    </Link>
-                    <Link as={NavLink} color="teal.500" to="/" marginRight={6}>
-                        Clinic List
-                    </Link>
-                    <Menu marginRight={6}>
-                        <MenuButton as={Link} color="teal.500" display="flex" alignItems="center">
-                            <Flex alignItems="center">
-                                <Text>More</Text>
-                                <BiChevronDown />
-                            </Flex>
-                        </MenuButton>
-
-                        <MenuList>
-                            <MenuItem as={NavLink} to="/" _focus={{ boxShadow: 'none' }}>
-                            Dashboard
-                            </MenuItem>
-                            <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
-                            Settings
-                            </MenuItem>
-                            <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
-                            Earnings
-                            </MenuItem>
-                            <MenuDivider />
-                            <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
-                            Sign out
-                            </MenuItem>
-                        </MenuList>
-                    </Menu>
-                </Flex>
-            </Flex>
-
             <Box
                 mt={24}
                 mb={10}
