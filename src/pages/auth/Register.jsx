@@ -4,7 +4,6 @@ import {
     Center,
     Flex,
     FormControl,
-    FormHelperText,
     FormLabel,
     IconButton,
     Image,
@@ -173,7 +172,6 @@ function Register() {
                                                         onClick={() => setShowPassword(!showPassword)}/>
                                         </InputRightElement>
                                     </InputGroup>
-                                    <FormHelperText>Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character</FormHelperText>
                                 </FormControl>
                                 <FormControl id="confirm_password">
                                     <FormLabel>Confirm Password</FormLabel>
