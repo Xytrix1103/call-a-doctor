@@ -2,30 +2,35 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from "react-router-dom";
 import GuardedRoute from "./components/GuardedRoute.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
+import AddDoctorToList from './pages/clinic/AddDoctorToList.jsx';
 import DoctorRequestForm from './pages/patient/DoctorRequestForm.jsx';
-import ClinicRegistry from './pages/auth/ClinicRegistry.jsx';
 import React from "react";
 import App from "./App.jsx";
 import {FirebaseProvider} from "./components/FirebaseCtx.jsx";
 import {ChakraProvider, extendTheme} from "@chakra-ui/react";
 import {AuthProvider} from "./components/AuthCtx.jsx";
 import Test from './pages/auth/Test.jsx';
+import ClinicRegistry from "./pages/auth/ClinicRegistry.jsx";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route path="/" element={<GuardedRoute/>}>
-			<Route path="/" element={<Dashboard/>}/>
+			<Route path="/" element={<></>}/>
 			<Route path="login" element={<Login/>}/>
 			<Route path="test" element={<Test/>}/>
 			<Route path="register" element={<Register/>}/>
+			<Route path="forgot" element={<></>}/>
+			<Route path="register-clinic" element={<ClinicRegistry/>}/>
 			<Route path="patient" element={<></>}>
 				<Route path="request" element={<DoctorRequestForm/>}/>
 			</Route>
-			<Route path="clinic-registry" element={<ClinicRegistry/>}/>
-			<Route path="forgot" element={<></>}/>
+			<Route path="clinic" element={<></>}>
+				<Route path="doctors" element={<></>}>
+					<Route path="add" element={<AddDoctorToList/>}/>
+				</Route>
+			</Route>
 			<Route path="admin" element={<></>}>
 				<Route path="doctors" element={<></>}/>
 				<Route path="patients" element={<></>}/>
