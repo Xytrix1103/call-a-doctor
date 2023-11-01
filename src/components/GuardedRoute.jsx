@@ -1,8 +1,7 @@
-import {Navigate, useLocation, useNavigation} from "react-router-dom";
+import {Navigate, Outlet, useLocation, useNavigation} from "react-router-dom";
 import {useEffect} from "react";
 import {useAuth} from "./AuthCtx.jsx";
 import GlobalSpinner from "./GlobalSpinner.jsx";
-import App from "../App.jsx";
 
 const GuardedRoute = () => {
 	const {user, loading} = useAuth();
@@ -22,13 +21,13 @@ const GuardedRoute = () => {
 					<GlobalSpinner/> :
 					(location.pathname === "/login" || location.pathname === "/register") ?
 						!user ?
-							<App/> :
+							<Outlet/> :
 							(
 								<Navigate to="/" />
 							)
 					:
 						user ?
-							<App/> :
+							<Outlet/> :
 							(
 								<Navigate to="/login" />
 							)
