@@ -4,7 +4,6 @@ import {BiChevronDown} from "react-icons/bi";
 
 const PatientNavbar = () => {
 	const location = useLocation();
-	
 	const currentPath = location.pathname;
 	
 	return (
@@ -30,13 +29,10 @@ const PatientNavbar = () => {
 			</Flex>
 			
 			<Flex alignItems="center">
-				<Link as={NavLink} color="#0307fc" to="/" marginRight={6}>
+				<Link as={NavLink} color="teal.500" to="/" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
 					Home
 				</Link>
-				<Link as={NavLink} color="teal.500" to="/patient/clinics" marginRight={6}>
-					Clinic List
-				</Link>
-				<Link as={NavLink} color="teal.500" to="/patient/clinics" marginRight={6}>
+				<Link as={NavLink} color="teal.500" to="/patient/clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
 					Clinic List
 				</Link>
 				<Menu marginRight={6}>
