@@ -5,6 +5,7 @@ import GuardedRoute from "./components/GuardedRoute.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
+import DoctorRequestForm from './pages/patient/DoctorRequestForm.jsx';
 import React from "react";
 import App from "./App.jsx";
 import {FirebaseProvider} from "./components/FirebaseCtx.jsx";
@@ -19,6 +20,9 @@ const router = createBrowserRouter(
 			<Route path="login" element={<Login/>}/>
 			<Route path="test" element={<Test/>}/>
 			<Route path="register" element={<Register/>}/>
+			<Route path="patient" element={<></>}>
+				<Route path="request" element={<DoctorRequestForm/>}/>
+			</Route>
 			<Route path="forgot" element={<></>}/>
 			<Route path="admin" element={<></>}>
 				<Route path="doctors" element={<></>}/>

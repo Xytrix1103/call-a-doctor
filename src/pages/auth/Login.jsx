@@ -31,7 +31,7 @@ function Login() {
 	
 	return (
 		<Center h="100vh" bg={"#f4f4f4"}>
-			<Box w="67%">
+			<Box w="70%">
 				<Flex
 					bg="white"
 					boxShadow="xl"
