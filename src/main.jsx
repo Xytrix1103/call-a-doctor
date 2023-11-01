@@ -13,6 +13,7 @@ import {ChakraProvider, extendTheme} from "@chakra-ui/react";
 import {AuthProvider} from "./components/AuthCtx.jsx";
 import Test from './pages/auth/Test.jsx';
 import ClinicRegistry from "./pages/auth/ClinicRegistry.jsx";
+import ClinicList from "./pages/patient/ClinicList.jsx";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -32,6 +33,7 @@ const router = createBrowserRouter(
 				</Route>
 			</Route>
 			<Route path="admin" element={<></>}>
+				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="doctors" element={<></>}/>
 				<Route path="patients" element={<></>}/>
 			</Route>
