@@ -50,7 +50,7 @@ function ClinicList() {
                 <Flex align="center">
                     <Avatar
                         size="md"
-                        src="src\assets\images\Call_A_Doctor_Logo_NoBg.png"
+                        src="\src\assets\images\Call_A_Doctor_Logo_NoBg.png"
                     />
                     <Text fontSize="xl" ml={2} fontWeight="bold">
                         Call A Doctor
