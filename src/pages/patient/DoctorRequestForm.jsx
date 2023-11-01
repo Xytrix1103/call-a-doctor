@@ -43,7 +43,7 @@ function DoctorRequestForm() {
             <Flex align="center">
                 <Avatar
                     size="md"
-                    src="src\assets\images\Call_A_Doctor_Logo_NoBg.png"
+                    src="\src\assets\images\Call_A_Doctor_Logo_NoBg.png"
                 />
                 <Text fontSize="xl" ml={2} fontWeight="bold">
                     Call A Doctor
@@ -58,7 +58,7 @@ function DoctorRequestForm() {
                     Clinic List
                 </Link>
                 <Menu marginRight={6}>
-                    <MenuButton as={NavLink} color="teal.500" display="flex" alignItems="center">
+                    <MenuButton as={Link} color="teal.500" display="flex" alignItems="center">
                         <Flex alignItems="center">
                             <Text>More</Text>
                             <BiChevronDown />
