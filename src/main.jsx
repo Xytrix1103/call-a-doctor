@@ -26,14 +26,14 @@ const router = createBrowserRouter(
 			<Route path="register-clinic" element={<ClinicRegistry/>}/>
 			<Route path="patient" element={<Outlet/>}>
 				<Route path="request" element={<DoctorRequestForm/>}/>
+				<Route path="clinics" element={<ClinicList/>}/>
 			</Route>
 			<Route path="clinic" element={<Outlet/>}>
-				<Route path="doctors" element={<></>}>
+				<Route path="doctors" element={<Outlet/>}>
 					<Route path="add" element={<AddDoctorToList/>}/>
 				</Route>
 			</Route>
 			<Route path="admin" element={<Outlet/>}>
-				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="doctors" element={<></>}/>
 				<Route path="patients" element={<></>}/>
 			</Route>
