@@ -28,10 +28,10 @@ function Login() {
 			console.log(res);
 		}
 	}
-	
+
 	return (
 		<Center h="100vh" bg={"#f4f4f4"}>
-			<Box w="70%">
+			<Box w="67%">
 				<Flex
 					bg="white"
 					boxShadow="xl"

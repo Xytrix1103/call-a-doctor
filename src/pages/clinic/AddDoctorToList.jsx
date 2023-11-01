@@ -1,25 +1,25 @@
 import {
-    Box,
-    Flex,
     Avatar,
-    Link,
-    Text,
-    IconButton,
+    Box,
     Button,
-    Menu,
-    MenuButton,
-    MenuList,
-    MenuItem,
-    MenuDivider,
-    Image,
     Center,
+    Flex,
+    FormControl,
+    FormHelperText,
+    FormLabel,
+    IconButton,
+    Image,
     Input,
-    Select,
     InputGroup,
     InputRightElement,
-    FormControl,
-    FormLabel,
-    FormHelperText,
+    Link,
+    Menu,
+    MenuButton,
+    MenuDivider,
+    MenuItem,
+    MenuList,
+    Select,
+    Text,
 } from '@chakra-ui/react';
 import {useState} from "react";
 import {BiChevronDown} from "react-icons/bi";
@@ -87,7 +87,6 @@ function AddDoctorToList() {
         }
     };
     
-    // Helper function to check if a file is an image
     const isImageFile = (file) => {
         return file.type.startsWith("image/");
     };  
