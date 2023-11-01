@@ -2,7 +2,6 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from "react-router-dom";
 import GuardedRoute from "./components/GuardedRoute.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
 import AddDoctorToList from './pages/clinic/AddDoctorToList.jsx';
