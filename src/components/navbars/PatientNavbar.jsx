@@ -30,13 +30,13 @@ const PatientNavbar = () => {
 			</Flex>
 			
 			<Flex alignItems="center">
-				<Link as={NavLink} color="#0307fc" to="/" marginRight={6} isactive={currentPath === "/"}>
+				<Link as={NavLink} color="#0307fc" to="/" marginRight={6}>
 					Home
 				</Link>
-				<Link as={NavLink} color="teal.500" to="/patient/clinics" marginRight={6} isactive={currentPath === "/patient/clinics"}>
+				<Link as={NavLink} color="teal.500" to="/patient/clinics" marginRight={6}>
 					Clinic List
 				</Link>
-				<Link as={NavLink} color="teal.500" to="/patient/clinics" marginRight={6} isactive={currentPath === "/patient/clinics"}>
+				<Link as={NavLink} color="teal.500" to="/patient/clinics" marginRight={6}>
 					Clinic List
 				</Link>
 				<Menu marginRight={6}>
@@ -48,13 +48,13 @@ const PatientNavbar = () => {
 					</MenuButton>
 					
 					<MenuList>
-						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: 'none' }} isactive={currentPath === "/"}>
+						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: 'none' }}>
 							Dashboard
 						</MenuItem>
-						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }} isactive={currentPath === "/"}>
+						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
 							Settings
 						</MenuItem>
-						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }} isactive={currentPath === "/"}>
+						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
 							Earnings
 						</MenuItem>
 						<MenuDivider />
