@@ -18,10 +18,11 @@ const clinics = [
 function ClinicList() {
     return (
         <Grid
-            w="100%"
-            h="100%"
+            w="full"
+            h="auto"
             templateColumns="repeat(4, 1fr)"
-            gap={6}
+            gap={10}
+            p={2}
         >
             {clinics.map((clinic) => (
                 <Link as={NavLink} to={`/patient/clinic/${clinic.id}`} key={clinic.id}>
