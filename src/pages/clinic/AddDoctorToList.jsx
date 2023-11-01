@@ -25,6 +25,7 @@ import {useState} from "react";
 import {BiChevronDown} from "react-icons/bi";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
+import {NavLink} from "react-router-dom";
 
 function AddDoctorToList() {
     const [showPassword, setShowPassword] = useState(false);
@@ -111,7 +112,7 @@ function AddDoctorToList() {
                 <Flex align="center">
                     <Avatar
                         size="md"
-                        src="src\assets\images\Call_A_Doctor_Logo_NoBg.png"
+                        src="\src\assets\images\Call_A_Doctor_Logo_NoBg.png"
                     />
                     <Text fontSize="xl" ml={2} fontWeight="bold">
                         Call A Doctor
@@ -119,10 +120,10 @@ function AddDoctorToList() {
                 </Flex>
 
                 <Flex alignItems="center">
-                    <Link as={Link} color="#0307fc" to="/" marginRight={6}>
+                    <Link as={NavLink} color="#0307fc" to="/" marginRight={6}>
                         Home
                     </Link>
-                    <Link as={Link} color="teal.500" to="/" marginRight={6}>
+                    <Link as={NavLink} color="teal.500" to="/" marginRight={6}>
                         Clinic List
                     </Link>
                     <Menu marginRight={6}>
@@ -134,17 +135,17 @@ function AddDoctorToList() {
                         </MenuButton>
 
                         <MenuList>
-                            <MenuItem as={Link} to="/" _focus={{ boxShadow: 'none' }}>
+                            <MenuItem as={NavLink} to="/" _focus={{ boxShadow: 'none' }}>
                             Dashboard
                             </MenuItem>
-                            <MenuItem as={Link} to="/" _focus={{ boxShadow: "none" }}>
+                            <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
                             Settings
                             </MenuItem>
-                            <MenuItem as={Link} to="/" _focus={{ boxShadow: "none" }}>
+                            <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
                             Earnings
                             </MenuItem>
                             <MenuDivider />
-                            <MenuItem as={Link} to="/" _focus={{ boxShadow: "none" }}>
+                            <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
                             Sign out
                             </MenuItem>
                         </MenuList>
