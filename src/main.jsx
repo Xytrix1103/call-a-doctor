@@ -34,7 +34,6 @@ const router = createBrowserRouter(
 				</Route>
 			</Route>
 			<Route path="admin" element={<Outlet/>}>
-				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="doctors" element={<></>}/>
 				<Route path="patients" element={<></>}/>
 			</Route>
