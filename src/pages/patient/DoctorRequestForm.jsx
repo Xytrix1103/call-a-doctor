@@ -1,23 +1,25 @@
 import {
-    Box,
-    Flex,
     Avatar,
-    Text,
-    Menu,
-    MenuButton,
-    MenuList,
-    MenuItem,
-    MenuDivider,
+    Box,
+    Button,
     Center,
-    Input,
-    Select,
-    InputGroup,
+    Flex,
     FormControl,
     FormLabel,
+    Input,
+    InputGroup,
+    Link,
+    Menu,
+    MenuButton,
+    MenuDivider,
+    MenuItem,
+    MenuList,
+    Select,
+    Text,
     Textarea,
-  } from '@chakra-ui/react'
-import {useState} from "react";
+} from '@chakra-ui/react'
 import {BiChevronDown} from "react-icons/bi";
+import {NavLink} from "react-router-dom";
 
 function DoctorRequestForm() {
 
@@ -49,14 +51,14 @@ function DoctorRequestForm() {
             </Flex>
 
             <Flex alignItems="center">
-                <Link as={Link} color="#0307fc" to="/" marginRight={6}>
+                <Link as={NavLink} color="#0307fc" to="/" marginRight={6}>
                     Home
                 </Link>
-                <Link as={Link} color="teal.500" to="/" marginRight={6}>
+                <Link as={NavLink} color="teal.500" to="/" marginRight={6}>
                     Clinic List
                 </Link>
                 <Menu marginRight={6}>
-                    <MenuButton as={Link} color="teal.500" display="flex" alignItems="center">
+                    <MenuButton as={NavLink} color="teal.500" display="flex" alignItems="center">
                         <Flex alignItems="center">
                             <Text>More</Text>
                             <BiChevronDown />
@@ -64,17 +66,17 @@ function DoctorRequestForm() {
                     </MenuButton>
 
                     <MenuList>
-                        <MenuItem as={Link} to="/" _focus={{ boxShadow: 'none' }}>
+                        <MenuItem as={NavLink} to="/" _focus={{ boxShadow: 'none' }}>
                         Dashboard
                         </MenuItem>
-                        <MenuItem as={Link} to="/" _focus={{ boxShadow: "none" }}>
+                        <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
                         Settings
                         </MenuItem>
-                        <MenuItem as={Link} to="/" _focus={{ boxShadow: "none" }}>
+                        <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
                         Earnings
                         </MenuItem>
                         <MenuDivider />
-                        <MenuItem as={Link} to="/" _focus={{ boxShadow: "none" }}>
+                        <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
                         Sign out
                         </MenuItem>
                     </MenuList>
@@ -268,6 +270,6 @@ function DoctorRequestForm() {
         </Box>
     </Center>
   );
-};
+}
 
 export default DoctorRequestForm;
