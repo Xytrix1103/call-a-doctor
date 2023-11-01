@@ -15,6 +15,7 @@ import Test from './pages/auth/Test.jsx';
 import ClinicRegistry from "./pages/auth/ClinicRegistry.jsx";
 import ClinicList from "./pages/patient/ClinicList.jsx";
 import PatientLayout from "./components/layouts/PatientLayout.jsx";
+import ClinicLayout from "./components/layouts/ClinicLayout.jsx";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -30,10 +31,8 @@ const router = createBrowserRouter(
 				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="clinic/:id" element={<></>}/>
 			</Route>
-			<Route path="clinic" element={<Outlet/>}>
-				<Route path="doctors" element={<Outlet/>}>
-					<Route path="add" element={<AddDoctorToList/>}/>
-				</Route>
+			<Route path="clinic" element={<ClinicLayout/>}>
+				<Route path="add-doctor" element={<AddDoctorToList/>}/>
 			</Route>
 			<Route path="admin" element={<Outlet/>}>
 				<Route path="doctors" element={<></>}/>
