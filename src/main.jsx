@@ -12,15 +12,18 @@ import {FirebaseProvider} from "./components/FirebaseCtx.jsx";
 import {ChakraProvider, extendTheme} from "@chakra-ui/react";
 import {AuthProvider} from "./components/AuthCtx.jsx";
 import Test from './pages/auth/Test.jsx';
+import ClinicRegistry from "./pages/auth/ClinicRegistry.jsx";
+import ClinicList from "./pages/patient/ClinicList.jsx";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route path="/" element={<GuardedRoute/>}>
-			<Route path="/" element={<Dashboard/>}/>
+			<Route path="/" element={<></>}/>
 			<Route path="login" element={<Login/>}/>
 			<Route path="test" element={<Test/>}/>
 			<Route path="register" element={<Register/>}/>
 			<Route path="forgot" element={<></>}/>
+			<Route path="register-clinic" element={<ClinicRegistry/>}/>
 			<Route path="patient" element={<></>}>
 				<Route path="request" element={<DoctorRequestForm/>}/>
 			</Route>
@@ -30,6 +33,7 @@ const router = createBrowserRouter(
 				</Route>
 			</Route>
 			<Route path="admin" element={<></>}>
+				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="doctors" element={<></>}/>
 				<Route path="patients" element={<></>}/>
 			</Route>
