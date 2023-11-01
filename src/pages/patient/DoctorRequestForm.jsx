@@ -1,5 +1,4 @@
 import {
-    Avatar,
     Box,
     Button,
     Center,
@@ -8,82 +7,24 @@ import {
     FormLabel,
     Input,
     InputGroup,
-    Link,
-    Menu,
-    MenuButton,
-    MenuDivider,
-    MenuItem,
-    MenuList,
     Select,
     Text,
     Textarea,
 } from '@chakra-ui/react'
-import {BiChevronDown} from "react-icons/bi";
-import {NavLink} from "react-router-dom";
 
 function DoctorRequestForm() {
-
+	
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		const data = new FormData(e.target);
+		
+		if (res) {
+			console.log("Requesting a doctor");
+		}
+	}
+	
   return (
-    <Center h="100vh" bg={"#f4f4f4"}>
-        <Flex
-            as="nav"
-            align="top"
-            padding="1rem"
-            bg="white" // Set the navbar background color to white
-            bgColor={"white"}
-            position="fixed"
-            top="0"
-            left="0"
-            right="0"
-            zIndex="999"
-            width="100%"
-            shadow="md"
-            justify="space-between" // Align items to the space between
-        >
-            <Flex align="center">
-                <Avatar
-                    size="md"
-                    src="\src\assets\images\Call_A_Doctor_Logo_NoBg.png"
-                />
-                <Text fontSize="xl" ml={2} fontWeight="bold">
-                    Call A Doctor
-                </Text>
-            </Flex>
-
-            <Flex alignItems="center">
-                <Link as={NavLink} color="#0307fc" to="/" marginRight={6}>
-                    Home
-                </Link>
-                <Link as={NavLink} color="teal.500" to="/patient/clinics" marginRight={6}>
-                    Clinic List
-                </Link>
-                <Menu marginRight={6}>
-                    <MenuButton as={Link} color="teal.500" display="flex" alignItems="center">
-                        <Flex alignItems="center">
-                            <Text>More</Text>
-                            <BiChevronDown />
-                        </Flex>
-                    </MenuButton>
-
-                    <MenuList>
-                        <MenuItem as={NavLink} to="/" _focus={{ boxShadow: 'none' }}>
-                        Dashboard
-                        </MenuItem>
-                        <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
-                        Settings
-                        </MenuItem>
-                        <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
-                        Earnings
-                        </MenuItem>
-                        <MenuDivider />
-                        <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
-                        Sign out
-                        </MenuItem>
-                    </MenuList>
-                </Menu>
-            </Flex>
-        </Flex>
-
+    <Center w="100%" h="100%" bg="#f4f4f4">
         <Box
             w="80%"
             bg="white"
@@ -91,7 +32,7 @@ function DoctorRequestForm() {
             rounded="xl"
             p={5}
             gridGap={4}
-            gridTemplateColumns="1fr 1fr"                
+            gridTemplateColumns="1fr 1fr"
         >
             <form action="/" method="post">
                 <Flex>
@@ -100,7 +41,7 @@ function DoctorRequestForm() {
                             Doctor Request Form
                         </Text>
                     </Box>
-                </Flex>                     
+                </Flex>
            
                 <Flex>
                     <Box mx={5} w="full">
@@ -250,26 +191,26 @@ function DoctorRequestForm() {
                                     w="full"
                                     p={2.5}
                                 />
-                            </FormControl>                        
+                            </FormControl>
                         </Box>
 
-                        <Button
-                            type="submit"
-                            colorScheme="blue"
-                            rounded="xl"
-                            px={4}
-                            py={2}
-                            mt={14}
-                            w="full"
-                        >
-                            Submit Request
-                        </Button>
-                    </Box>
-                </Flex>
-            </form>
-        </Box>
-    </Center>
-  );
+                            <Button
+                                type="submit"
+                                colorScheme="blue"
+                                rounded="xl"
+                                px={4}
+                                py={2}
+                                mt={14}
+                                w="full"
+                            >
+                                Submit Request
+                            </Button>
+                        </Box>
+                    </Flex>
+                </form>
+            </Box>
+        </Center>
+    );
 }
 
 export default DoctorRequestForm;

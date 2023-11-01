@@ -91,6 +91,15 @@ function AddDoctorToList() {
     const isImageFile = (file) => {
         return file.type.startsWith("image/");
     };  
+    	
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		const data = new FormData(e.target);
+		
+		if (res) {
+			console.log("Adding doctor to list");
+		}
+	}
 
     return (
         <Center minHeight="100vh" bg={"#f4f4f4"}>
@@ -164,7 +173,7 @@ function AddDoctorToList() {
                 gridGap={4}
                 gridTemplateColumns="1fr 1fr"                
             >
-                <form action="/" method="post">
+                <form action="/api/add-doctor-to-list" method="post" onSubmit={handleSubmit}>
                     <Flex>
                         <Box my={7} mx={5} w="full">
                             <Text fontSize="xl" fontWeight="bold">
