@@ -1,20 +1,20 @@
 import {
-    Box,
-    Button,
-    Center,
-    Flex,
-    FormControl,
-    FormErrorMessage,
-    FormHelperText,
-    FormLabel,
-    IconButton,
-    Image,
-    Input,
-    InputGroup,
-    InputRightElement,
-    Select,
-    Text,
-    Textarea,
+	Box,
+	Button,
+	Center,
+	Flex,
+	FormControl,
+	FormErrorMessage,
+	FormHelperText,
+	FormLabel,
+	IconButton,
+	Image,
+	Input,
+	InputGroup,
+	InputRightElement,
+	Select,
+	Text,
+	Textarea,
 } from '@chakra-ui/react';
 import {useRef, useState} from "react";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
@@ -118,8 +118,7 @@ function ClinicRegistry() {
 						<Box mx={5} w="full">
 							<Box>
 								<FormControl isInvalid={errors.clinic_name}>
-									<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900"
-									           htmlFor="clinic_name">
+									<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
 										Clinic Name
 									</FormLabel>
 									<Input
@@ -422,8 +421,9 @@ function ClinicRegistry() {
 										alt="Preview"
 										display={imageSrc ? "block" : "none"}
 										ref={previewImageRef}
-										w="auto"
-										h="64"
+										w="full"
+										h="full"
+										objectFit="cover"
 									/>
 								</Box>
 							</FormControl>
@@ -465,6 +465,9 @@ function ClinicRegistry() {
 											})
 										}
 									/>
+									<FormErrorMessage>
+										{errors.admin_name && errors.admin_name.message}
+									</FormErrorMessage>
 								</FormControl>
 							</Box>
 							<Box>
@@ -492,6 +495,9 @@ function ClinicRegistry() {
 											})
 										}
 									/>
+									<FormErrorMessage>
+										{errors.email && errors.email.message}
+									</FormErrorMessage>
 								</FormControl>
 							</Box>
 						</Box>
@@ -544,15 +550,21 @@ function ClinicRegistry() {
 											            onClick={() => setShowPassword(!showPassword)}/>
 										</InputRightElement>
 									</InputGroup>
-									<FormHelperText fontSize="xs">
-										Minimum eight characters, at least one uppercase letter, one lowercase letter,
-										one number and one special character
-									</FormHelperText>
+									{
+										errors.password ?
+											<FormErrorMessage>
+												{errors.password && errors.password.message}
+											</FormErrorMessage> :
+											<FormHelperText fontSize="xs">
+												Minimum eight characters, at least one uppercase letter, one lowercase letter,
+												one number and one special character
+											</FormHelperText>
+									}
 								</FormControl>
 							</Box>
 							<Box>
 								<FormControl id="confirm_password" isInvalid={errors.confirm_password}>
-									<FormLabel mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900">
+									<FormLabel mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
 										Confirm Password
 									</FormLabel>
 									<InputGroup>
@@ -598,6 +610,16 @@ function ClinicRegistry() {
 											            onClick={() => setShowConfirmPassword(!showConfirmPassword)}/>
 										</InputRightElement>
 									</InputGroup>
+									{
+										errors.confirm_password ?
+											<FormErrorMessage>
+												{errors.confirm_password && errors.confirm_password.message}
+											</FormErrorMessage> :
+											<FormHelperText fontSize="xs">
+												Minimum eight characters, at least one uppercase letter, one lowercase letter,
+												one number and one special character
+											</FormHelperText>
+									}
 								</FormControl>
 							</Box>
 							<Button
