@@ -1,97 +1,88 @@
 import {
-    Avatar,
-    Box,
-    Button,
-    Center,
-    Flex,
-    FormControl,
-    FormHelperText,
-    FormLabel,
-    IconButton,
-    Image,
-    Input,
-    InputGroup,
-    InputRightElement,
-    Link,
-    Menu,
-    MenuButton,
-    MenuDivider,
-    MenuItem,
-    MenuList,
-    Select,
-    Text,
+	Box,
+	Button,
+	Flex,
+	FormControl,
+	FormHelperText,
+	FormLabel,
+	Grid,
+	IconButton,
+	Image,
+	Input,
+	InputGroup,
+	InputRightElement,
+	Select,
+	Text,
 } from '@chakra-ui/react';
 import {useState} from "react";
-import {BiChevronDown} from "react-icons/bi";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
-import {NavLink} from "react-router-dom";
 
 function AddDoctorToList() {
-    const [showPassword, setShowPassword] = useState(false);
-    const [isDragActive, setIsDragActive] = useState(false);
-    const [imageSrc, setImageSrc] = useState(null);
-
-    const handleDragEnter = (e) => {
-        e.preventDefault();
-        setIsDragActive(true);
-    };
-
-    const handleDragOver = (e) => {
-        e.preventDefault();
-        setIsDragActive(true);
-    };
-
-    const handleDragLeave = () => {
-        setIsDragActive(false);
-    };
-    
-    const handleDrop = (e) => {
-        e.preventDefault();
-        setIsDragActive(false);
-        const file = e.dataTransfer.files[0];
-        
-        if (file) {
-            if (isImageFile(file)) {
-                    // Read the file and set the image source
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                    setImageSrc(event.target.result);
-                    // Set preview image container bg to white
-                    const previewImageContainer = document.getElementById("preview-image-container");
-                    previewImageContainer.style.backgroundColor = "white";
-                };
-                reader.readAsDataURL(file);
-            } else {
-                alert("Invalid file type. Please upload an image.");
-            }
-        }
-    };
-    
-    const handleFileInputChange = (e) => {
-        const file = e.target.files[0];
-        
-        if (file) {
-            if (isImageFile(file)) {
-                    // Read the file and set the image source
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                    setImageSrc(event.target.result);
-                    // Set preview image container bg to white
-                    const previewImageContainer = document.getElementById("preview-image-container");
-                    previewImageContainer.style.backgroundColor = "white";
-                };
-                reader.readAsDataURL(file);
-            } else {
-                alert("Invalid file type. Please upload an image.");
-            }
-        }
-    };
-    
-    const isImageFile = (file) => {
-        return file.type.startsWith("image/");
-    };  
-    	
+	const [showPassword, setShowPassword] = useState(false);
+	const [isDragActive, setIsDragActive] = useState(false);
+	const [imageSrc, setImageSrc] = useState(null);
+	
+	const handleDragEnter = (e) => {
+		e.preventDefault();
+		setIsDragActive(true);
+	};
+	
+	const handleDragOver = (e) => {
+		e.preventDefault();
+		setIsDragActive(true);
+	};
+	
+	const handleDragLeave = () => {
+		setIsDragActive(false);
+	};
+	
+	const handleDrop = (e) => {
+		e.preventDefault();
+		setIsDragActive(false);
+		const file = e.dataTransfer.files[0];
+		
+		if (file) {
+			if (isImageFile(file)) {
+				// Read the file and set the image source
+				const reader = new FileReader();
+				reader.onload = (event) => {
+					setImageSrc(event.target.result);
+					// Set preview image container bg to white
+					const previewImageContainer = document.getElementById("preview-image-container");
+					previewImageContainer.style.backgroundColor = "white";
+				};
+				reader.readAsDataURL(file);
+			} else {
+				alert("Invalid file type. Please upload an image.");
+			}
+		}
+	};
+	
+	const handleFileInputChange = (e) => {
+		const file = e.target.files[0];
+		
+		if (file) {
+			if (isImageFile(file)) {
+				// Read the file and set the image source
+				const reader = new FileReader();
+				reader.onload = (event) => {
+					setImageSrc(event.target.result);
+					// Set preview image container bg to white
+					const previewImageContainer = document.getElementById("preview-image-container");
+					previewImageContainer.style.backgroundColor = "white";
+				};
+				reader.readAsDataURL(file);
+			} else {
+				alert("Invalid file type. Please upload an image.");
+			}
+		}
+	};
+	
+	const isImageFile = (file) => {
+		return file.type.startsWith("image/");
+	};
+	
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const data = new FormData(e.target);
@@ -100,90 +91,31 @@ function AddDoctorToList() {
 			console.log("Adding doctor to list");
 		}
 	}
-
-    return (
-        <Center minHeight="100vh" bg={"#f4f4f4"}>
-            <Flex
-                as="nav"
-                align="top"
-                padding="1rem"
-                bg="white"
-                bgColor={"white"}
-                position="fixed"
-                top="0"
-                left="0"
-                right="0"
-                zIndex="999"
-                width="100%"
-                shadow="md"
-                justify="space-between"
-            >
-                <Flex align="center">
-                    <Avatar
-                        size="md"
-                        src="\src\assets\images\Call_A_Doctor_Logo_NoBg.png"
-                    />
-                    <Text fontSize="xl" ml={2} fontWeight="bold">
-                        Call A Doctor
-                    </Text>
-                </Flex>
-
-                <Flex alignItems="center">
-                    <Link as={NavLink} color="#0307fc" to="/" marginRight={6}>
-                        Home
-                    </Link>
-                    <Link as={NavLink} color="teal.500" to="/" marginRight={6}>
-                        Clinic List
-                    </Link>
-                    <Menu marginRight={6}>
-                        <MenuButton as={Link} color="teal.500" display="flex" alignItems="center">
-                            <Flex alignItems="center">
-                                <Text>More</Text>
-                                <BiChevronDown />
-                            </Flex>
-                        </MenuButton>
-
-                        <MenuList>
-                            <MenuItem as={NavLink} to="/" _focus={{ boxShadow: 'none' }}>
-                            Dashboard
-                            </MenuItem>
-                            <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
-                            Settings
-                            </MenuItem>
-                            <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
-                            Earnings
-                            </MenuItem>
-                            <MenuDivider />
-                            <MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
-                            Sign out
-                            </MenuItem>
-                        </MenuList>
-                    </Menu>
-                </Flex>
-            </Flex>
-
+	
+	return (
+        <Flex w="full" h="auto" justify="center" align="center" bg="#f4f4f4">
             <Box
-                mt={24}
-                mb={10}
                 w="85%"
+                h="auto"
                 bg="white"
                 boxShadow="xl"
                 rounded="xl"
                 p={5}
-                gridGap={4}
-                gridTemplateColumns="1fr 1fr"                
             >
-                <form action="/api/add-doctor-to-list" method="post" onSubmit={handleSubmit}>
+                <form action="/api/add-doctor-to-list" method="post" onSubmit={handleSubmit} style={{ width: "100%" }}>
                     <Flex>
                         <Box my={7} mx={5} w="full">
                             <Text fontSize="xl" fontWeight="bold">
                                 Add Doctor To List
                             </Text>
                         </Box>
-                    </Flex>                     
-            
-                    <Flex>
-                        <Box mx={5} w="full">
+                    </Flex>
+                    
+                    <Grid
+                        templateColumns="repeat(2, 1fr)"
+                        gap={4}
+                    >
+                        <Box px={5} w="full">
                             <Box>
                                 <Text mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
                                     Doctor Name
@@ -313,7 +245,7 @@ function AddDoctorToList() {
                                         p={2.5}
                                         isRequired
                                     />
-                                </FormControl>                            
+                                </FormControl>
                             </Box>
                             <Box>
                                 <FormControl id="password">
@@ -341,19 +273,32 @@ function AddDoctorToList() {
                                         <InputRightElement>
                                             <IconButton aria-label="Show password" size="lg" variant="ghost"
                                                         icon={showPassword ? <IoMdEyeOff/> : <IoMdEye/>}
-                                                        _focus={{bg: "transparent", borderColor: "transparent", outline: "none"}}
-                                                        _hover={{bg: "transparent", borderColor: "transparent", outline: "none"}}
-                                                        _active={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+                                                        _focus={{
+                                                            bg: "transparent",
+                                                            borderColor: "transparent",
+                                                            outline: "none"
+                                                        }}
+                                                        _hover={{
+                                                            bg: "transparent",
+                                                            borderColor: "transparent",
+                                                            outline: "none"
+                                                        }}
+                                                        _active={{
+                                                            bg: "transparent",
+                                                            borderColor: "transparent",
+                                                            outline: "none"
+                                                        }}
                                                         onClick={() => setShowPassword(!showPassword)}/>
                                         </InputRightElement>
                                     </InputGroup>
                                     <FormHelperText fontSize="xs">
-                                        Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character
+                                        Minimum eight characters, at least one uppercase letter, one lowercase letter, one
+                                        number and one special character
                                     </FormHelperText>
                                 </FormControl>
                             </Box>
                         </Box>
-                        <Box mx={5} w="full">
+                        <Box px={5} w="full">
                             <Text mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
                                 Profile Picture
                             </Text>
@@ -390,8 +335,8 @@ function AddDoctorToList() {
                                         onDragOver={handleDragOver}
                                         onDragLeave={handleDragLeave}
                                         onDrop={handleDrop}
-                                        size={32} 
-                                        color={isDragActive ? "blue" : "gray"} 
+                                        size={32}
+                                        color={isDragActive ? "blue" : "gray"}
                                     />
                                     <Text mb={2} fontSize="sm" fontWeight="semibold">
                                         {isDragActive ? "Drop the file here" : "Drag & Drop or Click to upload"}
@@ -422,7 +367,7 @@ function AddDoctorToList() {
                                     h="64"
                                 />
                             </Box>
-
+                            
                             <Button
                                 type="submit"
                                 colorScheme="blue"
@@ -435,11 +380,11 @@ function AddDoctorToList() {
                                 Add Doctor
                             </Button>
                         </Box>
-                    </Flex>
+                    </Grid>
                 </form>
             </Box>
-        </Center>
-    );
+        </Flex>
+	);
 }
 
 export default AddDoctorToList;
