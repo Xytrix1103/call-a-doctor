@@ -1,37 +1,36 @@
 import {
     Box,
-    Flex,
-    Avatar,
-    Link,
-    Text,
-    IconButton,
     Button,
-    Menu,
-    MenuButton,
-    MenuList,
-    MenuItem,
-    MenuDivider,
-    Image,
     Center,
+    Flex,
+    FormControl,
+    FormHelperText,
+    FormLabel,
+    IconButton,
+    Image,
     Input,
-    Select,
     InputGroup,
     InputRightElement,
-    FormControl,
-    FormLabel,
-    FormHelperText,
+    Select,
+    Text,
     Textarea,
 } from '@chakra-ui/react';
-import {useState} from "react";
-import {BiChevronDown} from "react-icons/bi";
+import {useRef, useState} from "react";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
+import {register_clinic} from "../../../api/clinic_registry.js";
+import {useAuth} from "../../components/AuthCtx.jsx";
+import {useFirebase} from "../../components/FirebaseCtx.jsx";
 
 function ClinicRegistry() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isDragActive, setIsDragActive] = useState(false);
     const [imageSrc, setImageSrc] = useState(null);
+    const imageRef = useRef(null);
+    
+    const fb = useFirebase();
+    const authx = useAuth();
 
     const handleDragEnter = (e) => {
         e.preventDefault();
@@ -69,94 +68,32 @@ function ClinicRegistry() {
     const handleFileInputChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-        // Read the file and set the image source
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            setImageSrc(event.target.result);
-            // Set preview image container bg to white
-            const previewImageContainer = document.getElementById(
-            "preview-image-container"
-            );
-            previewImageContainer.style.background = "white";
-        };
-        reader.readAsDataURL(file);
+            // Read the file and set the image source
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                setImageSrc(event.target.result);
+                // Set preview image container bg to white
+                const previewImageContainer = document.getElementById(
+                "preview-image-container"
+                );
+                previewImageContainer.style.background = "white";
+            };
+            reader.readAsDataURL(file);
         }
     };
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const data = new FormData(e.target);
-		
-		if (res) {
-			console.log("Registering a clinic");
-		}
+        const image = imageRef.current.files[0];
+        
+        await register_clinic({...Object.fromEntries(data.entries()), image: image}, fb, authx);
 	}
 
     return (
-        <Center minHeight="100vh" bg={"#f4f4f4"}>
-            <Flex
-                as="nav"
-                align="top"
-                padding="1rem"
-                bg="white" // Set the navbar background color to white
-                bgColor={"white"}
-                position="fixed"
-                top="0"
-                left="0"
-                right="0"
-                zIndex="999"
-                width="100%"
-                shadow="md"
-                justify="space-between" // Align items to the space between
-            >
-                <Flex align="center">
-                    <Avatar
-                        size="md"
-                        src="src\assets\images\Call_A_Doctor_Logo_NoBg.png"
-                    />
-                    <Text fontSize="xl" ml={2} fontWeight="bold">
-                        Call A Doctor
-                    </Text>
-                </Flex>
-
-                <Flex alignItems="center">
-                    <Link as={Link} color="#0307fc" to="/" marginRight={6}>
-                        Home
-                    </Link>
-                    <Link as={Link} color="teal.500" to="/" marginRight={6}>
-                        Clinic List
-                    </Link>
-                    <Menu marginRight={6}>
-                        <MenuButton as={Link} color="teal.500" display="flex" alignItems="center">
-                            <Flex alignItems="center">
-                                <Text>More</Text>
-                                <BiChevronDown />
-                            </Flex>
-                        </MenuButton>
-
-                        <MenuList>
-                            <MenuItem as={Link} to="/" _focus={{ boxShadow: 'none' }}>
-                            Dashboard
-                            </MenuItem>
-                            <MenuItem as={Link} to="/" _focus={{ boxShadow: "none" }}>
-                            Settings
-                            </MenuItem>
-                            <MenuItem as={Link} to="/" _focus={{ boxShadow: "none" }}>
-                            Earnings
-                            </MenuItem>
-                            <MenuDivider />
-                            <MenuItem as={Link} to="/" _focus={{ boxShadow: "none" }}>
-                            Sign out
-                            </MenuItem>
-                        </MenuList>
-                    </Menu>
-                </Flex>
-            </Flex>
-
+        <Center h="auto" bg={"#f4f4f4"} py={10}>
             <Box
-                mt={24}
-                mb={10}
-                w="85%"
+                w="67%"
                 bg="white"
                 boxShadow="xl"
                 rounded="xl"
@@ -164,7 +101,7 @@ function ClinicRegistry() {
                 gridGap={4}
                 gridTemplateColumns="1fr 1fr"                
             >
-                <form action="/api/register-clinic" method="post" onSubmit={handleSubmit}>
+                <form action="/api/register-clinic" method="post" onSubmit={handleSubmit} encType="multipart/form-data">
                     <Flex>
                         <Box my={7} mx={5} w="full">
                             <Text fontSize="xl" fontWeight="bold">
@@ -400,6 +337,7 @@ function ClinicRegistry() {
                                     zIndex={1}
                                     cursor="pointer"
                                     onChange={handleFileInputChange}
+                                    ref={imageRef}
                                 />
                                 <Flex direction="column" alignItems="center">
                                     <BsFillCloudArrowDownFill
