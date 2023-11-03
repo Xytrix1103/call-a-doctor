@@ -10,11 +10,12 @@ import {
 	Image,
 	Input,
 	InputGroup,
+    Center,
 	InputRightElement,
 	Select,
 	Text,
 } from '@chakra-ui/react';
-import {useState} from "react";
+import {useRef, useState} from "react";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 
@@ -22,6 +23,10 @@ function AddDoctorToList() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [isDragActive, setIsDragActive] = useState(false);
 	const [imageSrc, setImageSrc] = useState(null);
+
+    const imageRef = useRef(null);
+	const previewImageRef = useRef(null);
+	const previewImageContainerRef = useRef(null);
 	
 	const handleDragEnter = (e) => {
 		e.preventDefault();
@@ -36,47 +41,35 @@ function AddDoctorToList() {
 	const handleDragLeave = () => {
 		setIsDragActive(false);
 	};
+
+    const populatePreviewImage = (file) => {
+		if (file) {
+			if (isImageFile(file)) {
+				// Read the file and set the image source
+				const reader = new FileReader();
+				reader.onload = (event) => {
+					setImageSrc(event.target.result);
+				};
+				reader.readAsDataURL(file);
+			} else {
+				alert("Invalid file type. Please upload an image.");
+			}
+		} else {
+			console.log("No file");
+			setImageSrc(null);
+		}
+	}
 	
 	const handleDrop = (e) => {
 		e.preventDefault();
 		setIsDragActive(false);
 		const file = e.dataTransfer.files[0];
-		
-		if (file) {
-			if (isImageFile(file)) {
-				// Read the file and set the image source
-				const reader = new FileReader();
-				reader.onload = (event) => {
-					setImageSrc(event.target.result);
-					// Set preview image container bg to white
-					const previewImageContainer = document.getElementById("preview-image-container");
-					previewImageContainer.style.backgroundColor = "white";
-				};
-				reader.readAsDataURL(file);
-			} else {
-				alert("Invalid file type. Please upload an image.");
-			}
-		}
+		populatePreviewImage(file);
 	};
 	
 	const handleFileInputChange = (e) => {
 		const file = e.target.files[0];
-		
-		if (file) {
-			if (isImageFile(file)) {
-				// Read the file and set the image source
-				const reader = new FileReader();
-				reader.onload = (event) => {
-					setImageSrc(event.target.result);
-					// Set preview image container bg to white
-					const previewImageContainer = document.getElementById("preview-image-container");
-					previewImageContainer.style.backgroundColor = "white";
-				};
-				reader.readAsDataURL(file);
-			} else {
-				alert("Invalid file type. Please upload an image.");
-			}
-		}
+		populatePreviewImage(file);
 	};
 	
 	const isImageFile = (file) => {
@@ -93,7 +86,7 @@ function AddDoctorToList() {
 	}
 	
 	return (
-        <Flex w="full" h="auto" justify="center" align="center" bg="#f4f4f4">
+        <Center h="100%" bg="#f4f4f4">
             <Box
                 w="85%"
                 h="auto"
@@ -101,8 +94,11 @@ function AddDoctorToList() {
                 boxShadow="xl"
                 rounded="xl"
                 p={3}
+                gridGap={4}
+				gridTemplateColumns="1fr 1fr"
             >
-                <form action="/api/add-doctor-to-list" method="post" onSubmit={handleSubmit} style={{ width: "100%" }}>
+                <form action="/api/add-doctor-to-list" method="post" onSubmit={handleSubmit}
+                    encType="multipart/form-data">
                     <Flex>
                         <Box my={7} mx={5} w="full">
                             <Text fontSize="xl" fontWeight="bold">
@@ -111,10 +107,7 @@ function AddDoctorToList() {
                         </Box>
                     </Flex>
                     
-                    <Grid
-                        templateColumns="repeat(2, 1fr)"
-                        gap={4}
-                    >
+                    <Flex>
                         <Box px={5} w="full">
                             <Box>
                                 <FormControl id="name">
@@ -260,92 +253,102 @@ function AddDoctorToList() {
                             </Box>
                         </Box>
                         <Box px={5} w="full">
-                            <Text mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                Profile Picture
-                            </Text>
-                            <Box
-                                onDragEnter={handleDragEnter}
-                                onDragOver={handleDragOver}
-                                onDragLeave={handleDragLeave}
-                                onDrop={handleDrop}
-                                rounded="lg"
-                                borderWidth="2px"
-                                border={"dashed"}
-                                borderColor={isDragActive ? "blue.500" : "gray.300"}
-                                p={8}
-                                textAlign="center"
-                                position={"relative"}
-                                cursor="pointer"
-                            >
-                                <Input
-                                    type="file"
-                                    accept="image/*"
-                                    opacity={0}
-                                    width="100%"
-                                    height="100%"
-                                    position="absolute"
-                                    top={0}
-                                    left={0}
-                                    zIndex={1}
-                                    cursor="pointer"
-                                    onChange={handleFileInputChange}
-                                />
-                                <Flex direction="column" alignItems="center">
-                                    <BsFillCloudArrowDownFill
-                                        onDragEnter={handleDragEnter}
-                                        onDragOver={handleDragOver}
-                                        onDragLeave={handleDragLeave}
-                                        onDrop={handleDrop}
-                                        size={32}
-                                        color={isDragActive ? "blue" : "gray"}
-                                    />
-                                    <Text mb={2} fontSize="sm" fontWeight="semibold">
-                                        {isDragActive ? "Drop the file here" : "Drag & Drop or Click to upload"}
-                                    </Text>
-                                    <Text fontSize="xs" color="gray.500">
-                                        (SVG, PNG, JPG, or JPEG)
-                                    </Text>
-                                </Flex>
-                            </Box>
-                            <Box
-                                w="full"
-                                h="48"
-                                id="preview-image-container"
-                                bg="gray.200"
-                                rounded="lg"
-                                display="flex"
-                                flexDir="column"
-                                alignItems="center"
-                                justifyContent="center"
-                                mt={8}
-                            >
-                                <Image
-                                    id="preview-image"
-                                    src={imageSrc || ""}
-                                    alt="Preview"
-                                    display={imageSrc ? "block" : "none"}
-                                    w="auto"
-                                    h="48"
-                                />
-                            </Box>
-                            
-                            <Button
-                                type="submit"
-                                colorScheme="blue"
-                                rounded="xl"
-                                px={4}
-                                py={2}
-                                mt={10}
-                                mb={4}
-                                w="full"
-                            >
-                                Add Doctor
-                            </Button>
+                            <FormControl w="full" h="full" display="grid" gridTemplateRows="auto 1fr">
+								<Box>
+									<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+										Profile Picture
+									</FormLabel>
+									<Box
+										onDragEnter={handleDragEnter}
+										onDragOver={handleDragOver}
+										onDragLeave={handleDragLeave}
+										onDrop={handleDrop}
+										rounded="lg"
+										borderWidth="2px"
+										border={"dashed"}
+										borderColor={isDragActive ? "blue.500" : "gray.300"}
+										p={8}
+										textAlign="center"
+										position={"relative"}
+										cursor="pointer"
+									>
+										<Input
+											type="file"
+											accept="image/*"
+											opacity={0}
+											width="100%"
+											height="100%"
+											position="absolute"
+											top={0}
+											left={0}
+											zIndex={1}
+											cursor="pointer"
+                                            isRequired
+											ref={imageRef}
+											onChange={handleFileInputChange}
+										/>
+										<Flex direction="column" alignItems="center">
+											<BsFillCloudArrowDownFill
+												onDragEnter={handleDragEnter}
+												onDragOver={handleDragOver}
+												onDragLeave={handleDragLeave}
+												onDrop={handleDrop}
+												size={32}
+												color={isDragActive ? "blue" : "gray"}
+											/>
+											<Text mb={2} fontSize="sm" fontWeight="semibold">
+												{isDragActive ? "Drop the file here" : "Drag & Drop or Click to upload"}
+											</Text>
+											<Text fontSize="xs" color="gray.500">
+												(SVG, PNG, JPG, or JPEG)
+											</Text>
+										</Flex>
+									</Box>
+								</Box>
+								<Box
+									w="full"
+									h="auto"
+									id="preview-image-container"
+									bg={!imageSrc ? "gray.200" : "transparent"}
+									rounded="lg"
+									display="flex"
+									flexDir="column"
+									alignItems="center"
+									justifyContent="center"
+									mt={8}
+									ref={previewImageContainerRef}
+								>
+									<Image
+										id="preview-image"
+										src={imageSrc || ""}
+										alt="Preview"
+										display={imageSrc ? "block" : "none"}
+										ref={previewImageRef}
+										w="full"
+										h="full"
+										objectFit="cover"
+									/>
+								</Box>
+                                <Box>
+                                    <Button
+                                        type="submit"
+                                        colorScheme="blue"
+                                        rounded="xl"
+                                        px={4}
+                                        py={2}
+                                        mt={8}
+                                        mb={4}
+                                        w="full"
+                                    >
+                                        Add Doctor
+                                    </Button>                                
+                                </Box>
+							</FormControl>
                         </Box>
-                    </Grid>
+                    </Flex>
                 </form>
             </Box>
-        </Flex>
+        </Center>
 	);
 }
 
