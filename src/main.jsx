@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import {createBrowserRouter, createRoutesFromElements, Outlet, Route, RouterProvider} from "react-router-dom";
-import GuardedRoute from "./components/GuardedRoute.jsx";
+import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from "react-router-dom";
+import RootLayout from "./components/layouts/RootLayout.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
 import AddDoctorToList from './pages/clinic/AddDoctorToList.jsx';
@@ -16,28 +16,39 @@ import ClinicList from "./pages/patient/ClinicList.jsx";
 import PatientLayout from "./components/layouts/PatientLayout.jsx";
 import ClinicDetails from './pages/patient/ClinicDetails';
 import ClinicLayout from "./components/layouts/ClinicLayout.jsx";
+import AdminLayout from "./components/layouts/AdminLayout.jsx";
 
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
-		<Route path="/" element={<GuardedRoute/>}>
-			<Route path="/" element={<></>}/>
+		<Route element={<RootLayout/>}>
+			<Route path="/" element={<Test/>}/>
 			<Route path="login" element={<Login/>}/>
-			<Route path="test" element={<Test/>}/>
 			<Route path="register" element={<Register/>}/>
 			<Route path="forgot" element={<></>}/>
 			<Route path="register-clinic" element={<ClinicRegistry/>}/>
-			<Route path="patient" element={<PatientLayout/>}>
-				<Route path="request/:id" element={<DoctorRequestForm/>}/>
+			<Route element={<PatientLayout/>}>
 				<Route path="clinics" element={<ClinicList/>}/>
-				<Route path="clinic/:id" element={<ClinicDetails/>}/>
+				<Route path="clinics/:id" element={<ClinicDetails/>}/>
+				<Route path="clinics/:id/request" element={<DoctorRequestForm/>}/>
 			</Route>
-			<Route path="clinic" element={<ClinicLayout/>}>
-				<Route path="add-doctor" element={<AddDoctorToList/>}/>
-			</Route>
-			<Route path="admin" element={<Outlet/>}>
-				<Route path="doctors" element={<></>}/>
+			<Route element={<ClinicLayout/>}>
 				<Route path="patients" element={<></>}/>
+				<Route path="patients/:id" element={<></>}/>
+				<Route path="doctors" element={<></>}/>
+				<Route path="doctors/add" element={<AddDoctorToList/>}/>
+			</Route>
+			<Route path="/admin" element={<AdminLayout/>}>
+				<Route path="clinics" element={<></>}/>
+				<Route path="clinics/:id" element={<></>}/>
+				<Route path="clinics/:id/doctors" element={<></>}/>
+				<Route path="clinics/:id/patients" element={<></>}/>
+				<Route path="doctors" element={<></>}/>
+				<Route path="doctors/:id" element={<></>}/>
+				<Route path="doctors/:id/schedule" element={<></>}/>
+				<Route path="doctors/:id/patients" element={<></>}/>
+				<Route path="patients" element={<></>}/>
+				<Route path="patients/:id" element={<></>}/>
 			</Route>
 		</Route>
 	)
