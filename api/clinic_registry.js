@@ -1,11 +1,10 @@
 import {equalTo, get, orderByChild, push, query, ref, set} from "firebase/database";
 import {getDownloadURL, ref as sRef, uploadBytes} from "firebase/storage";
 import {fetchSignInMethodsForEmail} from "firebase/auth";
+import {auth, db, storage} from "./firebase";
+import {register} from "./auth";
 
-export const register_clinic = async (data, fb, authx) => {
-	const {db, storage, auth} = fb;
-	const {user, register} = authx;
-	
+export const register_clinic = async (data) => {
 	const {
 		clinic_name,
 		start_time,
