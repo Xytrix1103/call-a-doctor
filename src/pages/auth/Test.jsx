@@ -1,12 +1,7 @@
-import {
-	Button,
-	Center,
-} from "@chakra-ui/react";
-import {useAuth} from "../../components/AuthCtx.jsx";
+import {Button, Center,} from "@chakra-ui/react";
+import {logout} from "../../../api/auth.js";
 
 function Test() {
-	const {logout} = useAuth();
-
 	const handleLogout = () => {
 		logout();
 	};

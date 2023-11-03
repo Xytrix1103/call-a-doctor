@@ -19,8 +19,6 @@ import {
 import {useRef, useState} from "react";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
-import {useAuth} from "../../components/AuthCtx.jsx";
-import {useFirebase} from "../../components/FirebaseCtx.jsx";
 import {useForm} from "react-hook-form";
 
 function ClinicRegistry() {
@@ -39,9 +37,6 @@ function ClinicRegistry() {
 	const imageRef = useRef(null);
 	const previewImageRef = useRef(null);
 	const previewImageContainerRef = useRef(null);
-	
-	const fb = useFirebase();
-	const authx = useAuth();
 	
 	const handleDragEnter = (e) => {
 		e.preventDefault();
@@ -89,7 +84,7 @@ function ClinicRegistry() {
 			...data,
 			image: imageRef.current.files[0],
 		}
-		// await register_clinic(data, fb, authx);
+		// await register_clinic(data);
 		console.log(data);
 	}
 	
