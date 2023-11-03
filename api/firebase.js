@@ -2,7 +2,6 @@ import {initializeApp} from "firebase/app";
 import {getDatabase} from "firebase/database";
 import {getAuth} from "firebase/auth";
 import {getStorage} from "firebase/storage";
-import {createContext, useContext} from "react";
 
 const firebaseConfig = {
 	apiKey: "AIzaSyDZYAUmSWuZ26oY-FYcfLGtP4DhyQLaSWA",
@@ -18,24 +17,3 @@ export const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app);
 export const auth = getAuth(app);
 export const storage = getStorage(app);
-
-const FirebaseCtx = createContext(null);
-
-export const useFirebase = () => {
-	return useContext(FirebaseCtx);
-}
-
-export const FirebaseProvider = ({children}) => {
-	const value = {
-		app,
-		db,
-		auth,
-		storage,
-	};
-	
-	return (
-		<FirebaseCtx.Provider value={value}>
-			{children}
-		</FirebaseCtx.Provider>
-	)
-}

@@ -8,22 +8,23 @@ import {
     IconButton,
     Image,
     Input,
-    Textarea,
     InputGroup,
     InputRightElement,
     Link,
     Text,
+    Textarea,
     VStack
 } from '@chakra-ui/react';
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 import {useEffect, useState} from "react";
-import {useAuth} from "../../components/AuthCtx.jsx";
+import {register} from "../../../api/auth.js";
 import {Navigate} from "react-router-dom";
+import {useAuth} from "../../components/AuthCtx.jsx";
 
 function Register() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const {user, register} = useAuth();
+    const {user} = useAuth();
     
     useEffect(() => {
         if (user) return <Navigate to="/" />;
