@@ -13,11 +13,10 @@ import {
 } from "@chakra-ui/react";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 import {useState} from "react";
-import {useAuth} from "../../components/AuthCtx.jsx";
+import {login} from "../../../api/auth.js";
 
 function Login() {
 	const [show, setShow] = useState(false);
-	const {login} = useAuth();
 	
 	const handleSubmit = async (e) => {
 		e.preventDefault();

@@ -8,7 +8,6 @@ import AddDoctorToList from './pages/clinic/AddDoctorToList.jsx';
 import DoctorRequestForm from './pages/patient/DoctorRequestForm.jsx';
 import React from "react";
 import App from "./App.jsx";
-import {FirebaseProvider} from "./components/FirebaseCtx.jsx";
 import {ChakraProvider, extendTheme} from "@chakra-ui/react";
 import {AuthProvider} from "./components/AuthCtx.jsx";
 import Test from './pages/auth/Test.jsx';
@@ -63,12 +62,10 @@ const theme = extendTheme({
 
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<ChakraProvider theme={theme}>
-		<FirebaseProvider>
-			<AuthProvider>
-				<RouterProvider router={router}>
-					<App/>
-				</RouterProvider>
-			</AuthProvider>
-		</FirebaseProvider>
+		<AuthProvider>
+			<RouterProvider router={router}>
+				<App/>
+			</RouterProvider>
+		</AuthProvider>
 	</ChakraProvider>
 )
