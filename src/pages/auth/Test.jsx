@@ -7,7 +7,7 @@ function Test() {
 	};
 
 	return (
-		<Center h="100vh" bg={"#f4f4f4"}>
+		<Center w="full" h="full" bg={"#f4f4f4"}>
             <Button onClick={handleLogout} mt={4} colorScheme="teal" variant="outline">
                 Logout
             </Button>
