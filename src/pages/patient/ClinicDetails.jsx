@@ -20,12 +20,12 @@ function ClinicDetails() {
 	return (
 		<Center w="100%" h="auto" bg="#f4f4f4">
 			<Box
-				w="full"
+				w="85%"
 				h="full"
 				bg="white"
 				boxShadow="xl"
 				rounded="xl"
-				p={5}
+				p={3}
 				gridGap={4}
 				gap={6}
 				gridTemplateColumns="1fr 1fr"
@@ -44,7 +44,8 @@ function ClinicDetails() {
 							<Text mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
 								Clinic Name
 							</Text>
-							<Input
+							<Text
+								as="input" 
 								variant="filled"
 								type="text"
 								name="name"
@@ -53,147 +54,162 @@ function ClinicDetails() {
 								rounded="xl"
 								borderWidth="1px"
 								borderColor="gray.300"
-								disabled
-								value={"Clinic A"}
+								value={data.name}
 								color="gray.900"
 								size="md"
 								focusBorderColor="blue.500"
 								w="full"
 								p={2.5}
+								isReadOnly 
+								pointerEvents="none"
 							/>
 						</Box>
-						<Text mt={6} mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+						<Text mt={4} mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
 							Operating Hours
 						</Text>
 						<Flex alignItems="center" justifyContent="space-between">
 							<Box flex="1">
-								<FormControl>
-									<Select
-										variant="filled"
-										name="start_time"
-										id="start_time"
-										rounded="xl"
-										borderWidth="1px"
-										borderColor="gray.300"
-										color="gray.900"
-										isRequired
-										size="md"
-										disabled
-										focusBorderColor="blue.500"
-									>
-										<option value="08:00 AM">08:00 AM</option>
-									</Select>
-								</FormControl>
+								<Text
+									as="input" 
+									variant="filled"
+									type="text"
+									name="name"
+									id="name"
+									placeholder="John Doe"
+									rounded="xl"
+									borderWidth="1px"
+									borderColor="gray.300"
+									value={data.start_time}
+									color="gray.900"
+									size="md"
+									focusBorderColor="blue.500"
+									w="full"
+									p={2.5}
+									isReadOnly 
+									pointerEvents="none"
+								/>
 							</Box>
 							<Text mx={3} fontSize="md" color="gray.900">
 								to
 							</Text>
 							<Box flex="1">
-								<FormControl>
-									<Select
-										variant="filled"
-										name="end_time"
-										id="end_time"
-										rounded="xl"
-										borderWidth="1px"
-										borderColor="gray.300"
-										color="gray.900"
-										isRequired
-										disabled
-										size="md"
-										focusBorderColor="blue.500"
-									>
-										<option value="08:00 AM">08:00 AM</option>
-									</Select>
-								</FormControl>
+								<Text
+									as="input" 
+									variant="filled"
+									type="text"
+									name="name"
+									id="name"
+									placeholder="John Doe"
+									rounded="xl"
+									borderWidth="1px"
+									borderColor="gray.300"
+									value={data.end_time}
+									color="gray.900"
+									size="md"
+									focusBorderColor="blue.500"
+									w="full"
+									p={2.5}
+									isReadOnly 
+									pointerEvents="none"
+								/>
 							</Box>
 						</Flex>
-						<Text mt={6} mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+						<Text mt={4} mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
 							Operating Days
 						</Text>
 						<Flex alignItems="center" justifyContent="space-between">
 							<Box flex="1">
-								<FormControl>
-									<Select
-										variant="filled"
-										name="start_day"
-										id="start_day"
-										rounded="xl"
-										borderWidth="1px"
-										borderColor="gray.300"
-										color="gray.900"
-										size="md"
-										disabled
-										isRequired
-										focusBorderColor="blue.500"
-									>
-										<option value="Monday">Monday</option>
-									</Select>
-								</FormControl>
+								<Text
+									as="input" 
+									variant="filled"
+									type="text"
+									name="name"
+									id="name"
+									placeholder="John Doe"
+									rounded="xl"
+									borderWidth="1px"
+									borderColor="gray.300"
+									value={data.start_day}
+									color="gray.900"
+									size="md"
+									focusBorderColor="blue.500"
+									w="full"
+									p={2.5}
+									isReadOnly 
+									pointerEvents="none"
+								/>
 							</Box>
 							<Text mx={3} fontSize="md" color="gray.900">
 								to
 							</Text>
 							<Box flex="1">
-								<FormControl>
-									<Select
-										variant="filled"
-										name="end_day"
-										id="end_day"
-										rounded="xl"
-										borderWidth="1px"
-										borderColor="gray.300"
-										color="gray.900"
-										size="md"
-										isRequired
-										disabled
-										focusBorderColor="blue.500"
-									>
-										<option value="Monday">Monday</option>
-									</Select>
-								</FormControl>
+								<Text
+									as="input" 
+									variant="filled"
+									type="text"
+									name="name"
+									id="name"
+									placeholder="John Doe"
+									rounded="xl"
+									borderWidth="1px"
+									borderColor="gray.300"
+									value={data.end_day}
+									color="gray.900"
+									size="md"
+									focusBorderColor="blue.500"
+									w="full"
+									p={2.5}
+									isReadOnly 
+									pointerEvents="none"
+								/>
 							</Box>
 						</Flex>
 						<Box>
-							<Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
+							<Text mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900">
 								Address
 							</Text>
-							<Textarea
+							<Text
+								as="textarea"
 								variant="filled"
-								name="address"
-								id="address"
-								placeholder="Enter your address here..."
+								type="text"
+								name="name"
+								id="name"
+								placeholder="John Doe"
 								rounded="xl"
 								borderWidth="1px"
 								borderColor="gray.300"
+								value={data.address}
 								color="gray.900"
 								size="md"
-								isRequired
-								disabled
 								focusBorderColor="blue.500"
 								w="full"
 								p={2.5}
-								rows={5}
+								isReadOnly 
+								pointerEvents="none"
 							/>
 						</Box>
 						<Box mb={3}>
-							<Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
+							<Text mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900">
 								Panel Firms
 							</Text>
-							<Textarea
+							<Text
+								as="textarea" 
 								variant="filled"
-								name="panel_firm"
-								id="panel_firm"
-								placeholder="Enter your panel firms here..."
+								type="text"
+								name="name"
+								id="name"
+								placeholder="No Panel Firms"
 								rounded="xl"
 								borderWidth="1px"
 								borderColor="gray.300"
+								value={data.panel_firms}
 								color="gray.900"
-								disabled
 								size="md"
 								focusBorderColor="blue.500"
 								w="full"
 								p={2.5}
+								isReadOnly 
+								pointerEvents="none"
 							/>
 						</Box>
 					</Box>
@@ -211,7 +227,7 @@ function ClinicDetails() {
 							>
 							</Box>
 						</Flex>
-						<NavLink to="/patient/request/1">
+						<NavLink to={`/clinics/${id}/request`}>
 							<Button
 								colorScheme="blue"
 								rounded="xl"

@@ -26,7 +26,7 @@ function DoctorRequestForm() {
   return (
     <Center w="100%" h="100%" bg="#f4f4f4">
         <Box
-            w="80%"
+            w="85%"
             bg="white"
             boxShadow="xl"
             rounded="xl"
@@ -175,7 +175,7 @@ function DoctorRequestForm() {
                         <Box>
                             <FormControl mt={6}>
                                 <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                    Panel Firms (Optional)
+                                    Panel Firm (Optional)
                                 </FormLabel>
                                 <Input
                                     variant="filled"
