@@ -3,7 +3,7 @@ import {auth, db} from "./firebase.js";
 import {ref, set} from "firebase/database";
 
 export const register = async (data) => {
-	const {email, password, name, phone = "", address = "", role="Patient"} = data;
+	const {email, password, name, phone = "", address = "", role="Patient", clinic=null} = data;
 	
 	try {
 		const newUser = await createUserWithEmailAndPassword(auth, email, password);
@@ -17,8 +17,9 @@ export const register = async (data) => {
 				name: name,
 				phone: phone,
 				address: address,
+				clinic: clinic
 			});
-			cb();
+			return newUser.user;
 		}
 	} catch (error) {
 		console.log(error);
