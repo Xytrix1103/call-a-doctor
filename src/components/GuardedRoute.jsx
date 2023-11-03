@@ -19,7 +19,7 @@ const GuardedRoute = () => {
 			{
 				loading || navigation.state === "loading" ?
 					<GlobalSpinner/> :
-					(location.pathname === "/login" || location.pathname === "/register") ?
+					(location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/register-clinic") ?
 						!user ?
 							<Outlet/> :
 							(
