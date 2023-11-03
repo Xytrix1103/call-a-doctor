@@ -14,6 +14,8 @@ import {AuthProvider} from "./components/AuthCtx.jsx";
 import Test from './pages/auth/Test.jsx';
 import ClinicRegistry from "./pages/auth/ClinicRegistry.jsx";
 import ClinicList from "./pages/patient/ClinicList.jsx";
+import PatientLayout from "./components/layouts/PatientLayout.jsx";
+import ClinicLayout from "./components/layouts/ClinicLayout.jsx";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -24,14 +26,13 @@ const router = createBrowserRouter(
 			<Route path="register" element={<Register/>}/>
 			<Route path="forgot" element={<></>}/>
 			<Route path="register-clinic" element={<ClinicRegistry/>}/>
-			<Route path="patient" element={<Outlet/>}>
+			<Route path="patient" element={<PatientLayout/>}>
 				<Route path="request" element={<DoctorRequestForm/>}/>
 				<Route path="clinics" element={<ClinicList/>}/>
+				<Route path="clinic/:id" element={<></>}/>
 			</Route>
-			<Route path="clinic" element={<Outlet/>}>
-				<Route path="doctors" element={<Outlet/>}>
-					<Route path="add" element={<AddDoctorToList/>}/>
-				</Route>
+			<Route path="clinic" element={<ClinicLayout/>}>
+				<Route path="add-doctor" element={<AddDoctorToList/>}/>
 			</Route>
 			<Route path="admin" element={<Outlet/>}>
 				<Route path="doctors" element={<></>}/>

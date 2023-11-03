@@ -1,19 +1,22 @@
 import {Avatar, Flex, Link, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text} from "@chakra-ui/react";
-import {NavLink} from "react-router-dom";
+import {NavLink, useLocation} from "react-router-dom";
 import {BiChevronDown} from "react-icons/bi";
 
-const ClinicNavbar = () => {
+const PatientNavbar = () => {
+	const location = useLocation();
+	const currentPath = location.pathname;
+	
 	return (
 		<Flex
 			as="nav"
 			align="top"
 			padding="1rem"
-			bg="white"
+			bg="white" // Set the navbar background color to white
 			bgColor={"white"}
 			zIndex="999"
 			width="100%"
 			shadow="md"
-			justify="space-between"
+			justify="space-between" // Align items to the space between
 		>
 			<Flex align="center">
 				<Avatar
@@ -61,4 +64,4 @@ const ClinicNavbar = () => {
 	)
 }
 
-export default ClinicNavbar;
+export default PatientNavbar;
