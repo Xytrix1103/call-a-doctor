@@ -2,6 +2,7 @@ import {Navigate, Outlet, useLocation, useNavigation} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {useAuth} from "../AuthCtx.jsx";
 import GlobalSpinner from "../GlobalSpinner.jsx";
+import LoadingAnimation from "../LoadingAnimation.jsx";
 
 const RootLayout = () => {
 	const {user, loading} = useAuth();
@@ -19,7 +20,7 @@ const RootLayout = () => {
 		<>
 			{
 				loading || navigation.state === "loading" ?
-					<GlobalSpinner/> :
+					<LoadingAnimation/> :
 					(location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/register-clinic") ?
 						!user ?
 							<Outlet/> :
