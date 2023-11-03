@@ -100,7 +100,7 @@ function AddDoctorToList() {
                 bg="white"
                 boxShadow="xl"
                 rounded="xl"
-                p={5}
+                p={3}
             >
                 <form action="/api/add-doctor-to-list" method="post" onSubmit={handleSubmit} style={{ width: "100%" }}>
                     <Flex>
@@ -117,25 +117,27 @@ function AddDoctorToList() {
                     >
                         <Box px={5} w="full">
                             <Box>
-                                <Text mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                    Doctor Name
-                                </Text>
-                                <Input
-                                    variant="filled"
-                                    type="text"
-                                    name="name"
-                                    id="name"
-                                    placeholder="John Doe"
-                                    rounded="xl"
-                                    borderWidth="1px"
-                                    borderColor="gray.300"
-                                    color="gray.900"
-                                    isRequired
-                                    size="md"
-                                    focusBorderColor="blue.500"
-                                    w="full"
-                                    p={2.5}
-                                />
+                                <FormControl id="name">
+                                    <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+                                        Name
+                                    </FormLabel>
+                                    <Input
+                                        variant="filled"
+                                        type="text"
+                                        name="name"
+                                        id="name"
+                                        placeholder="John Doe"
+                                        rounded="xl"
+                                        borderWidth="1px"
+                                        borderColor="gray.300"
+                                        color="gray.900"
+                                        isRequired
+                                        size="md"
+                                        focusBorderColor="blue.500"
+                                        w="full"
+                                        p={2.5}
+                                    />                                    
+                                </FormControl>
                             </Box>
                             <Flex alignItems="center" justifyContent="space-between" mt={6}>
                                 <Box flex="1" mr={4}>
@@ -183,47 +185,6 @@ function AddDoctorToList() {
                                     </FormControl>
                                 </Box>
                             </Flex>
-                            <Box>
-                                <Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
-                                    Specialty
-                                </Text>
-                                <Input
-                                    variant="filled"
-                                    type="text"
-                                    name="specialty"
-                                    id="specialty"
-                                    placeholder="Enter Primary Specialty (e.g., Cardiology)"
-                                    rounded="xl"
-                                    borderWidth="1px"
-                                    borderColor="gray.300"
-                                    color="gray.900"
-                                    size="md"
-                                    focusBorderColor="blue.500"
-                                    isRequired
-                                    w="full"
-                                    p={2.5}
-                                />
-                            </Box>
-                            <Box>
-                                <Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
-                                    Field of Expertise
-                                </Text>
-                                <Input
-                                    variant="filled"
-                                    type="text"
-                                    name="field_of_expertise"
-                                    id="field_of_expertise"
-                                    placeholder="Enter Field of Expertise or Subspecialties (e.g., Interventional Cardiology)"
-                                    rounded="xl"
-                                    borderWidth="1px"
-                                    borderColor="gray.300"
-                                    color="gray.900"
-                                    size="md"
-                                    focusBorderColor="blue.500"
-                                    w="full"
-                                    p={2.5}
-                                />
-                            </Box>
                             <Box>
                                 <FormControl id="email">
                                     <FormLabel mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
@@ -348,7 +309,7 @@ function AddDoctorToList() {
                             </Box>
                             <Box
                                 w="full"
-                                h="64"
+                                h="48"
                                 id="preview-image-container"
                                 bg="gray.200"
                                 rounded="lg"
@@ -356,7 +317,7 @@ function AddDoctorToList() {
                                 flexDir="column"
                                 alignItems="center"
                                 justifyContent="center"
-                                mt={12}
+                                mt={8}
                             >
                                 <Image
                                     id="preview-image"
@@ -374,7 +335,8 @@ function AddDoctorToList() {
                                 rounded="xl"
                                 px={4}
                                 py={2}
-                                mt={14}
+                                mt={10}
+                                mb={4}
                                 w="full"
                             >
                                 Add Doctor
