@@ -325,7 +325,7 @@ function AddDoctorToList() {
                                     alt="Preview"
                                     display={imageSrc ? "block" : "none"}
                                     w="auto"
-                                    h="64"
+                                    h="48"
                                 />
                             </Box>
                             
