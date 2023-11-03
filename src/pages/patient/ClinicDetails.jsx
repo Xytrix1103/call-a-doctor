@@ -18,11 +18,10 @@ function ClinicDetails() {
     console.log(data)
 	
 	return (
-		<Center w="100%" h="100%" bg="#f4f4f4">
+		<Center w="100%" h="auto" bg="#f4f4f4">
 			<Box
-				mt={24}
-				mb={12}
-				w="80%"
+				w="full"
+				h="full"
 				bg="white"
 				boxShadow="xl"
 				rounded="xl"
