@@ -26,16 +26,31 @@ const router = createBrowserRouter(
 			<Route path="forgot" element={<></>}/>
 			<Route path="register-clinic" element={<ClinicRegistry/>}/>
 			<Route element={<PatientLayout/>}>
-				<Route path="request" element={<DoctorRequestForm/>}/>
 				<Route path="clinics" element={<ClinicList/>}/>
-				<Route path="clinic/:id" element={<></>}/>
+				<Route path="clinics/:id" element={<></>}/>
+				<Route path="clinics/:id/request" element={<DoctorRequestForm/>}/>
 			</Route>
 			<Route element={<ClinicLayout/>}>
-				<Route path="add-doctor" element={<AddDoctorToList/>}/>
-			</Route>
-			<Route element={<AdminLayout/>}>
 				<Route path="doctors" element={<></>}/>
 				<Route path="patients" element={<></>}/>
+				<Route path="patients/:id" element={<></>}/>
+				<Route path="doctors/add" element={<AddDoctorToList/>}/>
+			</Route>
+			<Route element={<DoctorLayout/>}>
+				<Route path="patients" element={<></>}/>
+				<Route path="schedule" element={<></>}/>
+			</Route>
+			<Route element={<AdminLayout/>}>
+				<Route path="clinics" element={<></>}/>
+				<Route path="clinics/:id" element={<></>}/>
+				<Route path="clinics/:id/doctors" element={<></>}/>
+				<Route path="clinics/:id/patients" element={<></>}/>
+				<Route path="doctors" element={<></>}/>
+				<Route path="doctors/:id" element={<></>}/>
+				<Route path="doctors/:id/schedule" element={<></>}/>
+				<Route path="doctors/:id/patients" element={<></>}/>
+				<Route path="patients" element={<></>}/>
+				<Route path="patients/:id" element={<></>}/>
 			</Route>
 		</Route>
 	)
