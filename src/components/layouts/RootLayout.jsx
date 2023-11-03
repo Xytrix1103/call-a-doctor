@@ -1,12 +1,13 @@
 import {Navigate, Outlet, useLocation, useNavigation} from "react-router-dom";
-import {useEffect} from "react";
-import {useAuth} from "./AuthCtx.jsx";
-import GlobalSpinner from "./GlobalSpinner.jsx";
+import {useEffect, useState} from "react";
+import {useAuth} from "../AuthCtx.jsx";
+import GlobalSpinner from "../GlobalSpinner.jsx";
 
-const GuardedRoute = () => {
+const RootLayout = () => {
 	const {user, loading} = useAuth();
 	const location = useLocation();
 	const navigation = useNavigation();
+	const [root, setRoot] = useState("/");
 	
 	console.log(location.pathname);
 	
@@ -19,7 +20,7 @@ const GuardedRoute = () => {
 			{
 				loading || navigation.state === "loading" ?
 					<GlobalSpinner/> :
-					(location.pathname === "/login" || location.pathname === "/register") ?
+					(location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/register-clinic") ?
 						!user ?
 							<Outlet/> :
 							(
@@ -36,4 +37,4 @@ const GuardedRoute = () => {
 	)
 }
 
-export default GuardedRoute;
+export default RootLayout;

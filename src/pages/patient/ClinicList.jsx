@@ -25,7 +25,7 @@ function ClinicList() {
             p={2}
         >
             {clinics.map((clinic) => (
-                <Link as={NavLink} to={`/patient/clinic/${clinic.id}`} key={clinic.id}>
+                <Link as={NavLink} to={`/patient/clinics/${clinic.id}`} key={clinic.id}>
                     <Flex
                         direction="column"
                         alignItems="center"

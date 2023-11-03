@@ -4,7 +4,7 @@ import {Navigate, Outlet, useLocation, useNavigation} from "react-router-dom";
 import React, {useEffect} from "react";
 import {useAuth} from "../AuthCtx.jsx";
 
-const PatientLayout = () => {
+const AdminLayout = () => {
 	const {user, loading} = useAuth();
 	const location = useLocation();
 	const navigation = useNavigation();
@@ -18,7 +18,7 @@ const PatientLayout = () => {
 	return (
 		<>
 			{
-				user.role !== "Patient" ?
+				user.role !== "Admin" ?
 					(
 						<Navigate to="/" />
 					) :
@@ -35,4 +35,4 @@ const PatientLayout = () => {
 	)
 }
 
-export default PatientLayout
+export default AdminLayout
