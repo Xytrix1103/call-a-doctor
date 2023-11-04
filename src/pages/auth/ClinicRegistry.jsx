@@ -308,9 +308,6 @@ function ClinicRegistry() {
 										color="gray.900"
 										size="md"
 										focusBorderColor="blue.500"
-										{
-											...register("specialist_clinic")
-										}
 									>
 										<option value="None">None</option>
 										<option value="Allergy and Clinical Immunology">Allergy and Clinical Immunology</option>
