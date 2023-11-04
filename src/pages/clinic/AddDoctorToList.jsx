@@ -108,7 +108,7 @@ function AddDoctorToList() {
                     </Flex>
                     
                     <Flex>
-                        <Box px={5} w="full">
+                        <Box px={5} mb={4} w="full">
                             <Box>
                                 <FormControl id="name">
                                     <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
