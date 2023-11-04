@@ -10,11 +10,12 @@ import {
 	Image,
 	Input,
 	InputGroup,
+    Center,
 	InputRightElement,
 	Select,
 	Text,
 } from '@chakra-ui/react';
-import {useState} from "react";
+import {useRef, useState} from "react";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 
@@ -22,6 +23,10 @@ function AddDoctorToList() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [isDragActive, setIsDragActive] = useState(false);
 	const [imageSrc, setImageSrc] = useState(null);
+
+    const imageRef = useRef(null);
+	const previewImageRef = useRef(null);
+	const previewImageContainerRef = useRef(null);
 	
 	const handleDragEnter = (e) => {
 		e.preventDefault();
@@ -36,47 +41,35 @@ function AddDoctorToList() {
 	const handleDragLeave = () => {
 		setIsDragActive(false);
 	};
+
+    const populatePreviewImage = (file) => {
+		if (file) {
+			if (isImageFile(file)) {
+				// Read the file and set the image source
+				const reader = new FileReader();
+				reader.onload = (event) => {
+					setImageSrc(event.target.result);
+				};
+				reader.readAsDataURL(file);
+			} else {
+				alert("Invalid file type. Please upload an image.");
+			}
+		} else {
+			console.log("No file");
+			setImageSrc(null);
+		}
+	}
 	
 	const handleDrop = (e) => {
 		e.preventDefault();
 		setIsDragActive(false);
 		const file = e.dataTransfer.files[0];
-		
-		if (file) {
-			if (isImageFile(file)) {
-				// Read the file and set the image source
-				const reader = new FileReader();
-				reader.onload = (event) => {
-					setImageSrc(event.target.result);
-					// Set preview image container bg to white
-					const previewImageContainer = document.getElementById("preview-image-container");
-					previewImageContainer.style.backgroundColor = "white";
-				};
-				reader.readAsDataURL(file);
-			} else {
-				alert("Invalid file type. Please upload an image.");
-			}
-		}
+		populatePreviewImage(file);
 	};
 	
 	const handleFileInputChange = (e) => {
 		const file = e.target.files[0];
-		
-		if (file) {
-			if (isImageFile(file)) {
-				// Read the file and set the image source
-				const reader = new FileReader();
-				reader.onload = (event) => {
-					setImageSrc(event.target.result);
-					// Set preview image container bg to white
-					const previewImageContainer = document.getElementById("preview-image-container");
-					previewImageContainer.style.backgroundColor = "white";
-				};
-				reader.readAsDataURL(file);
-			} else {
-				alert("Invalid file type. Please upload an image.");
-			}
-		}
+		populatePreviewImage(file);
 	};
 	
 	const isImageFile = (file) => {
@@ -93,16 +86,19 @@ function AddDoctorToList() {
 	}
 	
 	return (
-        <Flex w="full" h="auto" justify="center" align="center" bg="#f4f4f4">
+        <Center h="100%" bg="#f4f4f4">
             <Box
                 w="85%"
                 h="auto"
                 bg="white"
                 boxShadow="xl"
                 rounded="xl"
-                p={5}
+                p={3}
+                gridGap={4}
+				gridTemplateColumns="1fr 1fr"
             >
-                <form action="/api/add-doctor-to-list" method="post" onSubmit={handleSubmit} style={{ width: "100%" }}>
+                <form action="/api/add-doctor-to-list" method="post" onSubmit={handleSubmit}
+                    encType="multipart/form-data">
                     <Flex>
                         <Box my={7} mx={5} w="full">
                             <Text fontSize="xl" fontWeight="bold">
@@ -111,31 +107,30 @@ function AddDoctorToList() {
                         </Box>
                     </Flex>
                     
-                    <Grid
-                        templateColumns="repeat(2, 1fr)"
-                        gap={4}
-                    >
-                        <Box px={5} w="full">
+                    <Flex>
+                        <Box px={5} mb={4} w="full">
                             <Box>
-                                <Text mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                    Doctor Name
-                                </Text>
-                                <Input
-                                    variant="filled"
-                                    type="text"
-                                    name="name"
-                                    id="name"
-                                    placeholder="John Doe"
-                                    rounded="xl"
-                                    borderWidth="1px"
-                                    borderColor="gray.300"
-                                    color="gray.900"
-                                    isRequired
-                                    size="md"
-                                    focusBorderColor="blue.500"
-                                    w="full"
-                                    p={2.5}
-                                />
+                                <FormControl id="name">
+                                    <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+                                        Name
+                                    </FormLabel>
+                                    <Input
+                                        variant="filled"
+                                        type="text"
+                                        name="name"
+                                        id="name"
+                                        placeholder="John Doe"
+                                        rounded="xl"
+                                        borderWidth="1px"
+                                        borderColor="gray.300"
+                                        color="gray.900"
+                                        isRequired
+                                        size="md"
+                                        focusBorderColor="blue.500"
+                                        w="full"
+                                        p={2.5}
+                                    />                                    
+                                </FormControl>
                             </Box>
                             <Flex alignItems="center" justifyContent="space-between" mt={6}>
                                 <Box flex="1" mr={4}>
@@ -183,47 +178,6 @@ function AddDoctorToList() {
                                     </FormControl>
                                 </Box>
                             </Flex>
-                            <Box>
-                                <Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
-                                    Specialty
-                                </Text>
-                                <Input
-                                    variant="filled"
-                                    type="text"
-                                    name="specialty"
-                                    id="specialty"
-                                    placeholder="Enter Primary Specialty (e.g., Cardiology)"
-                                    rounded="xl"
-                                    borderWidth="1px"
-                                    borderColor="gray.300"
-                                    color="gray.900"
-                                    size="md"
-                                    focusBorderColor="blue.500"
-                                    isRequired
-                                    w="full"
-                                    p={2.5}
-                                />
-                            </Box>
-                            <Box>
-                                <Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
-                                    Field of Expertise
-                                </Text>
-                                <Input
-                                    variant="filled"
-                                    type="text"
-                                    name="field_of_expertise"
-                                    id="field_of_expertise"
-                                    placeholder="Enter Field of Expertise or Subspecialties (e.g., Interventional Cardiology)"
-                                    rounded="xl"
-                                    borderWidth="1px"
-                                    borderColor="gray.300"
-                                    color="gray.900"
-                                    size="md"
-                                    focusBorderColor="blue.500"
-                                    w="full"
-                                    p={2.5}
-                                />
-                            </Box>
                             <Box>
                                 <FormControl id="email">
                                     <FormLabel mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
@@ -299,91 +253,102 @@ function AddDoctorToList() {
                             </Box>
                         </Box>
                         <Box px={5} w="full">
-                            <Text mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                Profile Picture
-                            </Text>
-                            <Box
-                                onDragEnter={handleDragEnter}
-                                onDragOver={handleDragOver}
-                                onDragLeave={handleDragLeave}
-                                onDrop={handleDrop}
-                                rounded="lg"
-                                borderWidth="2px"
-                                border={"dashed"}
-                                borderColor={isDragActive ? "blue.500" : "gray.300"}
-                                p={8}
-                                textAlign="center"
-                                position={"relative"}
-                                cursor="pointer"
-                            >
-                                <Input
-                                    type="file"
-                                    accept="image/*"
-                                    opacity={0}
-                                    width="100%"
-                                    height="100%"
-                                    position="absolute"
-                                    top={0}
-                                    left={0}
-                                    zIndex={1}
-                                    cursor="pointer"
-                                    onChange={handleFileInputChange}
-                                />
-                                <Flex direction="column" alignItems="center">
-                                    <BsFillCloudArrowDownFill
-                                        onDragEnter={handleDragEnter}
-                                        onDragOver={handleDragOver}
-                                        onDragLeave={handleDragLeave}
-                                        onDrop={handleDrop}
-                                        size={32}
-                                        color={isDragActive ? "blue" : "gray"}
-                                    />
-                                    <Text mb={2} fontSize="sm" fontWeight="semibold">
-                                        {isDragActive ? "Drop the file here" : "Drag & Drop or Click to upload"}
-                                    </Text>
-                                    <Text fontSize="xs" color="gray.500">
-                                        (SVG, PNG, JPG, or JPEG)
-                                    </Text>
-                                </Flex>
-                            </Box>
-                            <Box
-                                w="full"
-                                h="64"
-                                id="preview-image-container"
-                                bg="gray.200"
-                                rounded="lg"
-                                display="flex"
-                                flexDir="column"
-                                alignItems="center"
-                                justifyContent="center"
-                                mt={12}
-                            >
-                                <Image
-                                    id="preview-image"
-                                    src={imageSrc || ""}
-                                    alt="Preview"
-                                    display={imageSrc ? "block" : "none"}
-                                    w="auto"
-                                    h="64"
-                                />
-                            </Box>
-                            
-                            <Button
-                                type="submit"
-                                colorScheme="blue"
-                                rounded="xl"
-                                px={4}
-                                py={2}
-                                mt={14}
-                                w="full"
-                            >
-                                Add Doctor
-                            </Button>
+                            <FormControl w="full" h="full" display="grid" gridTemplateRows="auto 1fr">
+								<Box>
+									<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+										Profile Picture
+									</FormLabel>
+									<Box
+										onDragEnter={handleDragEnter}
+										onDragOver={handleDragOver}
+										onDragLeave={handleDragLeave}
+										onDrop={handleDrop}
+										rounded="lg"
+										borderWidth="2px"
+										border={"dashed"}
+										borderColor={isDragActive ? "blue.500" : "gray.300"}
+										p={8}
+										textAlign="center"
+										position={"relative"}
+										cursor="pointer"
+									>
+										<Input
+											type="file"
+											accept="image/*"
+											opacity={0}
+											width="100%"
+											height="100%"
+											position="absolute"
+											top={0}
+											left={0}
+											zIndex={1}
+											cursor="pointer"
+                                            isRequired
+											ref={imageRef}
+											onChange={handleFileInputChange}
+										/>
+										<Flex direction="column" alignItems="center">
+											<BsFillCloudArrowDownFill
+												onDragEnter={handleDragEnter}
+												onDragOver={handleDragOver}
+												onDragLeave={handleDragLeave}
+												onDrop={handleDrop}
+												size={32}
+												color={isDragActive ? "blue" : "gray"}
+											/>
+											<Text mb={2} fontSize="sm" fontWeight="semibold">
+												{isDragActive ? "Drop the file here" : "Drag & Drop or Click to upload"}
+											</Text>
+											<Text fontSize="xs" color="gray.500">
+												(SVG, PNG, JPG, or JPEG)
+											</Text>
+										</Flex>
+									</Box>
+								</Box>
+								<Box
+									w="full"
+									h="auto"
+									id="preview-image-container"
+									bg={!imageSrc ? "gray.200" : "transparent"}
+									rounded="lg"
+									display="flex"
+									flexDir="column"
+									alignItems="center"
+									justifyContent="center"
+									mt={8}
+									ref={previewImageContainerRef}
+								>
+									<Image
+										id="preview-image"
+										src={imageSrc || ""}
+										alt="Preview"
+										display={imageSrc ? "block" : "none"}
+										ref={previewImageRef}
+										w="full"
+										h="full"
+										objectFit="cover"
+									/>
+								</Box>
+                                <Box>
+                                    <Button
+                                        type="submit"
+                                        colorScheme="blue"
+                                        rounded="xl"
+                                        px={4}
+                                        py={2}
+                                        mt={8}
+                                        mb={4}
+                                        w="full"
+                                    >
+                                        Add Doctor
+                                    </Button>                                
+                                </Box>
+							</FormControl>
                         </Box>
-                    </Grid>
+                    </Flex>
                 </form>
             </Box>
-        </Flex>
+        </Center>
 	);
 }
 
