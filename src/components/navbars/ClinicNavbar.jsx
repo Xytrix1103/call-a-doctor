@@ -8,12 +8,12 @@ const ClinicNavbar = () => {
 			as="nav"
 			align="top"
 			padding="1rem"
-			bg="white" // Set the navbar background color to white
+			bg="white"
 			bgColor={"white"}
 			zIndex="999"
 			width="100%"
 			shadow="md"
-			justify="space-between" // Align items to the space between
+			justify="space-between"
 		>
 			<Flex align="center">
 				<Avatar

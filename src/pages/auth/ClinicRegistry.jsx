@@ -142,6 +142,9 @@ function ClinicRegistry() {
 									</FormErrorMessage>
 								</FormControl>
 							</Box>
+							<Text fontSize="sm" fontWeight="medium" color="gray.900" mt={4} mb={2}>
+								Operating Hours
+							</Text>
 							<Flex alignItems="center" justifyContent="space-between">
 								<Box flex="1">
 									<Text fontSize="sm" fontWeight="medium" color="gray.900" mt={6} mb={2}>
@@ -343,7 +346,7 @@ function ClinicRegistry() {
 									</Select>
 								</FormControl>
 							</Box>
-							<Box mb={2} mt={6}>
+							<Box mb={2} mt={4}>
 								<FormControl isInvalid={errors.address}>
 									<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 										Address
@@ -373,7 +376,7 @@ function ClinicRegistry() {
 									</FormErrorMessage>
 								</FormControl>
 							</Box>
-							<Box mb={2} mt={6}>
+							<Box mb={2} mt={4}>
 								<FormControl isInvalid={errors.panel_firms}>
 									<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 										Panel Firms (Optional)
@@ -461,7 +464,7 @@ function ClinicRegistry() {
 									flexDir="column"
 									alignItems="center"
 									justifyContent="center"
-									mt={12}
+									mt={4}
 									ref={previewImageContainerRef}
 								>
 									<Image
