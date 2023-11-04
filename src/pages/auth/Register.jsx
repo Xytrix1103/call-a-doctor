@@ -64,7 +64,12 @@ function Register() {
         <Center h="full" bg={"#f4f4f4"}>
             {
                 error && (
-                    <Alert status="error">
+                    <Alert 
+						status="error"
+						variant="subtle"
+						position="fixed"
+						top="0"
+					>
                         <AlertIcon />
                         <AlertTitle mr={2}>Registration failed!  Please try again.</AlertTitle>
                     </Alert>
