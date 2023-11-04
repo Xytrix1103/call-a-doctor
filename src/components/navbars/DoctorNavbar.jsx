@@ -42,7 +42,17 @@ const DoctorNavbar = () => {
 				<Menu marginRight={6}>
 					<MenuButton as={Link} color="teal.500" display="flex" alignItems="center">
 						<Flex alignItems="center">
-							<Text>More</Text>
+                            <MenuButton
+								as={Button}
+								rounded={'full'}
+								variant={'link'}
+								cursor={'pointer'}
+								minW={0}>
+								<Avatar
+								size={'sm'}
+								src="\src\assets\images\Default_User_Profile.png"
+							/>
+							</MenuButton>
 							<BiChevronDown />
 						</Flex>
 					</MenuButton>

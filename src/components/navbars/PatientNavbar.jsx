@@ -1,4 +1,4 @@
-import {Avatar, Flex, Link, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text} from "@chakra-ui/react";
+import {Avatar, Flex, Link, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, Button} from "@chakra-ui/react";
 import {NavLink, useLocation} from "react-router-dom";
 import {BiChevronDown} from "react-icons/bi";
 import {logout} from "../../../api/auth.js";
@@ -42,7 +42,17 @@ const PatientNavbar = () => {
 				<Menu marginRight={6}>
 					<MenuButton as={Link} color="teal.500" display="flex" alignItems="center">
 						<Flex alignItems="center">
-							<Text>More</Text>
+							<MenuButton
+								as={Button}
+								rounded={'full'}
+								variant={'link'}
+								cursor={'pointer'}
+								minW={0}>
+								<Avatar
+								size={'sm'}
+								src="\src\assets\images\Default_User_Profile.png"
+							/>
+							</MenuButton>
 							<BiChevronDown />
 						</Flex>
 					</MenuButton>
