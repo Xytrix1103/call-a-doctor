@@ -13,8 +13,9 @@ import {
     FormErrorMessage,
     Link,
     Text,
-    Textarea,
-    VStack
+    Alert,
+    AlertIcon,
+    AlertTitle,
 } from '@chakra-ui/react';
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 import {useEffect, useState} from "react";
@@ -33,6 +34,7 @@ function Register() {
 	} = useForm();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [error, setError] = useState(null);
     const {user} = useAuth();
     
     useEffect(() => {
@@ -49,15 +51,25 @@ function Register() {
         }
         const res = await registerUser(data);
         
-        if (res.error) {
-            alert(res.error);
-        } else {
-            window.location.href = "/";
-        }
+		if (res) {
+			if (res.error) {
+				setError(res.error);
+			}
+		} else {
+			setError("An error occurred. Please try again later.");
+		}
     }
 
     return (
         <Center h="full" bg={"#f4f4f4"}>
+            {
+                error && (
+                    <Alert status="error">
+                        <AlertIcon />
+                        <AlertTitle mr={2}>Registration failed!  Please try again.</AlertTitle>
+                    </Alert>
+                )
+            }
             <Box w='85%' my={6}>
                 <Flex 	
                     bg="white"

@@ -13,6 +13,9 @@ import {
 	FormErrorMessage,
 	InputRightElement,
 	Text,
+	Alert,
+	AlertIcon,
+	AlertTitle,
 } from "@chakra-ui/react";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 import {useState} from "react";
@@ -28,17 +31,35 @@ function Login() {
 		}
 	} = useForm();
 	const [show, setShow] = useState(false);
+	const [error, setError] = useState(null);
 	
 	const onSubmit = async (data) => {
 		const res = await login(data);
 		
 		if (res) {
-			console.log(res);
+			if (res.error) {
+				setError(res.error);
+			}
+		} else {
+			setError("An error occurred. Please try again later.");
 		}
 	}
 
 	return (
 		<Center h="full" bg={"#f4f4f4"}>
+			{
+                error && (
+                    <Alert 
+						status="error"
+						variant="subtle"
+						position="fixed"
+						top="0"
+					>
+                        <AlertIcon />
+                        <AlertTitle mr={2}>Login failed!  Invalid credentials.</AlertTitle>
+                    </Alert>
+                )
+            }
 			<Box w="85%">
 				<Flex
 					bg="white"
