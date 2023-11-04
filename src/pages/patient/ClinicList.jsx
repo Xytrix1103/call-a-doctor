@@ -92,7 +92,7 @@ function ClinicList() {
                             />
                             <Box px={4} py={3}>
                                 <Box display='flex' alignItems='baseline' mb={1}>
-                                    <Badge borderRadius='full' px='2' colorScheme='teal'>
+                                    <Badge borderRadius='full' px='2' colorScheme='blue'>
                                         Specialty
                                     </Badge>
                                     <Box
@@ -122,7 +122,7 @@ function ClinicList() {
                                             .map((_, i) => (
                                                 <AiFillStar
                                                     key={i}
-                                                    color={i < 4 ? 'teal' : 'gray'}
+                                                    color={i < 4 ? 'gold' : 'gray'}
                                                 />
                                             ))
                                     }

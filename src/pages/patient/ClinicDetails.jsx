@@ -1,6 +1,7 @@
 import {Box, Button, Center, Flex, FormControl, Input, Select, Text, Textarea,} from '@chakra-ui/react'
 import {NavLink, useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
+import {AiFillStar} from "react-icons/ai";
 import {db} from "../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
 
@@ -32,11 +33,50 @@ function ClinicDetails() {
 			>
 				<Flex>
 					<Box my={7} mx={5} w="full">
-						<Text fontSize="xl" fontWeight="bold">
+						<Text fontSize="xl" fontWeight="semibold" letterSpacing='wide'>
 							{data.name}
 						</Text>
+						<Box
+							color='gray.500'
+							fontWeight='semibold'
+							letterSpacing='wide'
+							fontSize='sm'
+							textTransform='uppercase'
+						>
+							Specialty
+						</Box>
 					</Box>
 
+					<Box my={7} mx={5} w="full">
+						<Flex alignItems="center" justifyContent="end">
+							<Box
+								color='gray.500'
+								fontWeight='semibold'
+								letterSpacing='wide'
+								fontSize='sm'
+								textTransform='uppercase'
+								mr={8}
+							>
+								Distance from user
+							</Box>
+							<Box display='flex' alignItems='center'>
+								{
+									Array(5)
+										.fill('')
+										.map((_, i) => (
+											<AiFillStar
+												size={20}
+												key={i}
+												color={i < 4 ? 'gold' : 'gray'}
+											/>
+										))
+								}
+								<Box as='span' ml='2' color='gray.600' fontSize='sm'>
+									reviews
+								</Box>
+							</Box>							
+						</Flex>
+					</Box>
 				</Flex>
 				
 				<Flex>
@@ -66,110 +106,109 @@ function ClinicDetails() {
 								tabIndex="-1"
 							/>
 						</Box>
-						<Text mt={4} mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-							Operating Hours
-						</Text>
 						<Flex alignItems="center" justifyContent="space-between">
 							<Box flex="1">
-								<Text
-									as="input" 
-									variant="filled"
-									type="text"
-									name="name"
-									id="name"
-									placeholder="John Doe"
-									rounded="xl"
-									borderWidth="1px"
-									borderColor="gray.300"
-									value={data.start_time}
-									color="gray.900"
-									size="md"
-									focusBorderColor="blue.500"
-									w="full"
-									p={2.5}
-									isReadOnly 
-									pointerEvents="none"
-									tabIndex="-1"
-								/>
+								<Text fontSize="sm" fontWeight="medium" color="gray.900" mt={6} mb={2}>
+									Operating Hours
+								</Text>
+								<Flex alignItems="center">
+									<Text
+										as="input" 
+										variant="filled"
+										type="text"
+										name="name"
+										id="name"
+										placeholder="John Doe"
+										rounded="xl"
+										borderWidth="1px"
+										borderColor="gray.300"
+										value={data.start_time}
+										color="gray.900"
+										size="md"
+										focusBorderColor="blue.500"
+										w="full"
+										p={2.5}
+										isReadOnly 
+										pointerEvents="none"
+										tabIndex="-1"
+									/>
+									<Text mx={3} fontSize="md" color="gray.900">
+										to
+									</Text>
+									<Text
+										as="input" 
+										variant="filled"
+										type="text"
+										name="name"
+										id="name"
+										placeholder="John Doe"
+										rounded="xl"
+										borderWidth="1px"
+										borderColor="gray.300"
+										value={data.end_time}
+										color="gray.900"
+										size="md"
+										focusBorderColor="blue.500"
+										w="full"
+										p={2.5}
+										isReadOnly 
+										pointerEvents="none"
+										tabIndex="-1"
+									/>
+								</Flex>
 							</Box>
-							<Text mx={3} fontSize="md" color="gray.900">
-								to
-							</Text>
-							<Box flex="1">
-								<Text
-									as="input" 
-									variant="filled"
-									type="text"
-									name="name"
-									id="name"
-									placeholder="John Doe"
-									rounded="xl"
-									borderWidth="1px"
-									borderColor="gray.300"
-									value={data.end_time}
-									color="gray.900"
-									size="md"
-									focusBorderColor="blue.500"
-									w="full"
-									p={2.5}
-									isReadOnly 
-									pointerEvents="none"
-									tabIndex="-1"
-								/>
+							<Box flex="1" ml={4}>
+								<Text mt={6} mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+									Operating Days
+								</Text>
+								<Flex alignItems="center">
+									<Text
+										as="input" 
+										variant="filled"
+										type="text"
+										name="name"
+										id="name"
+										placeholder="John Doe"
+										rounded="xl"
+										borderWidth="1px"
+										borderColor="gray.300"
+										value={data.start_day}
+										color="gray.900"
+										size="md"
+										focusBorderColor="blue.500"
+										w="full"
+										p={2.5}
+										isReadOnly 
+										pointerEvents="none"
+										tabIndex="-1"
+									/>
+									<Text mx={3} fontSize="md" color="gray.900">
+										to
+									</Text>
+									<Text
+										as="input" 
+										variant="filled"
+										type="text"
+										name="name"
+										id="name"
+										placeholder="John Doe"
+										rounded="xl"
+										borderWidth="1px"
+										borderColor="gray.300"
+										value={data.end_day}
+										color="gray.900"
+										size="md"
+										focusBorderColor="blue.500"
+										w="full"
+										p={2.5}
+										isReadOnly 
+										pointerEvents="none"
+										tabIndex="-1"
+									/>
+								</Flex>
 							</Box>
 						</Flex>
-						<Text mt={4} mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-							Operating Days
-						</Text>
-						<Flex alignItems="center" justifyContent="space-between">
-							<Box flex="1">
-								<Text
-									as="input" 
-									variant="filled"
-									type="text"
-									name="name"
-									id="name"
-									placeholder="John Doe"
-									rounded="xl"
-									borderWidth="1px"
-									borderColor="gray.300"
-									value={data.start_day}
-									color="gray.900"
-									size="md"
-									focusBorderColor="blue.500"
-									w="full"
-									p={2.5}
-									isReadOnly 
-									pointerEvents="none"
-									tabIndex="-1"
-								/>
-							</Box>
-							<Text mx={3} fontSize="md" color="gray.900">
-								to
-							</Text>
-							<Box flex="1">
-								<Text
-									as="input" 
-									variant="filled"
-									type="text"
-									name="name"
-									id="name"
-									placeholder="John Doe"
-									rounded="xl"
-									borderWidth="1px"
-									borderColor="gray.300"
-									value={data.end_day}
-									color="gray.900"
-									size="md"
-									focusBorderColor="blue.500"
-									w="full"
-									p={2.5}
-									isReadOnly 
-									pointerEvents="none"
-									tabIndex="-1"
-								/>
-							</Box>
-						</Flex>
+
 						<Box>
 							<Text mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900">
 								Address
