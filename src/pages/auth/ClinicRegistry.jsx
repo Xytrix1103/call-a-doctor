@@ -92,11 +92,11 @@ function ClinicRegistry() {
 	return (
 		<Center h="auto" bg={"#f4f4f4"} py={10}>
 			<Box
-				w="67%"
+				w="85%"
 				bg="white"
 				boxShadow="xl"
 				rounded="xl"
-				p={5}
+				p={3}
 				gridGap={4}
 				gridTemplateColumns="1fr 1fr"
 			>
@@ -126,7 +126,7 @@ function ClinicRegistry() {
 												required: "Clinic name cannot be empty",
 											})
 										}
-										placeholder="John Doe"
+										placeholder="Clinic A"
 										defaultValue=""
 										rounded="xl"
 										borderWidth="1px"
@@ -142,154 +142,210 @@ function ClinicRegistry() {
 									</FormErrorMessage>
 								</FormControl>
 							</Box>
-							<Text fontSize="sm" fontWeight="medium" color="gray.900" mt={6} mb={2}>
-								Operating Hours
-							</Text>
 							<Flex alignItems="center" justifyContent="space-between">
 								<Box flex="1">
-									<FormControl isInvalid={errors.start_time}>
-										<Select
-											variant="filled"
-											name="start_time"
-											id="start_time"
-											rounded="xl"
-											borderWidth="1px"
-											borderColor="gray.300"
-											color="gray.900"
-											size="md"
-											focusBorderColor="blue.500"
-											{
-												...register("start_time", {
-													required: "Start time cannot be empty",
-												})
-											}
-										>
-											<option value="08:00 AM">08:00 AM</option>
-											<option value="09:00 AM">09:00 AM</option>
-											<option value="10:00 AM">10:00 AM</option>
-											<option value="11:00 AM">11:00 AM</option>
-											<option value="12:00 PM">12:00 PM</option>
-											<option value="01:00 PM">01:00 PM</option>
-											<option value="02:00 PM">02:00 PM</option>
-											<option value="03:00 PM">03:00 PM</option>
-											<option value="04:00 PM">04:00 PM</option>
-											<option value="05:00 PM">05:00 PM</option>
-											<option value="06:00 PM">06:00 PM</option>
-											<option value="07:00 PM">07:00 PM</option>
-											<option value="08:00 PM">08:00 PM</option>
-											<option value="09:00 PM">09:00 PM</option>
-											<option value="10:00 PM">10:00 PM</option>
-											<option value="11:00 PM">11:00 PM</option>
-											<option value="12:00 AM">12:00 AM</option>
-										</Select>
-									</FormControl>
+									<Text fontSize="sm" fontWeight="medium" color="gray.900" mt={6} mb={2}>
+										Operating Hours
+									</Text>
+									<Flex alignItems="center">
+										<FormControl isInvalid={errors.start_time}>
+											<Select
+												variant="filled"
+												name="start_time"
+												id="start_time"
+												rounded="xl"
+												borderWidth="1px"
+												borderColor="gray.300"
+												color="gray.900"
+												size="md"
+												focusBorderColor="blue.500"
+												{
+													...register("start_time", {
+														required: "Start time cannot be empty",
+													})
+												}
+											>
+												<option value="08:00 AM">08:00 AM</option>
+												<option value="09:00 AM">09:00 AM</option>
+												<option value="10:00 AM">10:00 AM</option>
+												<option value="11:00 AM">11:00 AM</option>
+												<option value="12:00 PM">12:00 PM</option>
+												<option value="01:00 PM">01:00 PM</option>
+												<option value="02:00 PM">02:00 PM</option>
+												<option value="03:00 PM">03:00 PM</option>
+												<option value="04:00 PM">04:00 PM</option>
+												<option value="05:00 PM">05:00 PM</option>
+												<option value="06:00 PM">06:00 PM</option>
+												<option value="07:00 PM">07:00 PM</option>
+												<option value="08:00 PM">08:00 PM</option>
+												<option value="09:00 PM">09:00 PM</option>
+												<option value="10:00 PM">10:00 PM</option>
+												<option value="11:00 PM">11:00 PM</option>
+												<option value="12:00 AM">12:00 AM</option>
+											</Select>
+										</FormControl>
+										<Text mx={3} fontSize="md" color="gray.900">
+											to
+										</Text>
+										<FormControl isInvalid={errors.end_time}>
+											<Select
+												variant="filled"
+												name="end_time"
+												id="end_time"
+												rounded="xl"
+												borderWidth="1px"
+												borderColor="gray.300"
+												color="gray.900"
+												size="md"
+												focusBorderColor="blue.500"
+												{
+													...register("end_time", {
+														required: "End time cannot be empty",
+													})
+												}
+											>
+												<option value="08:00 AM">08:00 AM</option>
+												<option value="09:00 AM">09:00 AM</option>
+												<option value="10:00 AM">10:00 AM</option>
+												<option value="11:00 AM">11:00 AM</option>
+												<option value="12:00 PM">12:00 PM</option>
+												<option value="01:00 PM">01:00 PM</option>
+												<option value="02:00 PM">02:00 PM</option>
+												<option value="03:00 PM">03:00 PM</option>
+												<option value="04:00 PM">04:00 PM</option>
+												<option value="05:00 PM">05:00 PM</option>
+												<option value="06:00 PM">06:00 PM</option>
+												<option value="07:00 PM">07:00 PM</option>
+												<option value="08:00 PM">08:00 PM</option>
+												<option value="09:00 PM">09:00 PM</option>
+												<option value="10:00 PM">10:00 PM</option>
+												<option value="11:00 PM">11:00 PM</option>
+												<option value="12:00 AM">12:00 AM</option>
+											</Select>
+										</FormControl>
+									</Flex>
 								</Box>
-								<Text mx={3} fontSize="md" color="gray.900">
-									to
-								</Text>
-								<Box flex="1">
-									<FormControl isInvalid={errors.end_time}>
-										<Select
-											variant="filled"
-											name="end_time"
-											id="end_time"
-											rounded="xl"
-											borderWidth="1px"
-											borderColor="gray.300"
-											color="gray.900"
-											size="md"
-											focusBorderColor="blue.500"
-											{
-												...register("end_time", {
-													required: "End time cannot be empty",
-												})
-											}
-										>
-											<option value="08:00 AM">08:00 AM</option>
-											<option value="09:00 AM">09:00 AM</option>
-											<option value="10:00 AM">10:00 AM</option>
-											<option value="11:00 AM">11:00 AM</option>
-											<option value="12:00 PM">12:00 PM</option>
-											<option value="01:00 PM">01:00 PM</option>
-											<option value="02:00 PM">02:00 PM</option>
-											<option value="03:00 PM">03:00 PM</option>
-											<option value="04:00 PM">04:00 PM</option>
-											<option value="05:00 PM">05:00 PM</option>
-											<option value="06:00 PM">06:00 PM</option>
-											<option value="07:00 PM">07:00 PM</option>
-											<option value="08:00 PM">08:00 PM</option>
-											<option value="09:00 PM">09:00 PM</option>
-											<option value="10:00 PM">10:00 PM</option>
-											<option value="11:00 PM">11:00 PM</option>
-											<option value="12:00 AM">12:00 AM</option>
-										</Select>
-									</FormControl>
+								<Box flex="1" ml={4}>
+									<Text mt={6} mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+										Operating Days
+									</Text>
+									<Flex alignItems="center">
+										<FormControl isInvalid={errors.start_day}>
+											<Select
+												variant="filled"
+												name="start_day"
+												id="start_day"
+												rounded="xl"
+												borderWidth="1px"
+												borderColor="gray.300"
+												color="gray.900"
+												size="md"
+												focusBorderColor="blue.500"
+												{
+													...register("start_day", {
+														required: "Start day cannot be empty",
+													})
+												}
+											>
+												<option value="Monday">Monday</option>
+												<option value="Tuesday">Tuesday</option>
+												<option value="Wednesday">Wednesday</option>
+												<option value="Thursday">Thurday</option>
+												<option value="Friday">Friday</option>
+												<option value="Saturday">Saturday</option>
+												<option value="Sunday">Sunday</option>
+											</Select>
+										</FormControl>
+										<Text mx={3} fontSize="md" color="gray.900">
+											to
+										</Text>
+										<FormControl isInvalid={errors.end_day}>
+											<Select
+												variant="filled"
+												name="end_day"
+												id="end_day"
+												rounded="xl"
+												borderWidth="1px"
+												borderColor="gray.300"
+												color="gray.900"
+												size="md"
+												focusBorderColor="blue.500"
+												{
+													...register("end_day", {
+														required: "End day cannot be empty",
+													})
+												}
+											>
+												<option value="Monday">Monday</option>
+												<option value="Tuesday">Tuesday</option>
+												<option value="Wednesday">Wednesday</option>
+												<option value="Thursday">Thurday</option>
+												<option value="Friday">Friday</option>
+												<option value="Saturday">Saturday</option>
+												<option value="Sunday">Sunday</option>
+											</Select>
+										</FormControl>
+									</Flex>
 								</Box>
 							</Flex>
-							<Text mt={6} mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-								Operating Days
-							</Text>
-							<Flex alignItems="center" justifyContent="space-between">
-								<Box flex="1">
-									<FormControl isInvalid={errors.start_day}>
-										<Select
-											variant="filled"
-											name="start_day"
-											id="start_day"
-											rounded="xl"
-											borderWidth="1px"
-											borderColor="gray.300"
-											color="gray.900"
-											size="md"
-											focusBorderColor="blue.500"
-											{
-												...register("start_day", {
-													required: "Start day cannot be empty",
-												})
-											}
-										>
-											<option value="Monday">Monday</option>
-											<option value="Tuesday">Tuesday</option>
-											<option value="Wednesday">Wednesday</option>
-											<option value="Thursday">Thurday</option>
-											<option value="Friday">Friday</option>
-											<option value="Saturday">Saturday</option>
-											<option value="Sunday">Sunday</option>
-										</Select>
-									</FormControl>
-								</Box>
-								<Text mx={3} fontSize="md" color="gray.900">
-									to
-								</Text>
-								<Box flex="1">
-									<FormControl isInvalid={errors.end_day}>
-										<Select
-											variant="filled"
-											name="end_day"
-											id="end_day"
-											rounded="xl"
-											borderWidth="1px"
-											borderColor="gray.300"
-											color="gray.900"
-											size="md"
-											focusBorderColor="blue.500"
-											{
-												...register("end_day", {
-													required: "End day cannot be empty",
-												})
-											}
-										>
-											<option value="Monday">Monday</option>
-											<option value="Tuesday">Tuesday</option>
-											<option value="Wednesday">Wednesday</option>
-											<option value="Thursday">Thurday</option>
-											<option value="Friday">Friday</option>
-											<option value="Saturday">Saturday</option>
-											<option value="Sunday">Sunday</option>
-										</Select>
-									</FormControl>
-								</Box>
-							</Flex>
+
+							<Box
+								mb={2}
+								mt={6}
+								w="full"
+							>
+								<FormControl>
+									<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
+										Specialist Clinic (Optional)
+									</FormLabel>
+									<Select
+										variant="filled"
+										name="specialist_clinic"
+										id="specialist_clinic"
+										rounded="xl"
+										borderWidth="1px"
+										borderColor="gray.300"
+										color="gray.900"
+										size="md"
+										focusBorderColor="blue.500"
+										{
+											...register("specialist_clinic")
+										}
+									>
+										<option value="None">None</option>
+										<option value="Allergy and Clinical Immunology">Allergy and Clinical Immunology</option>
+										<option value="Cardiology">Cardiology</option>
+										<option value="Dermatology">Dermatology</option>
+										<option value="Endocrinology">Endocrinology</option>
+										<option value="Gastroenterology">Gastroenterology</option>
+										<option value="Geriatric Medicine">Geriatric Medicine</option>
+										<option value="Haematology">Haematology</option>
+										<option value="Immunology">Immunology</option>
+										<option value="Infectious Diseases">Infectious Diseases</option>
+										<option value="Nephrology">Nephrology</option>
+										<option value="Neurology">Neurology</option>
+										<option value="Oncology">Oncology</option>
+										<option value="Paediatrics">Paediatrics</option>
+										<option value="Psychiatry">Psychiatry</option>
+										<option value="Rheumatology">Rheumatology</option>
+										<option value="Urology">Urology</option>
+										<option value="Pulmonology">Pulmonology</option>
+										<option value="Otolaryngology (ENT)">Otolaryngology (ENT)</option>
+										<option value="Gynecology">Gynecology</option>
+										<option value="Orthopedic Surgery">Orthopedic Surgery</option>
+										<option value="Dental Surgery">Dental Surgery</option>
+										<option value="Ophthalmology">Ophthalmology</option>
+										<option value="Dietetics">Dietetics</option>
+										<option value="Radiology">Radiology</option>
+										<option value="Physical Therapy">Physical Therapy</option>
+										<option value="Sports Medicine">Sports Medicine</option>
+										<option value="Pain Management">Pain Management</option>
+										<option value="Hematopathology">Hematopathology</option>
+										<option value="Forensic Pathology">Forensic Pathology</option>
+										<option value="Clinical Pathology">Clinical Pathology</option>
+									</Select>
+								</FormControl>
+							</Box>
 							<Box mb={2} mt={6}>
 								<FormControl isInvalid={errors.address}>
 									<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
@@ -299,7 +355,7 @@ function ClinicRegistry() {
 										variant="filled"
 										name="address"
 										id="address"
-										placeholder="Enter your address here..."
+										placeholder="Enter clinic address here..."
 										rounded="xl"
 										borderWidth="1px"
 										borderColor="gray.300"
@@ -329,7 +385,7 @@ function ClinicRegistry() {
 										variant="filled"
 										name="panel_firm"
 										id="panel_firm"
-										placeholder="Enter your panel firms here..."
+										placeholder="Enter clinic panel firms here..."
 										rounded="xl"
 										borderWidth="1px"
 										borderColor="gray.300"
@@ -624,7 +680,8 @@ function ClinicRegistry() {
 								rounded="xl"
 								px={4}
 								py={2}
-								mt={14}
+								mt={8}
+								mb={2}
 								w="full"
 							>
 								Submit Request
