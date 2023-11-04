@@ -142,9 +142,6 @@ function ClinicRegistry() {
 									</FormErrorMessage>
 								</FormControl>
 							</Box>
-							<Text fontSize="sm" fontWeight="medium" color="gray.900" mt={4} mb={2}>
-								Operating Hours
-							</Text>
 							<Flex alignItems="center" justifyContent="space-between">
 								<Box flex="1">
 									<Text fontSize="sm" fontWeight="medium" color="gray.900" mt={6} mb={2}>
