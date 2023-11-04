@@ -33,9 +33,10 @@ function ClinicDetails() {
 				<Flex>
 					<Box my={7} mx={5} w="full">
 						<Text fontSize="xl" fontWeight="bold">
-							Clinic A
+							{data.name}
 						</Text>
 					</Box>
+
 				</Flex>
 				
 				<Flex>
@@ -221,7 +222,7 @@ function ClinicDetails() {
 						</Box>
 					</Box>
 					<Box mx={5} w="full">
-						<Flex>
+						<Flex direction="column" alignItems="center" colorScheme="blue">
 							<Box
 								my={7}
 								mx={5}
@@ -231,22 +232,22 @@ function ClinicDetails() {
 								bgPosition="center"
 								rounded={'lg'}
 								h="64"
-							>
-							</Box>
+							/>
+							<Flex w="full">
+								<Box w="full">
+									<NavLink to={`/clinics/${id}/request`}>
+										<Button
+											w={'full'}
+											colorScheme="blue"
+											rounded="xl"
+											mt={10}
+										>
+											Send Doctor Request
+										</Button>
+									</NavLink>                                     
+								</Box>
+							</Flex>
 						</Flex>
-						<NavLink to={`/clinics/${id}/request`}>
-							<Button
-								colorScheme="blue"
-								rounded="xl"
-								px={4}
-								mx={5}
-								py={2}
-								mt={10}
-								w="full"
-							>
-								Send Doctor Request
-							</Button>
-						</NavLink>
 					</Box>
 				</Flex>
 			</Box>

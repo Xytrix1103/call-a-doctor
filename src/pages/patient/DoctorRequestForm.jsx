@@ -5,16 +5,25 @@ import {
     Flex,
     FormControl,
     FormLabel,
+    FormErrorMessage,
     Input,
-    InputGroup,
     Select,
     Text,
     Textarea,
 } from '@chakra-ui/react'
+import {useForm} from "react-hook-form";
+import {useRef, useState} from "react";
 
 function DoctorRequestForm() {
-	
-	const handleSubmit = async (e) => {
+    const {
+		handleSubmit,
+		register,
+		formState: {
+			errors, isSubmitting
+		}
+	} = useForm();
+
+	const onSubmit = async (e) => {
 		e.preventDefault();
 		const data = new FormData(e.target);
 		
@@ -34,7 +43,7 @@ function DoctorRequestForm() {
             gridGap={4}
             gridTemplateColumns="1fr 1fr"
         >
-            <form action="/" method="post">
+            <form action="/" method="post" onSubmit={handleSubmit(onSubmit)}>
                 <Flex>
                     <Box my={7} mx={5} w="full">
                         <Text fontSize="xl" fontWeight="bold">
@@ -46,46 +55,64 @@ function DoctorRequestForm() {
                 <Flex>
                     <Box mx={5} w="full">
                         <Box>
-                            <Text mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                Patient Name
-                            </Text>
-                            <Input
-                                variant="filled"
-                                type="text"
-                                name="name"
-                                id="name"
-                                placeholder="John Doe"
-                                rounded="xl"
-                                borderWidth="1px"
-                                borderColor="gray.300"
-                                color="gray.900"
-                                size="md"
-                                focusBorderColor="blue.500"
-                                w="full"
-                                p={2.5}
-                            />
+                            <FormControl isInvalid={errors.patient_name}>
+                                <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+                                    Patient Name
+                                </FormLabel>
+                                <Input
+                                    variant="filled"
+                                    type="text"
+                                    id="name"
+                                    {
+                                        ...register("patient_name", {
+                                            required: "Patient name cannot be empty",
+                                        })
+                                    }
+                                    placeholder="John Doe"
+                                    defaultValue=""
+                                    rounded="xl"
+                                    borderWidth="1px"
+                                    borderColor="gray.300"
+                                    color="gray.900"
+                                    size="md"
+                                    focusBorderColor="blue.500"
+                                    w="full"
+                                    p={2.5}
+                                />
+                                <FormErrorMessage>
+                                    {errors.patient_name && errors.patient_name.message}
+                                </FormErrorMessage>
+                            </FormControl>
                         </Box>
                         <Flex alignItems="center" justifyContent="space-between" mt={6}>
                             <Box flex="1" mr={4}>
-                                <FormControl>
-                                    <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                        Age
-                                    </FormLabel>
-                                    <InputGroup size="md">
-                                        <Input
-                                            variant="filled"
-                                            type="number"
-                                            name="age"
-                                            id="age"
-                                            rounded="xl"
-                                            borderWidth="1px"
-                                            borderColor="gray.300"
-                                            color="gray.900"
-                                            size="md"
-                                            focusBorderColor="blue.500"
-                                        />
-                                    </InputGroup>
-                                </FormControl>
+                                <FormControl isInvalid={errors.age}>
+									<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+										Age
+									</FormLabel>
+									<Input
+										variant="filled"
+										type="number"
+										id="age"
+										{
+											...register("age", {
+												required: "Patient address cannot be empty",
+											})
+										}
+										defaultValue=""
+										rounded="xl"
+										borderWidth="1px"
+										borderColor="gray.300"
+										color="gray.900"
+										size="md"
+										focusBorderColor="blue.500"
+										w="full"
+										p={2.5}
+									/>
+									<FormErrorMessage>
+										{errors.age && errors.age.message}
+									</FormErrorMessage>
+								</FormControl>
                             </Box>
                             <Box flex="1">
                                 <FormControl>
@@ -109,37 +136,53 @@ function DoctorRequestForm() {
                                 </FormControl>
                             </Box>
                         </Flex>
-                        <Box>
-                            <Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
-                                Patient Description
-                            </Text>
-                            <Textarea
-                                variant="filled"
-                                name="description"
-                                id="description"
-                                placeholder="Describe your problems here..."
-                                rounded="xl"
-                                borderWidth="1px"
-                                borderColor="gray.300"
-                                color="gray.900"
-                                size="md"
-                                focusBorderColor="blue.500"
-                                w="full"
-                                p={2.5}
-                            />
+                        <Box mt={6}>
+                            <FormControl isInvalid={errors.address}>
+                                <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+                                    Address
+                                </FormLabel>
+                                <Textarea
+                                    variant="filled"
+                                    type="text"
+                                    id="address"
+                                    {
+                                        ...register("address", {
+                                            required: "Patient address cannot be empty",
+                                        })
+                                    }
+                                    placeholder="123 Main St, New York, NY 10030"
+                                    defaultValue=""
+                                    rounded="xl"
+                                    borderWidth="1px"
+                                    borderColor="gray.300"
+                                    color="gray.900"
+                                    size="md"
+                                    focusBorderColor="blue.500"
+                                    w="full"
+                                    p={2.5}
+                                />
+                                <FormErrorMessage>
+                                    {errors.address && errors.address.message}
+                                </FormErrorMessage>
+                            </FormControl>
                         </Box>
                     </Box>
                     <Box mx={5} w="full">
                         <Box>
-                            <FormControl>
+                            <FormControl isInvalid={errors.appointment_date}>
                                 <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
                                     Appointment Date
                                 </FormLabel>
                                 <Input
                                     variant="filled"
                                     type="date"
-                                    name="appointment_date"
                                     id="appointment_date"
+                                    {
+                                        ...register("appointment_date", {
+                                            required: "Appointment date cannot be empty",
+                                        })
+                                    }
+                                    defaultValue=""
                                     rounded="xl"
                                     borderWidth="1px"
                                     borderColor="gray.300"
@@ -149,18 +192,27 @@ function DoctorRequestForm() {
                                     w="full"
                                     p={2.5}
                                 />
+                                <FormErrorMessage>
+                                    {errors.appointment_date && errors.appointment_date.message}
+                                </FormErrorMessage>
                             </FormControl>
                         </Box>
-                        <Box>
-                            <FormControl mt={6}>
+                        <Box mt={6}>
+                            <FormControl isInvalid={errors.appointment_time}>
                                 <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
                                     Appointment Time
                                 </FormLabel>
                                 <Input
                                     variant="filled"
                                     type="time"
-                                    name="appointment_time"
                                     id="appointment_time"
+                                    {
+                                        ...register("appointment_time", {
+                                            required: "Appointment time cannot be empty",
+                                        })
+                                    }
+                                    placeholder="John Doe"
+                                    defaultValue=""
                                     rounded="xl"
                                     borderWidth="1px"
                                     borderColor="gray.300"
@@ -170,6 +222,9 @@ function DoctorRequestForm() {
                                     w="full"
                                     p={2.5}
                                 />
+                                <FormErrorMessage>
+                                    {errors.appointment_time && errors.appointment_time.message}
+                                </FormErrorMessage>
                             </FormControl>
                         </Box>
                         <Box>
