@@ -62,6 +62,7 @@ function ClinicDetails() {
 								p={2.5}
 								isReadOnly 
 								pointerEvents="none"
+								tabIndex="-1"
 							/>
 						</Box>
 						<Text mt={4} mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
@@ -87,6 +88,7 @@ function ClinicDetails() {
 									p={2.5}
 									isReadOnly 
 									pointerEvents="none"
+									tabIndex="-1"
 								/>
 							</Box>
 							<Text mx={3} fontSize="md" color="gray.900">
@@ -111,6 +113,7 @@ function ClinicDetails() {
 									p={2.5}
 									isReadOnly 
 									pointerEvents="none"
+									tabIndex="-1"
 								/>
 							</Box>
 						</Flex>
@@ -137,6 +140,7 @@ function ClinicDetails() {
 									p={2.5}
 									isReadOnly 
 									pointerEvents="none"
+									tabIndex="-1"
 								/>
 							</Box>
 							<Text mx={3} fontSize="md" color="gray.900">
@@ -161,6 +165,7 @@ function ClinicDetails() {
 									p={2.5}
 									isReadOnly 
 									pointerEvents="none"
+									tabIndex="-1"
 								/>
 							</Box>
 						</Flex>
@@ -186,6 +191,7 @@ function ClinicDetails() {
 								p={2.5}
 								isReadOnly 
 								pointerEvents="none"
+								tabIndex="-1"
 							/>
 						</Box>
 						<Box mb={3}>
@@ -210,6 +216,7 @@ function ClinicDetails() {
 								p={2.5}
 								isReadOnly 
 								pointerEvents="none"
+								tabIndex="-1"
 							/>
 						</Box>
 					</Box>
