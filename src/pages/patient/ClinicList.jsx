@@ -8,7 +8,7 @@ import {onValue, query, ref} from "firebase/database";
 
 function ClinicList() {
     const [clinics, setClinics] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState("");
     
     useEffect(() => {
         onValue(query(ref(db, "clinics")), (snapshot) => {
@@ -93,7 +93,7 @@ function ClinicList() {
                             <Box px={4} py={3}>
                                 <Box display='flex' alignItems='baseline' mb={1}>
                                     <Badge borderRadius='full' px='2' colorScheme='blue'>
-                                        Specialty
+                                        Immunology
                                     </Badge>
                                     <Box
                                         color='gray.500'
@@ -103,7 +103,7 @@ function ClinicList() {
                                         textTransform='uppercase'
                                         ml='2'
                                     >
-                                        Distance from user
+                                        3.75 km away
                                     </Box>
                                 </Box>
 
@@ -127,7 +127,7 @@ function ClinicList() {
                                             ))
                                     }
                                     <Box as='span' ml='2' color='gray.600' fontSize='sm'>
-                                        reviews
+                                        4.0 reviews
                                     </Box>
                                 </Box>
                             </Box>                       
