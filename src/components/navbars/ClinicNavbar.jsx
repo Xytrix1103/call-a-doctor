@@ -1,8 +1,13 @@
 import {Avatar, Flex, Link, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text} from "@chakra-ui/react";
 import {NavLink} from "react-router-dom";
 import {BiChevronDown} from "react-icons/bi";
+import {logout} from "../../../api/auth.js";
 
 const ClinicNavbar = () => {
+	const handleLogout = () => {
+		logout();
+	};
+
 	return (
 		<Flex
 			as="nav"
@@ -51,7 +56,7 @@ const ClinicNavbar = () => {
 							Earnings
 						</MenuItem>
 						<MenuDivider />
-						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
+						<MenuItem as={NavLink} onClick={handleLogout} _focus={{ boxShadow: "none" }}>
 							Sign out
 						</MenuItem>
 					</MenuList>

@@ -3,13 +3,13 @@ import {NavLink, useLocation} from "react-router-dom";
 import {BiChevronDown} from "react-icons/bi";
 import {logout} from "../../../api/auth.js";
 
-const PatientNavbar = () => {
+const AdminNavbar = () => {
 	const location = useLocation();
 	const currentPath = location.pathname;
-	const handleLogout = () => {
+    const handleLogout = () => {
 		logout();
 	};
-	
+
 	return (
 		<Flex
 			as="nav"
@@ -68,4 +68,4 @@ const PatientNavbar = () => {
 	)
 }
 
-export default PatientNavbar;
+export default AdminNavbar;
