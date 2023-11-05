@@ -354,7 +354,7 @@ function ClinicRegistry() {
 										id="phone"
 										{
 											...register("phone", {
-												required: "Clinic name cannot be empty",
+												required: "Contact number cannot be empty",
 											})
 										}
 										placeholder="04-345-6789"
