@@ -343,7 +343,37 @@ function ClinicRegistry() {
 									</Select>
 								</FormControl>
 							</Box>
-							<Box mb={2} mt={4}>
+							<Box mb={2} mt={6}>
+								<FormControl isInvalid={errors.phone}>
+									<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
+										Contact Number
+									</FormLabel>
+									<Input
+										variant="filled"
+										type="tel"
+										id="phone"
+										{
+											...register("phone", {
+												required: "Contact number cannot be empty",
+											})
+										}
+										placeholder="04-345-6789"
+										defaultValue=""
+										rounded="xl"
+										borderWidth="1px"
+										borderColor="gray.300"
+										color="gray.900"
+										size="md"
+										focusBorderColor="blue.500"
+										w="full"
+										p={2.5}
+									/>
+									<FormErrorMessage>
+										{errors.phone && errors.phone.message}
+									</FormErrorMessage>
+								</FormControl>
+							</Box>
+							<Box mb={2} mt={6}>
 								<FormControl isInvalid={errors.address}>
 									<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 										Address
@@ -373,7 +403,7 @@ function ClinicRegistry() {
 									</FormErrorMessage>
 								</FormControl>
 							</Box>
-							<Box mb={2} mt={4}>
+							<Box mb={2} mt={6}>
 								<FormControl isInvalid={errors.panel_firms}>
 									<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 										Panel Firms (Optional)
@@ -471,9 +501,21 @@ function ClinicRegistry() {
 										display={imageSrc ? "block" : "none"}
 										ref={previewImageRef}
 										w="full"
-										h="full"
+										h="64"
 										objectFit="cover"
 									/>
+								</Box>
+								<Box
+									w="full"
+									h="64"
+									bgImage="url(https://source.unsplash.com/random)"
+									rounded="lg"
+									display="flex"
+									flexDir="column"
+									alignItems="center"
+									justifyContent="center"
+									mt={4}
+								>
 								</Box>
 							</FormControl>
 						</Box>
