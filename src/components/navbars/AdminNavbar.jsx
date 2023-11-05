@@ -1,15 +1,15 @@
-import {Avatar, Flex, Link, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, Button} from "@chakra-ui/react";
+import {Avatar, Flex, Link, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text} from "@chakra-ui/react";
 import {NavLink, useLocation} from "react-router-dom";
 import {BiChevronDown} from "react-icons/bi";
 import {logout} from "../../../api/auth.js";
 
-const PatientNavbar = () => {
+const AdminNavbar = () => {
 	const location = useLocation();
 	const currentPath = location.pathname;
-	const handleLogout = () => {
+    const handleLogout = () => {
 		logout();
 	};
-	
+
 	return (
 		<Flex
 			as="nav"
@@ -42,7 +42,7 @@ const PatientNavbar = () => {
 				<Menu marginRight={6}>
 					<MenuButton as={Link} color="teal.500" display="flex" alignItems="center">
 						<Flex alignItems="center">
-							<MenuButton
+                            <MenuButton
 								as={Button}
 								rounded={'full'}
 								variant={'link'}
@@ -78,4 +78,4 @@ const PatientNavbar = () => {
 	)
 }
 
-export default PatientNavbar;
+export default AdminNavbar;
