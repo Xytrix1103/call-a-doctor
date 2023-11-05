@@ -350,7 +350,7 @@ function ClinicRegistry() {
 									</FormLabel>
 									<Input
 										variant="filled"
-										type="text"
+										type="tel"
 										id="phone"
 										{
 											...register("phone", {
