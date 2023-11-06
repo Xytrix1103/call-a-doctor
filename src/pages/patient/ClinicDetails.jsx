@@ -1,10 +1,42 @@
-import {Box, Button, Center, Flex, FormControl, Input, InputLeftElement, Text, InputGroup, InputRightElement, Avatar} from '@chakra-ui/react'
+import {Box, Button, Center, Flex, FormControl, Input, InputLeftElement, Text, InputGroup, InputRightElement, Avatar, Textarea} from '@chakra-ui/react'
+import { LoadScript, Marker, GoogleMap, Autocomplete } from '@react-google-maps/api';
 import {NavLink, useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
 import {AiFillStar, AiOutlineSend} from "react-icons/ai";
 import {FaUserCircle} from "react-icons/fa";
 import {db} from "../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
+
+function Map () {
+	const mapStyle = {
+		height: '280px',
+		width: '100%',
+	};
+	const [center] = useState({
+		lat: 5.4164,
+		lng: 100.3327
+	});
+
+	return (
+		<LoadScript
+			googleMapsApiKey="AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A"
+			libraries={["places"]}
+		>
+			<Box>
+				<GoogleMap
+					center={center}
+					zoom={20}
+					mapContainerStyle={mapStyle}
+					options={{ 
+						mapTypeControl: false,
+					 }}
+				>
+					{center && <Marker position={center} />}
+				</GoogleMap>
+			</Box>
+		</LoadScript>
+	);
+}
 
 function ClinicDetails() {
 	const [data, setData] = useState({});
@@ -112,23 +144,16 @@ function ClinicDetails() {
 				<Flex>
 					<Box mx={5} mb={4} w="full">
 						<Box>
-							<Text mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+							<Text mb={2} fontSize="sm" fontWeight="medium" color="gray.500">
 								Clinic Name
 							</Text>
 							<Text
-								variant="filled"
-								type="text"
-								name="name"
-								id="name"
-								placeholder="John Doe"
-								rounded="xl"
-								borderWidth="1px"
-								borderColor="gray.300"
-								color="gray.900"
-								size="md"
-								focusBorderColor="blue.500"
+								fontSize="md"
+								fontWeight="semiBold"
+								border="1px solid #E2E8F0"
+								borderRadius="md"
+								p={2}
 								w="full"
-								p={2.5} 
 								pointerEvents="none"
 								tabIndex="-1"
 							>
@@ -137,46 +162,32 @@ function ClinicDetails() {
 						</Box>
 						<Flex alignItems="center" justifyContent="space-between">
 							<Box flex="1">
-								<Text fontSize="sm" fontWeight="medium" color="gray.900" mt={6} mb={2}>
+								<Text fontSize="sm" fontWeight="medium" color="gray.500" mt={6} mb={2}>
 									Operating Hours
 								</Text>
 								<Flex alignItems="center">
 									<Text
-										variant="filled"
-										type="text"
-										name="name"
-										id="name"
-										placeholder="John Doe"
-										rounded="xl"
-										borderWidth="1px"
-										borderColor="gray.300"
-										color="gray.900"
-										size="md"
-										focusBorderColor="blue.500"
+										fontSize="md"
+										fontWeight="semiBold"
+										border="1px solid #E2E8F0"
+										borderRadius="md"
+										p={2}
 										w="full"
-										p={2.5}
 										pointerEvents="none"
 										tabIndex="-1"
 									>
 										{data.start_time}
 									</Text>
-									<Text mx={3} fontSize="md" color="gray.900">
+									<Text mx={3} fontSize="md" color="gray.700">
 										to
 									</Text>
 									<Text
-										variant="filled"
-										type="text"
-										name="name"
-										id="name"
-										placeholder="John Doe"
-										rounded="xl"
-										borderWidth="1px"
-										borderColor="gray.300"
-										color="gray.900"
-										size="md"
-										focusBorderColor="blue.500"
+										fontSize="md"
+										fontWeight="semiBold"
+										border="1px solid #E2E8F0"
+										borderRadius="md"
+										p={2}
 										w="full"
-										p={2.5}
 										pointerEvents="none"
 										tabIndex="-1"
 									>
@@ -185,46 +196,32 @@ function ClinicDetails() {
 								</Flex>
 							</Box>
 							<Box flex="1" ml={4}>
-								<Text mt={6} mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+								<Text mt={6} mb={2} fontSize="sm" fontWeight="medium" color="gray.500">
 									Operating Days
 								</Text>
 								<Flex alignItems="center">
 									<Text
-										variant="filled"
-										type="text"
-										name="name"
-										id="name"
-										placeholder="John Doe"
-										rounded="xl"
-										borderWidth="1px"
-										borderColor="gray.300"
-										color="gray.900"
-										size="md"
-										focusBorderColor="blue.500"
+										fontSize="md"
+										fontWeight="semiBold"
+										border="1px solid #E2E8F0"
+										borderRadius="md"
+										p={2}
 										w="full"
-										p={2.5}
 										pointerEvents="none"
 										tabIndex="-1"
 									>
 										{data.start_day}
 									</Text>
-									<Text mx={3} fontSize="md" color="gray.900">
+									<Text mx={3} fontSize="md" color="gray.700">
 										to
 									</Text>
 									<Text
-										variant="filled"
-										type="text"
-										name="name"
-										id="name"
-										placeholder="John Doe"
-										rounded="xl"
-										borderWidth="1px"
-										borderColor="gray.300"
-										color="gray.900"
-										size="md"
-										focusBorderColor="blue.500"
+										fontSize="md"
+										fontWeight="semiBold"
+										border="1px solid #E2E8F0"
+										borderRadius="md"
+										p={2}
 										w="full"
-										p={2.5}
 										pointerEvents="none"
 										tabIndex="-1"
 									>
@@ -235,24 +232,16 @@ function ClinicDetails() {
 						</Flex>
 
 						<Box>
-							<Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
+							<Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.500">
 								Contact Number
 							</Text>
 							<Text
-								variant="filled"
-								type="text"
-								name="phone"
-								id="phone"
-								placeholder="John Doe"
-								rounded="xl"
-								borderWidth="1px"
-								borderColor="gray.300"
-								value="017-123-4567"
-								color="gray.900"
-								size="md"
-								focusBorderColor="blue.500"
+								fontSize="md"
+								fontWeight="semiBold"
+								border="1px solid #E2E8F0"
+								borderRadius="md"
+								p={2}
 								w="full"
-								p={2.5} 
 								pointerEvents="none"
 								tabIndex="-1"
 							>
@@ -261,52 +250,36 @@ function ClinicDetails() {
 						</Box>
 
 						<Box>
-							<Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
+							<Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.500">
 								Address
 							</Text>
-							<Text
-								as="textarea"
-								variant="filled"
-								type="text"
-								name="name"
-								id="name"
-								placeholder="John Doe"
-								rounded="xl"
-								borderWidth="1px"
-								borderColor="gray.300"
-								color="gray.900"
-								size="md"
-								focusBorderColor="blue.500"
+							<Textarea
+								fontSize="md"
+								fontWeight="semiBold"
+								border="1px solid #E2E8F0"
+								borderRadius="md"
+								p={2}
 								w="full"
-								p={2.5} 
-								pointerEvents="none"
-								tabIndex="-1"
-							>
-								{data.address}
-							</Text>
+								readOnly
+								value={data.address}
+								pointerEvents={'none'}
+							/>
 						</Box>
 						<Box mb={3}>
-							<Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
+							<Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.500">
 								Panel Firms
 							</Text>
-							<Text
-								as="textarea" 
-								variant="filled"
-								type="text"
-								name="name"
-								id="name"
-								placeholder="No Panel Firms"
-								rounded="xl"
-								borderWidth="1px"
-								borderColor="gray.300"
-								value={data.panel_firms}
-								color="gray.900"
-								size="md"
-								focusBorderColor="blue.500"
+							<Textarea
+								fontSize="md"
+								fontWeight="semiBold"
+								border="1px solid #E2E8F0"
+								borderRadius="md"
+								placeholder='No panel firms available'
+								p={2}
 								w="full"
-								p={2.5}
-								pointerEvents="none"
-								tabIndex="-1"
+								readOnly
+								value={data.panel_firms}
+								pointerEvents={'none'}
 							/>
 						</Box>
 						<Flex w="full">
@@ -328,12 +301,11 @@ function ClinicDetails() {
 						<Flex direction="column" alignItems="center">
 							<Box
 								w="full"
-								bgImage={`url(https://source.unsplash.com/random)`}
-								bgSize="cover"
-								bgPosition="center"
 								rounded={'lg'}
 								h="64"
-							/>
+							>
+								<Map />
+							</Box>
 						</Flex>
 						<Box mt={4}>
 							<FormControl>

@@ -12,15 +12,90 @@ import {
 	Input,
 	InputGroup,
 	InputRightElement,
+	InputLeftElement,
 	Select,
 	Text,
 	Textarea,
 } from '@chakra-ui/react';
-import {useRef, useState} from "react";
-import {BsFillCloudArrowDownFill} from "react-icons/bs";
-import {IoMdEye, IoMdEyeOff} from "react-icons/io";
-import {useForm} from "react-hook-form";
-import {register_clinic} from "../../../api/clinic_registry.js";
+import { useRef, useState } from "react";
+import { BsFillCloudArrowDownFill } from "react-icons/bs";
+import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+import { useForm } from "react-hook-form";
+import { register_clinic } from "../../../api/clinic_registry.js";
+import { BiSearchAlt2 } from "react-icons/bi";
+import { LoadScript, Marker, GoogleMap, Autocomplete } from '@react-google-maps/api';
+
+function MapWithSearch () {
+	const mapStyle = {
+		height: '400px',
+		width: '100%',
+	};
+	const [selected, setSelected] = useState(null);
+	const [center, setCenter] = useState({
+		lat: 5.4164,
+		lng: 100.3327
+	});
+	const inputRef = useRef();
+
+	const handlePlaceSelect = () => {
+		if (inputRef.current && inputRef.current.getPlace) {
+		  const place = inputRef.current.getPlace();
+		  const { geometry, formatted_address } = place;
+		  const { location } = geometry;
+		  console.log(place);
+		  console.log(location.lat(), location.lng(), formatted_address);
+		  setCenter({ lat: location.lat(), lng: location.lng() });
+		  setSelected({ lat: location.lat(), lng: location.lng() });
+		}
+	};
+
+	return (
+		<LoadScript
+			googleMapsApiKey="AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A"
+			libraries={["places"]}
+		>
+			<Box>
+				<Box
+					mb={2}
+					mt={2}
+					w="full"
+				>
+					<Autocomplete
+						onLoad={(autocomplete) => {
+							inputRef.current = autocomplete;
+							autocomplete.setFields(["geometry", "formatted_address"]);
+						}}
+						onPlaceChanged={handlePlaceSelect}
+					>
+						<InputGroup size="md">
+							<InputLeftElement
+								pointerEvents="none"
+								children={<BiSearchAlt2 color="gray.500" />}
+							/>
+							<Input 
+								type='text' 
+								placeholder="Search for clinic location.."
+								ref={inputRef}
+								focusBorderColor='blue.500'
+							/>
+						</InputGroup>         
+					</Autocomplete>
+				</Box>
+				<GoogleMap
+					center={center}
+					zoom={20}
+					mapContainerStyle={mapStyle}
+					options={{ 
+						streetViewControl: false,
+						mapTypeControl: false,
+					 }}
+				>
+					{selected && <Marker position={selected} />}
+				</GoogleMap>
+			</Box>
+		</LoadScript>
+	);
+}
 
 function ClinicRegistry() {
 	const {
@@ -38,7 +113,7 @@ function ClinicRegistry() {
 	const imageRef = useRef(null);
 	const previewImageRef = useRef(null);
 	const previewImageContainerRef = useRef(null);
-	
+
 	const handleDragEnter = (e) => {
 		e.preventDefault();
 		setIsDragActive(true);
@@ -507,15 +582,11 @@ function ClinicRegistry() {
 								</Box>
 								<Box
 									w="full"
-									h="64"
-									bgImage="url(https://source.unsplash.com/random)"
+									h="auto"
 									rounded="lg"
-									display="flex"
-									flexDir="column"
-									alignItems="center"
-									justifyContent="center"
 									mt={4}
 								>
+									<MapWithSearch />
 								</Box>
 							</FormControl>
 						</Box>
