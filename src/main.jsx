@@ -11,7 +11,7 @@ import App from "./App.jsx";
 import {ChakraProvider, extendTheme} from "@chakra-ui/react";
 import {AuthProvider} from "./components/AuthCtx.jsx";
 import Test from './pages/auth/Test.jsx';
-import ClinicRegistry from "./pages/auth/ClinicRegistry.jsx";
+import ClinicRegistry from "./pages/auth/clinic_registry/ClinicRegistry.jsx";
 import ClinicList from "./pages/patient/ClinicList.jsx";
 import PatientLayout from "./components/layouts/PatientLayout.jsx";
 import ClinicDetails from './pages/patient/ClinicDetails';
