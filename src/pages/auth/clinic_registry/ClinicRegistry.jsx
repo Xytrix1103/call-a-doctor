@@ -39,7 +39,7 @@ function ClinicRegistry() {
 		steps,
 		initialStep: 0,
 	});
-
+	
 	
 	const onSubmit = async (data) => {
 		data = {
