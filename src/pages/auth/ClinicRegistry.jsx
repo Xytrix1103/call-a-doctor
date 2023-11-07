@@ -20,7 +20,7 @@ import {useRef, useState} from "react";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 import {useForm} from "react-hook-form";
-import {register_clinic} from "../../../api/clinic_registry.js";
+import {register_clinic_request} from "../../../api/clinic_registry.js";
 
 function ClinicRegistry() {
 	const {
@@ -85,7 +85,7 @@ function ClinicRegistry() {
 			...data,
 			image: imageRef.current.files[0],
 		}
-		await register_clinic(data);
+		await register_clinic_request(data);
 		console.log(data);
 	}
 	
