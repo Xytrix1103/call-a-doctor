@@ -1,6 +1,5 @@
 import {
 	Box,
-	Button,
 	Center,
 	Flex,
 	Step,
@@ -15,7 +14,7 @@ import {
 	Text,
 	useSteps,
 } from '@chakra-ui/react';
-import {useRef, useState, useEffect} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import {register_clinic} from "../../../../api/clinic_registry.js";
 import ClinicLocationStep from "./ClinicLocationStep.jsx";
@@ -61,8 +60,8 @@ function ClinicRegistry() {
 				break;
 			case 1:
 				//trigger certain fields
-				trigger(["name", "address", "phone", "start_time", "end_time", "start_day", "end_day"]).then(r => {
-					if (r) {
+				trigger(["clinic_name", "address", "phone", "start_time", "end_time", "start_day", "end_day"]).then(r => {
+					if (r && imageRef.current.files[0]) {
 						setActiveStep(activeStep + 1);
 					} else {
 						alert("Please fill in all the fields")
@@ -70,7 +69,7 @@ function ClinicRegistry() {
 				});
 				break;
 			case 2:
-				trigger(["admin_name", "email", "assword", "confirm_password"]).then(r => {
+				trigger(["admin_name", "email", "password", "confirm_password"]).then(r => {
 					if (r) {
 						setActiveStep(activeStep + 1);
 					} else {

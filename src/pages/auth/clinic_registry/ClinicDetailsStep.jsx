@@ -1,25 +1,12 @@
-import {
-	Box,
-	Flex,
-	FormControl,
-	FormErrorMessage,
-	FormLabel,
-	Image,
-	Input,
-	Select,
-	Text,
-	Textarea
-} from "@chakra-ui/react";
+import {Box, Flex, FormControl, FormErrorMessage, FormLabel, Image, Input, Select, Text} from "@chakra-ui/react";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
-import MapWithSearch from "../../../components/register/MapStep.jsx";
 import {useRef, useState} from "react";
 
 const ClinicDetailsStep = ({form, imageRef}) => {
 	const {
-		handleSubmit,
 		register,
 		formState: {
-			errors, isSubmitting
+			errors
 		}
 	} = form;
 	const [isDragActive, setIsDragActive] = useState(false);
@@ -87,7 +74,6 @@ const ClinicDetailsStep = ({form, imageRef}) => {
 								})
 							}
 							placeholder="Clinic A"
-							defaultValue=""
 							rounded="xl"
 							borderWidth="1px"
 							borderColor="gray.300"

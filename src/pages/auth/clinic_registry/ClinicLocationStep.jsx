@@ -1,4 +1,4 @@
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Autocomplete, GoogleMap, InfoWindow, LoadScript, Marker} from "@react-google-maps/api";
 import {Box, Input, InputGroup, InputLeftElement, Text} from "@chakra-ui/react";
 import {BiSearchAlt2} from "react-icons/bi";
@@ -9,6 +9,7 @@ const ClinicLocationStep = ({placeId, setPlaceId}) => {
 		height: '440px',
 		width: '100%',
 	};
+	const libs = ["places"];
 	const [mapRef, setMapRef] = useState(null);
 	const [openInfo, setOpenInfo] = useState(false);
 	const [center, setCenter] = useState({
@@ -43,10 +44,23 @@ const ClinicLocationStep = ({placeId, setPlaceId}) => {
 		}
 	};
 	
+	useEffect(() => {
+		if(navigator.geolocation) {
+			console.log("Geolocation is supported by this browser.");
+			navigator.geolocation.getCurrentPosition((position) => {
+				console.log(position);
+				setCenter({
+					lat: position.coords.latitude,
+					lng: position.coords.longitude,
+				});
+			});
+		}
+	}, []);
+	
 	return (
 		<LoadScript
 			googleMapsApiKey="AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A"
-			libraries={["places"]}
+			libraries={libs}
 		>
 			
 			<Box
