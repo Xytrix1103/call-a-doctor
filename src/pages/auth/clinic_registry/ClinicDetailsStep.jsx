@@ -71,7 +71,7 @@ const ClinicDetailsStep = ({form, imageRef}) => {
 	
 	return (
 		<Flex>
-			<Box mx={5} w="full">
+			<Box w="full">
 				<Box>
 					<FormControl isInvalid={errors.clinic_name}>
 						<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
@@ -333,7 +333,7 @@ const ClinicDetailsStep = ({form, imageRef}) => {
 						</FormErrorMessage>
 					</FormControl>
 				</Box>
-				<Box mb={2} mt={6}>
+				{/* <Box mb={2} mt={6}>
 					<FormControl isInvalid={errors.address}>
 						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 							Address
@@ -362,13 +362,14 @@ const ClinicDetailsStep = ({form, imageRef}) => {
 							{errors.address && errors.address.message}
 						</FormErrorMessage>
 					</FormControl>
-				</Box>
+				</Box> */}
 				<Box mb={2} mt={6}>
 					<FormControl isInvalid={errors.panel_firms}>
 						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 							Panel Firms (Optional)
 						</FormLabel>
-						<Textarea
+						<Input
+							type="text"
 							variant="filled"
 							name="panel_firm"
 							id="panel_firm"
@@ -464,14 +465,6 @@ const ClinicDetailsStep = ({form, imageRef}) => {
 							h="64"
 							objectFit="cover"
 						/>
-					</Box>
-					<Box
-						w="full"
-						h="auto"
-						rounded="lg"
-						mt={4}
-					>
-						<MapWithSearch />
 					</Box>
 				</FormControl>
 			</Box>

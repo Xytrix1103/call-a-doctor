@@ -15,7 +15,7 @@ import {
 	Text,
 	useSteps,
 } from '@chakra-ui/react';
-import {useRef, useState} from "react";
+import {useRef, useState, useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {register_clinic} from "../../../../api/clinic_registry.js";
 import ClinicLocationStep from "./ClinicLocationStep.jsx";
@@ -82,64 +82,90 @@ function ClinicRegistry() {
 				break;
 		}
 	}
+
+	const [isContentOverflowing, setContentOverflowing] = useState(false);
+
+	const contentRef = useRef(null); // Create a ref for the content
+
+	useEffect(() => {
+	  const handleResize = () => {
+		// Check if the content height exceeds the window height
+		if (contentRef.current) {
+			const contentHeight = contentRef.current.getBoundingClientRect().height;
+			const windowHeight = window.innerHeight;
+			setContentOverflowing(contentHeight > windowHeight);
+		}
+	  };
+  
+	  // Add event listener for window resize
+	  window.addEventListener("resize", handleResize);
+  
+	  // Call it initially
+	  handleResize();
+  
+	}, [activeStep]);
 	
 	return (
-		<Center h="auto" bg={"#f4f4f4"} py={10}>
+		<Center w="100%" bg={"#f4f4f4"} py={5} h="100%">
 			<Box
 				w="85%"
 				bg="white"
 				boxShadow="xl"
 				rounded="xl"
-				p={3}
-				gridGap={4}
-				gridTemplateColumns="1fr 1fr"
+				p={8}
+				display="flex"
+				flexDir="column"
 			>
 				<form action="/api/register-clinic" method="post" onSubmit={handleSubmit(onSubmit)}
 				      encType="multipart/form-data">
 					<Flex>
-						<Box my={7} mx={5} w="full">
+						<Box w="full" mb={4}>
 							<Text fontSize="xl" fontWeight="bold">
-								{steps[activeStep].title}
+								{steps[activeStep].description}
 							</Text>
 						</Box>
 					</Flex>
-					{steps[activeStep].component}
-					<Stepper index={activeStep}>
-						{steps.map((step, index) => (
-							<Step key={index}>
-								<StepIndicator>
-									<StepStatus
-										complete={<StepIcon />}
-										incomplete={<StepNumber />}
-										active={<StepNumber />}
-									/>
-								</StepIndicator>
-								
-								<Box flexShrink='0'>
-									<StepTitle>{step.title}</StepTitle>
-									<StepDescription>{step.description}</StepDescription>
-								</Box>
-								
-								<StepSeparator />
-							</Step>
-						))}
-					</Stepper>
-					<Flex>
-						<Box my={7} mx={5} w="full">
-							<Button
-								type="button"
-								onClick={() => setActiveStep(activeStep - 1)}
-								disabled={activeStep === 0}
-							>
-								Back
-							</Button>
-							<Button
-								type="button"
-								onClick={onNext}
-								disabled={activeStep === steps.length - 1}
-							>
-								Next
-							</Button>
+					<Box flex="1" ref={contentRef}>
+						{steps[activeStep].component}
+					</Box>
+					<Flex w="full" justifyContent="center" alignItems="center" direction="column">
+						<Box my={4} w="70%">
+							<Stepper index={activeStep}>
+								{steps.map((step, index) => (
+									<Step
+										key={index}
+										onClick={() => {
+											// Handle step transitions
+											if (index > activeStep) {
+												// Move to the next step
+												if (activeStep < steps.length - 1) {
+													onNext();
+												}
+											} else if (index < activeStep) {
+												// Move to the previous step
+												if (activeStep > 0) {
+													setActiveStep(activeStep - 1);
+												}
+											}
+										}}
+									>
+										<StepIndicator>
+											<StepStatus
+												complete={<StepIcon />}
+												incomplete={<StepNumber />}
+												active={<StepNumber />}
+											/>
+										</StepIndicator>
+										
+										<Box flexShrink='0'>
+											<StepTitle>{step.title}</StepTitle>
+											<StepDescription>{step.description}</StepDescription>
+										</Box>
+										
+										<StepSeparator />
+									</Step>
+								))}
+							</Stepper>							
 						</Box>
 					</Flex>
 				</form>

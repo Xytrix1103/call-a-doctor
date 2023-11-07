@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 
 const ClinicLocationStep = ({placeId, setPlaceId}) => {
 	const mapStyle = {
-		height: '400px',
+		height: '440px',
 		width: '100%',
 	};
 	const [mapRef, setMapRef] = useState(null);
@@ -50,7 +50,7 @@ const ClinicLocationStep = ({placeId, setPlaceId}) => {
 		>
 			
 			<Box
-				mb={2}
+				mb={3}
 				mt={2}
 				w="full"
 			>
