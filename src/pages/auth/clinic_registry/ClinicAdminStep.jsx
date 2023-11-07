@@ -134,6 +134,7 @@ const ClinicAdminStep = ({form}) => {
 									            borderColor: "transparent",
 									            outline: "none"
 								            }}
+								            tabIndex="-1"
 								            onClick={() => setShowPassword(!showPassword)}/>
 							</InputRightElement>
 						</InputGroup>
@@ -194,6 +195,7 @@ const ClinicAdminStep = ({form}) => {
 									            borderColor: "transparent",
 									            outline: "none"
 								            }}
+								            tabIndex="-1"
 								            onClick={() => setShowConfirmPassword(!showConfirmPassword)}/>
 							</InputRightElement>
 						</InputGroup>
