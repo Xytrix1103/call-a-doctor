@@ -4,6 +4,7 @@ import {
 	Flex,
 	FormControl,
 	FormHelperText,
+    FormErrorMessage,
 	FormLabel,
 	Grid,
 	IconButton,
@@ -17,9 +18,17 @@ import {
 } from '@chakra-ui/react';
 import {useRef, useState} from "react";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
+import {useForm} from "react-hook-form";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 
 function AddDoctorToList() {
+    const {
+		handleSubmit,
+		register,
+		formState: {
+			errors, isSubmitting
+		}
+	} = useForm();
 	const [showPassword, setShowPassword] = useState(false);
 	const [isDragActive, setIsDragActive] = useState(false);
 	const [imageSrc, setImageSrc] = useState(null);
@@ -76,7 +85,7 @@ function AddDoctorToList() {
 		return file.type.startsWith("image/");
 	};
 	
-	const handleSubmit = async (e) => {
+	const onSubmit = async (e) => {
 		e.preventDefault();
 		const data = new FormData(e.target);
 		
@@ -97,7 +106,7 @@ function AddDoctorToList() {
                 gridGap={4}
 				gridTemplateColumns="1fr 1fr"
             >
-                <form action="/api/add-doctor-to-list" method="post" onSubmit={handleSubmit}
+                <form action="/api/add-doctor-to-list" method="post" onSubmit={handleSubmit(onSubmit)}
                     encType="multipart/form-data">
                     <Flex>
                         <Box my={7} mx={5} w="full">
@@ -110,7 +119,7 @@ function AddDoctorToList() {
                     <Flex>
                         <Box px={5} mb={4} w="full">
                             <Box>
-                                <FormControl id="name">
+                                <FormControl isInvalid={errors.name} id="name">
                                     <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
                                         Name
                                     </FormLabel>
@@ -124,17 +133,24 @@ function AddDoctorToList() {
                                         borderWidth="1px"
                                         borderColor="gray.300"
                                         color="gray.900"
-                                        isRequired
                                         size="md"
                                         focusBorderColor="blue.500"
                                         w="full"
                                         p={2.5}
-                                    />                                    
+                                        {
+                                            ...register("name", {
+                                                required: "Name is required",
+                                            })
+                                        }
+                                    />        
+                                <FormErrorMessage>
+									{errors.email && errors.email.message}
+								</FormErrorMessage>                            
                                 </FormControl>
                             </Box>
                             <Flex alignItems="center" justifyContent="space-between" mt={6}>
                                 <Box flex="1" mr={4}>
-                                    <FormControl>
+                                    <FormControl isInvalid={errors.age} id='age'>
                                         <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
                                             Age
                                         </FormLabel>
@@ -148,11 +164,18 @@ function AddDoctorToList() {
                                                 borderWidth="1px"
                                                 borderColor="gray.300"
                                                 color="gray.900"
-                                                isRequired
+                                                {
+                                                    ...register("age", {
+                                                        required: "Age is required",
+                                                    })
+                                                }
                                                 size="md"
                                                 focusBorderColor="blue.500"
                                             />
                                         </InputGroup>
+                                        <FormErrorMessage>
+                                            {errors.age && errors.age.message}
+                                        </FormErrorMessage>  
                                     </FormControl>
                                 </Box>
                                 <Box flex="1">
@@ -179,15 +202,19 @@ function AddDoctorToList() {
                                 </Box>
                             </Flex>
                             <Box>
-                                <FormControl id="email">
+                                <FormControl isInvalid={errors.email}>
                                     <FormLabel mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
                                         Email
                                     </FormLabel>
                                     <Input
                                         variant="filled"
                                         type="email"
-                                        name="email"
                                         id="email"
+                                        {
+                                            ...register("email", {
+                                                required: "Email is required",
+                                            })
+                                        }
                                         placeholder="john.doe@gmail.com"
                                         rounded="xl"
                                         borderWidth="1px"
@@ -195,23 +222,28 @@ function AddDoctorToList() {
                                         color="gray.900"
                                         size="md"
                                         focusBorderColor="blue.500"
-                                        w="full"
                                         p={2.5}
-                                        isRequired
                                     />
+                                    <FormErrorMessage>
+                                        {errors.email && errors.email.message}
+                                    </FormErrorMessage>
                                 </FormControl>
                             </Box>
                             <Box>
-                                <FormControl id="password">
-                                    <FormLabel mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
+                                <FormControl isInvalid={errors.password}>
+                                    <FormLabel mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900">
                                         Password
                                     </FormLabel>
-                                    <InputGroup>
+                                    <InputGroup size='md'>
                                         <Input
-                                            type={showPassword ? 'text' : 'password'}
                                             variant="filled"
-                                            name="password"
+                                            type={showPassword ? "text" : "password"}
                                             id="password"
+                                            {
+                                                ...register("password", {
+                                                    required: "Password is required",
+                                                })
+                                            }
                                             placeholder="•••••••••"
                                             rounded="xl"
                                             borderWidth="1px"
@@ -219,36 +251,29 @@ function AddDoctorToList() {
                                             color="gray.900"
                                             size="md"
                                             focusBorderColor="blue.500"
-                                            w="full"
                                             p={2.5}
-                                            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
-                                            isRequired
                                         />
                                         <InputRightElement>
-                                            <IconButton aria-label="Show password" size="lg" variant="ghost"
-                                                        icon={showPassword ? <IoMdEyeOff/> : <IoMdEye/>}
-                                                        _focus={{
-                                                            bg: "transparent",
-                                                            borderColor: "transparent",
-                                                            outline: "none"
-                                                        }}
-                                                        _hover={{
-                                                            bg: "transparent",
-                                                            borderColor: "transparent",
-                                                            outline: "none"
-                                                        }}
-                                                        _active={{
-                                                            bg: "transparent",
-                                                            borderColor: "transparent",
-                                                            outline: "none"
-                                                        }}
-                                                        onClick={() => setShowPassword(!showPassword)}/>
+                                            <IconButton
+                                                aria-label="Show password"
+                                                size="lg"
+                                                variant="ghost"
+                                                icon={showPassword ? <IoMdEyeOff /> : <IoMdEye />}
+                                                _focus={{ bg: "transparent", borderColor: "transparent", outline: "none" }}
+                                                _hover={{ bg: "transparent", borderColor: "transparent", outline: "none" }}
+                                                _active={{ bg: "transparent", borderColor: "transparent", outline: "none" }}
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                tabIndex="-1"
+                                            />
                                         </InputRightElement>
                                     </InputGroup>
                                     <FormHelperText fontSize="xs">
-                                        Minimum eight characters, at least one uppercase letter, one lowercase letter, one
-                                        number and one special character
+                                        Minimum eight characters, at least one uppercase letter, one lowercase letter,
+                                        one number and one special character
                                     </FormHelperText>
+                                    <FormErrorMessage>
+                                        {errors.password && errors.password.message}
+                                    </FormErrorMessage>
                                 </FormControl>
                             </Box>
                         </Box>

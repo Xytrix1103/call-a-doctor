@@ -1,4 +1,4 @@
-import {Avatar, Flex, Link, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text} from "@chakra-ui/react";
+import {Avatar, Flex, Link, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, Button} from "@chakra-ui/react";
 import {NavLink} from "react-router-dom";
 import {BiChevronDown} from "react-icons/bi";
 import {logout} from "../../../api/auth.js";
