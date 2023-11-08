@@ -14,7 +14,7 @@ import {
 	HStack,
 	Textarea
 } from '@chakra-ui/react'
-import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow} from '@react-google-maps/api';
+import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
 import {NavLink, useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
 import {AiFillStar, AiOutlineSend} from "react-icons/ai";
@@ -23,11 +23,12 @@ import {BiLinkExternal} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
 
-function Map({ placeId }) {
+function Map({ placeId, onDistanceChange }) {
 	const mapStyle = {
-	  height: '280px',
+	  height: '350px',
 	  width: '100%',
 	};
+	const libs = ['places'];
 	const [mapRef, setMapRef] = useState(null);
 	const [center, setCenter] = useState({
 	  lat: 5.4164,
@@ -36,12 +37,15 @@ function Map({ placeId }) {
 	const [place, setPlace] = useState(null);
 	const [name, setName] = useState('');
 	const [formattedAddress, setFormattedAddress] = useState('');
+	const [destinationCoordinates, setDestinationCoordinates] = useState(null);
+	const [distance, setDistance] = useState(null);
+	const [directions, setDirections] = useState(null);
 
 	const { isLoaded, loadError } = useLoadScript({
 		googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
-		libraries: ['places'],
+		libraries: libs,
 	});
-  
+
 	const getMapsLink = () => {
 		if (place) {
 			const { name } = place;
@@ -71,11 +75,48 @@ function Map({ placeId }) {
 									console.log(result);
 									setName(name);
 									setFormattedAddress(formatted_address);
+									setDestinationCoordinates({
+										lat: result.geometry.location.lat(),
+										lng: result.geometry.location.lng(),
+									});
 					
 									setCenter({
 										lat: result.geometry.location.lat(),
 										lng: result.geometry.location.lng(),
 									});
+
+									if (navigator.geolocation) {
+										navigator.geolocation.getCurrentPosition((position) => {
+											const currentLocation = new window.google.maps.LatLng(
+												position.coords.latitude,
+												position.coords.longitude
+											  );
+											  const placeLocation = new window.google.maps.LatLng(
+												result.geometry.location.lat(),
+												result.geometry.location.lng()
+											  );
+											  const directionsService = new window.google.maps.DirectionsService();
+											  directionsService.route(
+												{
+												  origin: currentLocation,
+												  destination: placeLocation,
+												  travelMode: window.google.maps.TravelMode.DRIVING,
+												},
+												(result, status) => {
+												  if (status === window.google.maps.DirectionsStatus.OK) {
+													setDirections(result);
+													const distance = result.routes[0].legs[0].distance.value;
+													const distanceInKilometers = distance / 1000; 
+													onDistanceChange(distanceInKilometers); 
+													setDistance(distance);
+													console.log(distance);
+												  } else {
+													console.error(`Error retrieving directions: Status - ${status}`);
+												  }
+												}
+											);
+										});
+									}
 								} else {
 									console.error(`Error retrieving place details: Status - ${status}`);
 								}
@@ -91,10 +132,16 @@ function Map({ placeId }) {
 							});
 						}
 					}
+
 				}}
 				center={center}
 				zoom={15}
 				mapContainerStyle={mapStyle}
+				options={
+					{
+						mapTypeControl: false,
+					}	
+				}
 			>
 				{place && (
 					<Marker position={{ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }} />
@@ -117,6 +164,7 @@ function Map({ placeId }) {
 						</Box>
 					</InfoWindow>
 				)}
+				{directions && <DirectionsRenderer directions={directions} /> }
 			</GoogleMap>
 		</Box>
 	);
@@ -125,21 +173,6 @@ function Map({ placeId }) {
 function ClinicDetails() {
 	const [data, setData] = useState({});
 	const {id} = useParams();
-	// const [selectedRating, setSelectedRating] = useState(0);
-
-	// const handleStarClick = (rating) => {
-	//   	setSelectedRating(rating);
-	// };
-
-	// const sendReview = () => {
-	// 	const review = document.getElementById('review').value;
-	// 	const rating = selectedRating;
-	// 	if (rating < 1) {
-	// 		alert('Please select a rating');
-	// 		return;
-	// 	}
-	// 	console.log(review, rating);
-	// };
     
     useEffect(() => {
         onValue(query(ref(db, `clinics/${id}`)), (snapshot) => {
@@ -147,6 +180,12 @@ function ClinicDetails() {
 	        setData(data);
         });
     }, []);
+
+	const [distance, setDistance] = useState(null);
+
+	const handleDistance = (distance) => {
+	  	setDistance(distance); // Set the distance state
+	};
     
     console.log(data)
 	
@@ -203,7 +242,7 @@ function ClinicDetails() {
 								textTransform='uppercase'
 								mr={8}
 							>
-								6.8 km away from your location
+								{distance ? distance : "0"} km away from your location
 							</Box>
 							<Box display='flex' alignItems='center'>
 								{
@@ -386,61 +425,14 @@ function ClinicDetails() {
 							<Box
 								w="full"
 								rounded={'lg'}
-								h="64"
+								h="350px"
 							>
-								<Map placeId={data.placeId} />
+								<Map placeId={data.placeId} onDistanceChange={handleDistance}/>
 							</Box>
+							
 						</Flex>
 						<Box mt={4}>
-							{/* <FormControl>
-								<Text mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-									Leave a review
-								</Text>
-								<InputGroup size="md">
-									<InputLeftElement
-										pointerEvents="none"
-										children={<FaUserCircle color="gray.500" />}
-									/>
-									<Input
-										type="text"
-										placeholder="Write your review here..."
-										id='review'
-										size="md"
-										focusBorderColor="blue.500"
-										borderRadius="xl"
-										borderColor="gray.300"
-										backgroundColor="white"
-										color="gray.800"
-									/>
-									<InputRightElement
-										children={<AiOutlineSend color="gray.500" />}
-										onClick={sendReview}
-										cursor="pointer"
-									/>
-								</InputGroup>
-							</FormControl> */}
 							<Box mt={4} w="full">
-								{/* <Flex alignItems="center" justifyContent="end">
-									<Box display='flex' alignItems='center'>
-										{
-											Array(5)
-												.fill('')
-												.map((_, i) => (
-													<AiFillStar
-														size={20}
-														key={i}
-														color={i < selectedRating ? "gold" : "gray"}
-														onClick={() => handleStarClick(i + 1)}
-														cursor={'pointer'}
-													/>
-												))
-										}
-										<Box as='span' ml='2' color='gray.600' fontSize='sm'>
-											{selectedRating}.0
-										</Box>
-									</Box>
-								</Flex> */}
-
 								<Box
 									borderBottom="1px"
 									borderColor="gray.300"
