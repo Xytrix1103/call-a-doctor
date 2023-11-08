@@ -61,6 +61,12 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 		setIsDragActive(false);
 		const file = e.dataTransfer.files[0];
 		populatePreviewImage(file);
+		
+		if (file) {
+			setImage(file);
+		} else {
+			setImage(null);
+		}
 	};
 	
 	const handleFileInputChange = (e) => {

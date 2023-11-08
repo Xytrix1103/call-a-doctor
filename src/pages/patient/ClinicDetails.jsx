@@ -1,5 +1,18 @@
-import {Box, Button, Center, Flex, FormControl, Input, InputLeftElement, Text, InputGroup, InputRightElement, Avatar, Textarea} from '@chakra-ui/react'
-import { LoadScript, Marker, GoogleMap, Autocomplete } from '@react-google-maps/api';
+import {
+	Avatar,
+	Box,
+	Button,
+	Center,
+	Flex,
+	FormControl,
+	Input,
+	InputGroup,
+	InputLeftElement,
+	InputRightElement,
+	Text,
+	Textarea
+} from '@chakra-ui/react'
+import {GoogleMap, LoadScript, Marker} from '@react-google-maps/api';
 import {NavLink, useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
 import {AiFillStar, AiOutlineSend} from "react-icons/ai";
@@ -245,7 +258,7 @@ function ClinicDetails() {
 								pointerEvents="none"
 								tabIndex="-1"
 							>
-								017-123-4567
+								{data.contact}
 							</Text>
 						</Box>
 

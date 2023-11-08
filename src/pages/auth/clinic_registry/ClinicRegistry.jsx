@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 import {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
-import {register_clinic_request} from "../../../../api/clinic_registry.js";
+import {register_clinic} from "../../../../api/clinic_registry.js";
 import ClinicLocationStep from "./ClinicLocationStep.jsx";
 import ClinicDetailsStep from "./ClinicDetailsStep.jsx";
 import ClinicAdminStep from "./ClinicAdminStep.jsx";
@@ -46,7 +46,7 @@ function ClinicRegistry() {
 			image: image,
 			placeId: place.placeId,
 		}
-		await register_clinic_request(data);
+		await register_clinic(data);
 		console.log(data);
 	}
 	

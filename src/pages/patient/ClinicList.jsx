@@ -1,10 +1,22 @@
-import {Badge, Box, Flex, Grid, GridItem, Input, InputGroup, InputLeftElement, Link, Text} from '@chakra-ui/react'
-import {NavLink} from "react-router-dom";
+import {
+    Badge,
+    Box,
+    Flex,
+    Image,
+    Input,
+    InputGroup,
+    InputLeftElement,
+    Link,
+    SimpleGrid,
+    Text,
+    VStack
+} from '@chakra-ui/react'
 import {useEffect, useState} from "react";
 import {db} from "../../../api/firebase.js";
-import {AiFillStar} from "react-icons/ai";
 import {BiSearchAlt2} from "react-icons/bi";
 import {onValue, query, ref} from "firebase/database";
+import {NavLink} from "react-router-dom";
+import {AiFillStar} from "react-icons/ai";
 
 function ClinicList() {
     const [clinics, setClinics] = useState([]);
@@ -30,13 +42,10 @@ function ClinicList() {
     
     return (
         <Box w="full" h="full" p={2} direction="column" mb={4}>
-            <Flex
+            <Box
                 w="30%"
                 h="auto"
-                p={2}
-                direction="column"
-                justify="center"
-                align="center"
+                py={2}
                 mb={4}
             >
                 <InputGroup size="md">
@@ -57,39 +66,23 @@ function ClinicList() {
                         color="gray.800"
                     />
                 </InputGroup>
-            </Flex>
-            <Box w="full" h="auto" p={2} direction="column">
-                <Grid
-                    w="full"
-                    h="auto"
-                    templateColumns="repeat(4, auto)"
+            </Box>
+            <Flex w="full" h="auto" pb={6}>
+                <SimpleGrid
+                    columns={[1, 1, 2, 3, 4]}
                     gap={10}
-                    p={2}
                 >
-                    {[...filteredClinics,...filteredClinics,...filteredClinics,...filteredClinics,...filteredClinics].map((clinic) => (
-                        <GridItem w="auto" h="64" key={clinic.id} maxW="80">
-                            <Link as={NavLink} to={`/clinics/${clinic.id}`} key={clinic.id} style={{ textDecoration: 'none' }}>
-                                <Flex
-                                    direction="column"
-                                    justify="flex-end"
-                                    bg="white"
-                                    w="full"
-                                    h="full"
-                                    shadow="lg"
-                                    borderRadius="lg"
-                                    transition="transform 0.2s"
-                                    _hover={{
-                                        transform: 'scale(1.05)',
-                                        shadow: 'xl',
-                                    }}
-                                >
-                                    <Box
+                    {filteredClinics.map((clinic) => (
+                        <Flex bg="white" h="full" shadow="lg" borderRadius="lg" transition="transform 0.2s" _hover={{ transform: 'scale(1.05)', shadow: 'xl' }}>
+                            <Link as={NavLink} to={`/clinics/${clinic.id}`} key={clinic.id} style={{ textDecoration: 'none' }} w="full" h="full">
+                                <VStack w="full" h="full">
+                                    <Image
                                         w="full"
-                                        h="full"
-                                        bgImage={`url(${clinic.image})`}
-                                        bgSize="cover"
-                                        bgPosition="center"
-                                        borderTopRadius="8px"
+                                        h="32"
+                                        fit="cover"
+                                        src={clinic.image}
+                                        alt={clinic.name}
+                                        borderTopRadius="lg"
                                     />
                                     <Box px={4} py={3} w="full" h="full">
                                         <Box display='flex' alignItems='baseline' mb={1}>
@@ -132,12 +125,12 @@ function ClinicList() {
                                             </Box>
                                         </Box>
                                     </Box>
-                                </Flex>
+                                </VStack>
                             </Link>
-                        </GridItem>
+                        </Flex>
                     ))}
-                </Grid>
-            </Box>
+                </SimpleGrid>
+            </Flex>
         </Box>
     );
 }

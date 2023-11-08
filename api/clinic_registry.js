@@ -11,8 +11,9 @@ export const register_clinic_request = async (data) => {
 		end_time,
 		start_day,
 		end_day,
-		contact,
+		phone,
 		address,
+		placeId,
 		image,
 		admin_name,
 		email,
@@ -43,8 +44,9 @@ export const register_clinic_request = async (data) => {
 				end_time: end_time,
 				start_day: start_day,
 				end_day: end_day,
-				contact: contact,
+				contact: phone,
 				address: address,
+				placeId: placeId,
 				admin_name: admin_name,
 				email: email,
 				password: password
@@ -77,8 +79,9 @@ export const register_clinic = async (data) => {
 		end_time,
 		start_day,
 		end_day,
-		contact,
+		phone,
 		address,
+		placeId,
 		image,
 		admin_name,
 		email,
@@ -115,44 +118,50 @@ export const register_clinic = async (data) => {
 				console.log("User already exists");
 				throw {error: "User already exists in Database"};
 			}
-			return register(adminData);
-		})
-		.then(registerUser => {
-			if (registerUser.error) {
-				throw {error: registerUser.error};
-			} else {
-				uid = registerUser.uid;
-			}
-			return set(newClinicRef, {
-				name: clinic_name,
-				start_time: start_time,
-				end_time: end_time,
-				start_day: start_day,
-				end_day: end_day,
-				contact: contact,
-				address: address,
-				admins: {
-					[uid]: true
-				}
-			});
-		})
-		.then(() => {
-			console.log("Clinic added to database");
-			return uploadBytes(storageRef, image);
-		})
-		.then(uploadImage => {
-			return getDownloadURL(uploadImage.ref);
-		})
-		.then(imageURL => {
-			return set(ref(db, `clinics/${newClinicRef.key}/image`), imageURL);
-		})
-		.then(addImageToDb => {
-			console.log("Clinic created");
-			return set(ref(db, `clinics/${newClinicRef.key}/admins/${uid}`), true);
-		})
-		.then(setAdmin => {
-			console.log("Admin user added to clinic");
-			return {success: true};
+			return register(adminData)
+				.then(registerUser => {
+						if (registerUser.error) {
+							throw {error: registerUser.error};
+						} else {
+							uid = registerUser.uid;
+						}
+						
+						return set(newClinicRef, {
+							name: clinic_name,
+							start_time: start_time,
+							end_time: end_time,
+							start_day: start_day,
+							end_day: end_day,
+							contact: phone,
+							address: address,
+							placeId: placeId,
+							admins: {
+								[uid]: true
+							}
+						})
+				})
+				.then(() => {
+					console.log("Clinic added to database");
+					return uploadBytes(storageRef, image);
+				})
+				.then(uploadImage => {
+					return getDownloadURL(uploadImage.ref);
+				})
+				.then(imageURL => {
+					return set(ref(db, `clinics/${newClinicRef.key}/image`), imageURL);
+				})
+				.then(addImageToDb => {
+					console.log("Clinic created");
+					return set(ref(db, `clinics/${newClinicRef.key}/admins/${uid}`), true);
+				})
+				.then(setAdmin => {
+					console.log("Admin user added to clinic");
+					return {success: true};
+				})
+				.catch(error => {
+					console.log("Error: " + error);
+					return {error: error};
+				});
 		})
 		.catch(error => {
 			console.log("Error: " + error);
