@@ -10,65 +10,136 @@ import {
 	InputLeftElement,
 	InputRightElement,
 	Text,
+	Link,
+	HStack,
 	Textarea
 } from '@chakra-ui/react'
-import {GoogleMap, LoadScript, Marker} from '@react-google-maps/api';
+import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow} from '@react-google-maps/api';
 import {NavLink, useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
 import {AiFillStar, AiOutlineSend} from "react-icons/ai";
 import {FaUserCircle} from "react-icons/fa";
+import {BiLinkExternal} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
 
-function Map () {
+function Map({ placeId }) {
 	const mapStyle = {
-		height: '280px',
-		width: '100%',
+	  height: '280px',
+	  width: '100%',
 	};
-	const [center] = useState({
-		lat: 5.4164,
-		lng: 100.3327
+	const [mapRef, setMapRef] = useState(null);
+	const [center, setCenter] = useState({
+	  lat: 5.4164,
+	  lng: 100.3327,
 	});
+	const [place, setPlace] = useState(null);
+	const [name, setName] = useState('');
+	const [formattedAddress, setFormattedAddress] = useState('');
 
+	const { isLoaded, loadError } = useLoadScript({
+		googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
+		libraries: ['places'],
+	});
+  
+	const getMapsLink = () => {
+		if (place) {
+			const { name } = place;
+			return `https://www.google.com/maps/search/?api=1&query=${name}`;
+		}
+	};
+
+	if (loadError) return "Error loading maps";
+	if (!isLoaded) return "Loading maps";
+  
 	return (
-		<LoadScript
-			googleMapsApiKey="AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A"
-			libraries={["places"]}
-		>
-			<Box>
-				<GoogleMap
-					center={center}
-					zoom={20}
-					mapContainerStyle={mapStyle}
-					options={{ 
-						mapTypeControl: false,
-					 }}
-				>
-					{center && <Marker position={center} />}
-				</GoogleMap>
-			</Box>
-		</LoadScript>
+		<Box>
+			<GoogleMap
+				onLoad={(map) => {
+					setMapRef(map);
+					if (placeId && window.google && window.google.maps) {
+						const service = new window.google.maps.places.PlacesService(map);
+						service.getDetails(
+							{
+								placeId: placeId,
+							},
+							(result, status) => {
+								if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+									const { name, formatted_address } = result;
+						
+									setPlace(result);
+									console.log(result);
+									setName(name);
+									setFormattedAddress(formatted_address);
+					
+									setCenter({
+										lat: result.geometry.location.lat(),
+										lng: result.geometry.location.lng(),
+									});
+								} else {
+									console.error(`Error retrieving place details: Status - ${status}`);
+								}
+							}
+						);
+					} else {
+						if (navigator.geolocation) {
+							navigator.geolocation.getCurrentPosition((position) => {
+								setCenter({
+									lat: position.coords.latitude,
+									lng: position.coords.longitude,
+								});
+							});
+						}
+					}
+				}}
+				center={center}
+				zoom={15}
+				mapContainerStyle={mapStyle}
+			>
+				{place && (
+					<Marker position={{ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }} />
+				)}
+				{place && (
+					<InfoWindow position={{ lat: place.geometry.location.lat() + 0.0015, lng: place.geometry.location.lng() }}>
+						<Box p={1} maxW="sm">
+						<Text fontSize="sm" fontWeight="medium">
+							{name}
+						</Text>
+						<Text fontSize="xs" fontWeight="medium" color="gray.500" mt={1} mb={2}>
+							{formattedAddress}
+						</Text>
+						<Link href={getMapsLink()} isExternal target="_blank" rel="noreferrer" _hover={{ textDecoration: "none" }} textDecoration="none" onClick={(e) => e.stopPropagation()}>
+							<HStack spacing={1} fontSize="xs" fontWeight="medium" color="blue.500">
+								<Text outline="none">View on Google Maps</Text>
+								<BiLinkExternal />
+							</HStack>
+						</Link>
+						</Box>
+					</InfoWindow>
+				)}
+			</GoogleMap>
+		</Box>
 	);
 }
 
 function ClinicDetails() {
 	const [data, setData] = useState({});
 	const {id} = useParams();
-	const [selectedRating, setSelectedRating] = useState(0);
+	// const [selectedRating, setSelectedRating] = useState(0);
 
-	const handleStarClick = (rating) => {
-	  	setSelectedRating(rating);
-	};
+	// const handleStarClick = (rating) => {
+	//   	setSelectedRating(rating);
+	// };
 
-	const sendReview = () => {
-		const review = document.getElementById('review').value;
-		const rating = selectedRating;
-		if (rating < 1) {
-			alert('Please select a rating');
-			return;
-		}
-		console.log(review, rating);
-	};
+	// const sendReview = () => {
+	// 	const review = document.getElementById('review').value;
+	// 	const rating = selectedRating;
+	// 	if (rating < 1) {
+	// 		alert('Please select a rating');
+	// 		return;
+	// 	}
+	// 	console.log(review, rating);
+	// };
     
     useEffect(() => {
         onValue(query(ref(db, `clinics/${id}`)), (snapshot) => {
@@ -116,7 +187,7 @@ function ClinicDetails() {
 									fontSize="sm"
 									textTransform="uppercase"
 								>
-									Radiology Clinic
+									{ data.specialty ? data.specialty : 'General Clinic' }
 								</Box>
 							</Box>
 						</Flex>
@@ -258,7 +329,7 @@ function ClinicDetails() {
 								pointerEvents="none"
 								tabIndex="-1"
 							>
-								{data.contact}
+								{data.contact ? data.contact : 'No contact number available'}
 							</Text>
 						</Box>
 
@@ -317,11 +388,11 @@ function ClinicDetails() {
 								rounded={'lg'}
 								h="64"
 							>
-								<Map />
+								<Map placeId={data.placeId} />
 							</Box>
 						</Flex>
 						<Box mt={4}>
-							<FormControl>
+							{/* <FormControl>
 								<Text mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
 									Leave a review
 								</Text>
@@ -347,9 +418,9 @@ function ClinicDetails() {
 										cursor="pointer"
 									/>
 								</InputGroup>
-							</FormControl>
+							</FormControl> */}
 							<Box mt={4} w="full">
-								<Flex alignItems="center" justifyContent="end">
+								{/* <Flex alignItems="center" justifyContent="end">
 									<Box display='flex' alignItems='center'>
 										{
 											Array(5)
@@ -368,18 +439,18 @@ function ClinicDetails() {
 											{selectedRating}.0
 										</Box>
 									</Box>
-								</Flex>
+								</Flex> */}
 
 								<Box
 									borderBottom="1px"
 									borderColor="gray.300"
-									mt={2}
-									mb={2}
+									mt={4}
+									mb={4}
 								/>
 
 								<Box 
 									mt={4} 
-									maxHeight={200}
+									maxHeight={300}
 									overflowY='scroll'
 								>
 									<Flex mb={3} w="full">
