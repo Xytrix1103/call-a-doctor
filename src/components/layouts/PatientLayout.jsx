@@ -25,7 +25,7 @@ const PatientLayout = () => {
 					(
 						<Grid templateRows="auto 1fr" w="100%" h="100%" bg="#f4f4f4" overflow="hidden">
 							<PatientNavbar/>
-							<Box w="100%" h="100%" bg="#f4f4f4" overflow="auto" p={5} minH="100vh">
+							<Box w="full" h="auto" bg="#f4f4f4" overflow="auto" p={5}>
 								<Outlet/>
 							</Box>
 						</Grid>

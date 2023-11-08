@@ -23,7 +23,7 @@ const RootLayout = () => {
 					<GlobalSpinner/> :
 					(location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/register-clinic") ?
 						!user ?
-							<Box w="100%" h="100%" bg="#f4f4f4" overflow="auto" p={5} minH="100vh">
+							<Box w="100%" h="100%" bg="#f4f4f4" overflow="auto" minH="100vh">
 								<Outlet/>
 							</Box> :
 							(
@@ -31,7 +31,7 @@ const RootLayout = () => {
 							)
 					:
 						user ?
-							<Box w="100%" h="100%" bg="#f4f4f4" overflow="auto" p={5} minH="100vh">
+							<Box w="100%" h="100%" bg="#f4f4f4" overflow="auto" minH="100vh">
 								<Outlet/>
 							</Box> :
 							(

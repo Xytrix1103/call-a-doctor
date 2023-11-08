@@ -20,7 +20,8 @@ const ClinicLocationStep = ({place, setPlace}) => {
 		if (inputRef.current && inputRef.current.getPlace) {
 			const place = inputRef.current.getPlace();
 			const placeId = place.place_id;
-			const { geometry, formatted_address, name } = place;
+			const { geometry, formatted_address, name, formatted_phone_number } = place;
+			console.log(place);
 			const { location } = geometry;
 			mapRef.panTo({ lat: location.lat(), lng: location.lng() });
 			setPlace({
@@ -29,6 +30,7 @@ const ClinicLocationStep = ({place, setPlace}) => {
 				name: name,
 				address: formatted_address,
 				placeId: placeId,
+				contact: formatted_phone_number
 			});
 		}
 	};
@@ -67,7 +69,7 @@ const ClinicLocationStep = ({place, setPlace}) => {
 				<Autocomplete
 					onLoad={(autocomplete) => {
 						inputRef.current = autocomplete;
-						autocomplete.setFields(["geometry", "formatted_address", "place_id", "name"]);
+						autocomplete.setFields(["geometry", "formatted_address", "place_id", "name", "formatted_phone_number"]);
 					}}
 					onPlaceChanged={handlePlaceSelect}
 				>

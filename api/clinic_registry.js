@@ -11,6 +11,7 @@ export const register_clinic_request = async (data) => {
 		end_time,
 		start_day,
 		end_day,
+		contact,
 		address,
 		image,
 		admin_name,
@@ -42,6 +43,7 @@ export const register_clinic_request = async (data) => {
 				end_time: end_time,
 				start_day: start_day,
 				end_day: end_day,
+				contact: contact,
 				address: address,
 				admin_name: admin_name,
 				email: email,
@@ -75,6 +77,7 @@ export const register_clinic = async (data) => {
 		end_time,
 		start_day,
 		end_day,
+		contact,
 		address,
 		image,
 		admin_name,
@@ -126,6 +129,7 @@ export const register_clinic = async (data) => {
 				end_time: end_time,
 				start_day: start_day,
 				end_day: end_day,
+				contact: contact,
 				address: address,
 				admins: {
 					[uid]: true

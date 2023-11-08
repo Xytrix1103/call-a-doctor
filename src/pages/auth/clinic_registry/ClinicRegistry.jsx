@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 import {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
-import {register_clinic} from "../../../../api/clinic_registry.js";
+import {register_clinic_request} from "../../../../api/clinic_registry.js";
 import ClinicLocationStep from "./ClinicLocationStep.jsx";
 import ClinicDetailsStep from "./ClinicDetailsStep.jsx";
 import ClinicAdminStep from "./ClinicAdminStep.jsx";
@@ -27,11 +27,11 @@ function ClinicRegistry() {
 	
 	const form = useForm();
 	const {handleSubmit, trigger} = form;
-	const imageRef = useRef(null);
+	const [image, setImage] = useState(null);
 	
 	const steps = [
 		{ title: 'First', description: 'Clinic Address', component: <ClinicLocationStep place= {place} setPlace={setPlace}/> },
-		{ title: 'Second', description: 'Clinic Registry', component: <ClinicDetailsStep form={form} imageRef={imageRef} place={place} setPlace={setPlace}/> },
+		{ title: 'Second', description: 'Clinic Registry', component: <ClinicDetailsStep form={form} image={image} setImage={setImage} place={place} setPlace={setPlace}/> },
 		{ title: 'Third', description: 'Admin Registry', component: <ClinicAdminStep form={form}/> },
 	];
 	
@@ -43,13 +43,15 @@ function ClinicRegistry() {
 	const onSubmit = async (data) => {
 		data = {
 			...data,
-			image: imageRef.current.files[0],
+			image: image,
+			placeId: place.placeId,
 		}
-		await register_clinic(data);
+		await register_clinic_request(data);
 		console.log(data);
 	}
 	
 	const onNext = () => {
+		console.log(activeStep);
 		switch (activeStep) {
 			case 0:
 				if (place) {
@@ -59,9 +61,9 @@ function ClinicRegistry() {
 				}
 				break;
 			case 1:
-				//trigger certain fields
+				console.log("Step 2");
 				trigger(["clinic_name", "address", "phone", "start_time", "end_time", "start_day", "end_day"]).then(r => {
-					if (r && imageRef.current.files[0]) {
+					if (r && image) {
 						setActiveStep(activeStep + 1);
 					} else {
 						alert("Please fill in all the fields")
@@ -69,9 +71,9 @@ function ClinicRegistry() {
 				});
 				break;
 			case 2:
-				trigger(["admin_name", "email", "password", "confirm_password"]).then(r => {
+				onSubmit(form.getValues()).then(r => {
 					if (r) {
-						setActiveStep(activeStep + 1);
+						alert("Clinic registered successfully");
 					} else {
 						alert("Please fill in all the fields")
 					}
@@ -105,7 +107,7 @@ function ClinicRegistry() {
 	}, [activeStep]);
 	
 	return (
-		<Center w="100%" h="auto" bg="#f4f4f4">
+		<Center w="100%" h="auto" bg="#f4f4f4" p={5}>
 			<Flex
 				w="85%"
 				h="full"
@@ -165,7 +167,7 @@ function ClinicRegistry() {
 										<StepSeparator />
 									</Step>
 								))}
-							</Stepper>							
+							</Stepper>
 						</Box>
 						<Flex w="70%" justifyContent="center">
 							{
@@ -195,7 +197,9 @@ function ClinicRegistry() {
 									mx={2}
 									onClick={onNext}
 								>
-									{activeStep === steps.length - 1 ? "Submit" : "Next"}
+									{
+										activeStep === steps.length - 1 ? "Submit" : "Next"
+									}
 								</Button>
 							</Box>
 						</Flex>

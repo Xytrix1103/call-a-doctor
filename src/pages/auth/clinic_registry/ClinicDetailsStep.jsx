@@ -14,7 +14,7 @@ import {
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
 import {useRef, useState} from "react";
 
-const ClinicDetailsStep = ({form, imageRef, place, setPlace}) => {
+const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 	const {
 		register,
 		formState: {
@@ -66,6 +66,12 @@ const ClinicDetailsStep = ({form, imageRef, place, setPlace}) => {
 	const handleFileInputChange = (e) => {
 		const file = e.target.files[0];
 		populatePreviewImage(file);
+		
+		if (file) {
+			setImage(file);
+		} else {
+			setImage(null);
+		}
 	};
 	
 	return (
@@ -73,8 +79,8 @@ const ClinicDetailsStep = ({form, imageRef, place, setPlace}) => {
 			<Box w="full" h="full">
 				<Box w="full">
 					<FormControl isInvalid={errors.clinic_name}>
-						<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-							Clinic Name
+						<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900" requiredIndicator>
+							Clinic Name <Text as="span" color="red.500" fontWeight="bold">*</Text>
 						</FormLabel>
 						<Input
 							variant="filled"
@@ -104,7 +110,7 @@ const ClinicDetailsStep = ({form, imageRef, place, setPlace}) => {
 				<Flex alignItems="center" justifyContent="space-between">
 					<Box flex="1">
 						<Text fontSize="sm" fontWeight="medium" color="gray.900" mt={6} mb={2}>
-							Operating Hours
+							Operating Hours <Text as="span" color="red.500" fontWeight="bold">*</Text>
 						</Text>
 						<Flex alignItems="center">
 							<FormControl isInvalid={errors.start_time}>
@@ -186,7 +192,7 @@ const ClinicDetailsStep = ({form, imageRef, place, setPlace}) => {
 					</Box>
 					<Box flex="1" ml={4}>
 						<Text mt={6} mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-							Operating Days
+							Operating Days <Text as="span" color="red.500" fontWeight="bold">*</Text>
 						</Text>
 						<Flex alignItems="center">
 							<FormControl isInvalid={errors.start_day}>
@@ -305,7 +311,7 @@ const ClinicDetailsStep = ({form, imageRef, place, setPlace}) => {
 				<Box mb={2} mt={6}>
 					<FormControl isInvalid={errors.phone}>
 						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
-							Contact Number
+							Contact Number <Text as="span" color="red.500" fontWeight="bold">*</Text>
 						</FormLabel>
 						<Input
 							variant="filled"
@@ -317,7 +323,7 @@ const ClinicDetailsStep = ({form, imageRef, place, setPlace}) => {
 								})
 							}
 							placeholder="04-345-6789"
-							defaultValue=""
+							defaultValue={place.contact}
 							rounded="xl"
 							borderWidth="1px"
 							borderColor="gray.300"
@@ -335,7 +341,7 @@ const ClinicDetailsStep = ({form, imageRef, place, setPlace}) => {
 				<Box mb={2} mt={6}>
 					<FormControl isInvalid={errors.address}>
 						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
-							Address
+							Address <Text as="span" color="red.500" fontWeight="bold">*</Text>
 						</FormLabel>
 						<Textarea
 							variant="filled"
@@ -393,7 +399,7 @@ const ClinicDetailsStep = ({form, imageRef, place, setPlace}) => {
 				<FormControl w="full" h="full" display="grid" gridTemplateRows="auto 1fr">
 					<Box>
 						<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-							Clinic Image
+							Clinic Image <Text as="span" color="red.500" fontWeight="bold">*</Text>
 						</FormLabel>
 						<Box
 							onDragEnter={handleDragEnter}
