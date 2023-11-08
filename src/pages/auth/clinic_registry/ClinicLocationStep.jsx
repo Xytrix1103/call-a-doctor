@@ -1,17 +1,15 @@
 import {useEffect, useRef, useState} from "react";
 import {Autocomplete, GoogleMap, InfoWindow, LoadScript, Marker} from "@react-google-maps/api";
-import {Box, Input, InputGroup, InputLeftElement, Text} from "@chakra-ui/react";
-import {BiSearchAlt2} from "react-icons/bi";
-import {Link} from "react-router-dom";
+import {Box, HStack, Input, InputGroup, InputLeftElement, Link, Text} from "@chakra-ui/react";
+import {BiLinkExternal, BiSearchAlt2} from "react-icons/bi";
 
-const ClinicLocationStep = ({placeId, setPlaceId}) => {
+const ClinicLocationStep = ({place, setPlace}) => {
 	const mapStyle = {
-		height: '440px',
+		height: '400px',
 		width: '100%',
 	};
 	const libs = ["places"];
 	const [mapRef, setMapRef] = useState(null);
-	const [openInfo, setOpenInfo] = useState(false);
 	const [center, setCenter] = useState({
 		lat: 5.4164,
 		lng: 100.3327,
@@ -25,24 +23,22 @@ const ClinicLocationStep = ({placeId, setPlaceId}) => {
 			const { geometry, formatted_address, name } = place;
 			const { location } = geometry;
 			mapRef.panTo({ lat: location.lat(), lng: location.lng() });
-			setPlaceId({
+			setPlace({
 				lat: location.lat(),
 				lng: location.lng(),
 				name: name,
 				address: formatted_address,
 				placeId: placeId,
 			});
-			setOpenInfo(true);
 		}
 	};
 	
-	const handleViewOnMaps = () => {
-		if (placeId) {
-			const { name } = placeId;
-			const url = `https://www.google.com/maps/search/?api=1&query=${name}`;
-			window.open(url, '_blank');
+	const getMapsLink = () => {
+		if (place) {
+			const { name } = place;
+			return `https://www.google.com/maps/search/?api=1&query=${name}`;
 		}
-	};
+	}
 	
 	useEffect(() => {
 		if(navigator.geolocation) {
@@ -97,31 +93,27 @@ const ClinicLocationStep = ({placeId, setPlaceId}) => {
 				zoom={15} // Adjust the zoom level as needed
 				mapContainerStyle={mapStyle}
 			>
-				{placeId && (
+				{place && (
 					<Marker
-						position={placeId}
-						onClick={() => {
-							// Handle marker click
-							setOpenInfo(!openInfo);
-						}}
+						position={{ lat: place.lat, lng: place.lng }}
 					/>
 				)}
-				{openInfo && placeId && (
+				{place && (
 					<InfoWindow
-						position={{ lat: placeId.lat + 0.0015, lng: placeId.lng }}
-						onCloseClick={() => {
-							setOpenInfo(false);
-						}}
+						position={{ lat: place.lat + 0.0015, lng: place.lng }}
 					>
-						<Box p={1} maxW="200px">
+						<Box p={1} maxW="sm">
 							<Text fontSize="sm" fontWeight="medium">
-								{placeId.name}
+								{place.name}
 							</Text>
 							<Text fontSize="xs" fontWeight="medium" color="gray.500" mt={1} mb={2}>
-								{placeId.address}
+								{place.address}
 							</Text>
-							<Link onClick={handleViewOnMaps} size="sm" fontSize="xs">
-								View on Google Maps
+							<Link href={getMapsLink()} isExternal target="_blank" rel="noreferrer" _hover={{textDecoration: "none"}} textDecoration="none" onClick={(e) => e.stopPropagation()}>
+								<HStack spacing={1} fontSize="xs" fontWeight="medium" color="blue.500">
+									<Text outline="none">View on Google Maps</Text>
+									<BiLinkExternal/>
+								</HStack>
 							</Link>
 						</Box>
 					</InfoWindow>

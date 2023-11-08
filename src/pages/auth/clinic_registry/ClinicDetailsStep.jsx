@@ -1,8 +1,20 @@
-import {Box, Flex, FormControl, FormErrorMessage, FormLabel, Image, Input, Select, Text} from "@chakra-ui/react";
+import {
+	Box,
+	Flex,
+	FormControl,
+	FormErrorMessage,
+	FormLabel,
+	Grid,
+	Image,
+	Input,
+	Select,
+	Text,
+	Textarea
+} from "@chakra-ui/react";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
 import {useRef, useState} from "react";
 
-const ClinicDetailsStep = ({form, imageRef}) => {
+const ClinicDetailsStep = ({form, imageRef, place, setPlace}) => {
 	const {
 		register,
 		formState: {
@@ -57,9 +69,9 @@ const ClinicDetailsStep = ({form, imageRef}) => {
 	};
 	
 	return (
-		<Flex>
-			<Box w="full">
-				<Box>
+		<Grid templateColumns="repeat(2, 1fr)" gap={6} w="full" h="full">
+			<Box w="full" h="full">
+				<Box w="full">
 					<FormControl isInvalid={errors.clinic_name}>
 						<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
 							Clinic Name
@@ -78,6 +90,7 @@ const ClinicDetailsStep = ({form, imageRef}) => {
 							borderWidth="1px"
 							borderColor="gray.300"
 							color="gray.900"
+							defaultValue={place.name}
 							size="md"
 							focusBorderColor="blue.500"
 							w="full"
@@ -319,7 +332,7 @@ const ClinicDetailsStep = ({form, imageRef}) => {
 						</FormErrorMessage>
 					</FormControl>
 				</Box>
-				{/* <Box mb={2} mt={6}>
+				<Box mb={2} mt={6}>
 					<FormControl isInvalid={errors.address}>
 						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 							Address
@@ -335,6 +348,7 @@ const ClinicDetailsStep = ({form, imageRef}) => {
 							color="gray.900"
 							size="md"
 							focusBorderColor="blue.500"
+							defaultValue={place.address}
 							w="full"
 							p={2.5}
 							rows={5}
@@ -348,7 +362,7 @@ const ClinicDetailsStep = ({form, imageRef}) => {
 							{errors.address && errors.address.message}
 						</FormErrorMessage>
 					</FormControl>
-				</Box> */}
+				</Box>
 				<Box mb={2} mt={6}>
 					<FormControl isInvalid={errors.panel_firms}>
 						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
@@ -375,7 +389,7 @@ const ClinicDetailsStep = ({form, imageRef}) => {
 					</FormControl>
 				</Box>
 			</Box>
-			<Box mx={5} w="full">
+			<Box w="full">
 				<FormControl w="full" h="full" display="grid" gridTemplateRows="auto 1fr">
 					<Box>
 						<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
@@ -454,7 +468,7 @@ const ClinicDetailsStep = ({form, imageRef}) => {
 					</Box>
 				</FormControl>
 			</Box>
-		</Flex>
+		</Grid>
 	)
 }
 

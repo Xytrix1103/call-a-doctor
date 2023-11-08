@@ -1,5 +1,6 @@
 import {
 	Box,
+	Button,
 	Center,
 	Flex,
 	Step,
@@ -22,15 +23,15 @@ import ClinicDetailsStep from "./ClinicDetailsStep.jsx";
 import ClinicAdminStep from "./ClinicAdminStep.jsx";
 
 function ClinicRegistry() {
-	const [placeId, setPlaceId] = useState(null);
+	const [place, setPlace] = useState(null);
 	
 	const form = useForm();
 	const {handleSubmit, trigger} = form;
 	const imageRef = useRef(null);
 	
 	const steps = [
-		{ title: 'First', description: 'Clinic Address', component: <ClinicLocationStep placeId= {placeId} setPlaceId={setPlaceId}/> },
-		{ title: 'Second', description: 'Clinic Registry', component: <ClinicDetailsStep form={form} imageRef={imageRef}/> },
+		{ title: 'First', description: 'Clinic Address', component: <ClinicLocationStep place= {place} setPlace={setPlace}/> },
+		{ title: 'Second', description: 'Clinic Registry', component: <ClinicDetailsStep form={form} imageRef={imageRef} place={place} setPlace={setPlace}/> },
 		{ title: 'Third', description: 'Admin Registry', component: <ClinicAdminStep form={form}/> },
 	];
 	
@@ -38,7 +39,6 @@ function ClinicRegistry() {
 		steps,
 		initialStep: 0,
 	});
-	
 	
 	const onSubmit = async (data) => {
 		data = {
@@ -52,7 +52,7 @@ function ClinicRegistry() {
 	const onNext = () => {
 		switch (activeStep) {
 			case 0:
-				if (placeId) {
+				if (place) {
 					setActiveStep(activeStep + 1);
 				} else {
 					alert("Please select a location")
@@ -105,15 +105,16 @@ function ClinicRegistry() {
 	}, [activeStep]);
 	
 	return (
-		<Center w="100%" bg={"#f4f4f4"} py={5} h="100%">
-			<Box
+		<Center w="100%" h="auto" bg="#f4f4f4">
+			<Flex
 				w="85%"
+				h="full"
 				bg="white"
 				boxShadow="xl"
 				rounded="xl"
-				p={8}
-				display="flex"
-				flexDir="column"
+				px={8}
+				py={4}
+				direction="column"
 			>
 				<form action="/api/register-clinic" method="post" onSubmit={handleSubmit(onSubmit)}
 				      encType="multipart/form-data">
@@ -124,11 +125,11 @@ function ClinicRegistry() {
 							</Text>
 						</Box>
 					</Flex>
-					<Box flex="1" ref={contentRef}>
+					<Flex w="full" h="full" grow={1} direction="column" ref={contentRef}>
 						{steps[activeStep].component}
-					</Box>
+					</Flex>
 					<Flex w="full" justifyContent="center" alignItems="center" direction="column">
-						<Box my={4} w="70%">
+						<Box w="70%" mt={6} mb={5}>
 							<Stepper index={activeStep}>
 								{steps.map((step, index) => (
 									<Step
@@ -166,9 +167,41 @@ function ClinicRegistry() {
 								))}
 							</Stepper>							
 						</Box>
+						<Flex w="70%" justifyContent="center">
+							{
+								activeStep > 0 && (
+									<Box>
+										<Button
+											variant="solid"
+											colorScheme="blue"
+											size="md"
+											mx={2}
+											onClick={() => {
+												if (activeStep > 0) {
+													setActiveStep(activeStep - 1);
+												}
+											}}
+										>
+											Back
+										</Button>
+									</Box>
+								)
+							}
+							<Box>
+								<Button
+									variant="solid"
+									colorScheme="blue"
+									size="md"
+									mx={2}
+									onClick={onNext}
+								>
+									{activeStep === steps.length - 1 ? "Submit" : "Next"}
+								</Button>
+							</Box>
+						</Flex>
 					</Flex>
 				</form>
-			</Box>
+			</Flex>
 		</Center>
 	);
 }
