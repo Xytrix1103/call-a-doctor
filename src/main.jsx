@@ -12,6 +12,7 @@ import {ChakraProvider, extendTheme} from "@chakra-ui/react";
 import {AuthProvider} from "./components/AuthCtx.jsx";
 import Test from './pages/auth/Test.jsx';
 import ClinicRegistry from "./pages/auth/clinic_registry/ClinicRegistry.jsx";
+import PatientRegistry from './pages/auth/patient_registry/PatientRegistry';
 import ClinicList from "./pages/patient/ClinicList.jsx";
 import PatientLayout from "./components/layouts/PatientLayout.jsx";
 import ClinicDetails from './pages/patient/ClinicDetails';
@@ -24,7 +25,7 @@ const router = createBrowserRouter(
 		<Route element={<RootLayout/>}>
 			<Route path="/" element={<Test/>}/>
 			<Route path="login" element={<Login/>}/>
-			<Route path="register" element={<Register/>}/>
+			<Route path="register" element={<PatientRegistry/>}/>
 			<Route path="forgot" element={<></>}/>
 			<Route path="register-clinic" element={<ClinicRegistry/>}/>
 			<Route element={<PatientLayout/>}>

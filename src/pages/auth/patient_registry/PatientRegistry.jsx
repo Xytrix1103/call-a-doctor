@@ -3,6 +3,7 @@ import {
 	Button,
 	Center,
 	Flex,
+	IconButton,
 	Step,
 	StepDescription,
 	StepIcon,
@@ -12,11 +13,16 @@ import {
 	StepSeparator,
 	StepStatus,
 	StepTitle,
+	Link,
 	Text,
 	useSteps,
 } from '@chakra-ui/react';
 import {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
+import {useAuth} from "../../../components/AuthCtx.jsx";
+import {useNavigate} from "react-router-dom";
+import {register as registerUser} from "../../../../api/auth.js";
+import {AiOutlineArrowLeft} from "react-icons/ai";
 import PatientDetailsStep from './PatientDetailsStep';
 import PatientLocationStep from './PatientLocationStep';
 
@@ -24,19 +30,23 @@ function PatientRegistry() {
 	const [place, setPlace] = useState(null);
     const [error, setError] = useState(null);
     const {user} = useAuth();
-	
 	const form = useForm();
 	const {handleSubmit, trigger} = form;
+	const navigate = useNavigate();
 	
 	const steps = [
 		{ title: 'First', description: 'Address', component: <PatientLocationStep place={place} setPlace={setPlace}/> },
-		{ title: 'Second', description: 'Details', component: <PatientDetailsStep form={form} place={place} setPlace={setPlace}/> },
+		{ title: 'Second', description: 'Details', component: <PatientDetailsStep form={form} place={place}/> },
 	];
 	
 	const {activeStep, setActiveStep} = useSteps({
 		steps,
 		initialStep: 0,
 	});
+
+	const handleBack = () => {
+		navigate('/login');
+	};
 
     useEffect(() => {
         if (user) return <Navigate to="/" />;
@@ -45,7 +55,6 @@ function PatientRegistry() {
 	const onSubmit = async (data) => {
 		data = {
 			...data,
-			image: image,
 			placeId: place.placeId,
 		}
         const password = data["password"];
@@ -60,9 +69,13 @@ function PatientRegistry() {
 		if (res) {
 			if (res.error) {
 				setError(res.error);
+			} else {
+				setError(null);
+				return true;
 			}
 		} else {
 			setError("An error occurred. Please try again later.");
+			return false;
 		}
 	}
 	
@@ -78,11 +91,11 @@ function PatientRegistry() {
 				break;
 			case 1:
 				console.log("Step 2");
-				trigger(["clinic_name", "address", "phone", "start_time", "end_time", "start_day", "end_day"]).then(r => {
+				trigger(["name", "address", "phone", "age", "password", "confirm_password"]).then(r => {
 					if (r) {
                         onSubmit(form.getValues()).then(r => {
                             if (r) {
-                                alert("Clinic registered successfully");
+                                alert("User details registered successfully");
                             } else {
                                 alert("Please fill in all the fields")
                             }
@@ -133,12 +146,25 @@ function PatientRegistry() {
 			>
 				<form action="/api/register-clinic" method="post" onSubmit={handleSubmit(onSubmit)}
 				      encType="multipart/form-data">
-					<Flex>
-						<Box w="full" mb={4}>
+					<Flex justifyContent="center" alignItems="center" mb={4}>
+						<Box>
+							<IconButton
+								icon={<AiOutlineArrowLeft />}
+								aria-label="Back"
+								onClick={handleBack}
+								bg="transparent"
+							/>
+						</Box>
+						<Box w="full" ml={3}>
 							<Text fontSize="xl" fontWeight="bold">
-								{steps[activeStep].description}
+							{steps[activeStep].description}
 							</Text>
 						</Box>
+						<Flex w="full" alignItems="center" justifyContent="end">
+							<Text textAlign="center">
+								Registering a clinic?{' '} <Link color="blue.500" href="/register-clinic"> Register here </Link>
+							</Text>
+						</Flex>
 					</Flex>
 					<Flex w="full" h="full" grow={1} direction="column" ref={contentRef}>
 						{steps[activeStep].component}

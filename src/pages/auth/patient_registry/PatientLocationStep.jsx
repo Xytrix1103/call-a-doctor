@@ -5,7 +5,7 @@ import {BiLinkExternal, BiSearchAlt2} from "react-icons/bi";
 
 const PatientLocationStep = ({place, setPlace}) => {
 	const mapStyle = {
-		height: '400px',
+		height: '450px',
 		width: '100%',
 	};
 	const libs = ["places"];
@@ -80,7 +80,7 @@ const PatientLocationStep = ({place, setPlace}) => {
 						/>
 						<Input
 							type='text'
-							placeholder="Search for clinic location.."
+							placeholder="Search for home location..."
 							ref={inputRef}
 							focusBorderColor='blue.500'
 						/>

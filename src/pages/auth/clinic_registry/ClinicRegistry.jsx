@@ -12,19 +12,22 @@ import {
 	StepSeparator,
 	StepStatus,
 	StepTitle,
+	IconButton,
 	Text,
 	useSteps,
 } from '@chakra-ui/react';
 import {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
+import {useNavigate} from "react-router-dom";
 import {register_clinic} from "../../../../api/clinic_registry.js";
+import {AiOutlineArrowLeft} from "react-icons/ai";
 import ClinicLocationStep from "./ClinicLocationStep.jsx";
 import ClinicDetailsStep from "./ClinicDetailsStep.jsx";
 import ClinicAdminStep from "./ClinicAdminStep.jsx";
 
 function ClinicRegistry() {
 	const [place, setPlace] = useState(null);
-	
+	const navigate = useNavigate();
 	const form = useForm();
 	const {handleSubmit, trigger} = form;
 	const [image, setImage] = useState(null);
@@ -39,6 +42,10 @@ function ClinicRegistry() {
 		steps,
 		initialStep: 0,
 	});
+
+	const handleBack = () => {
+		navigate('/login');
+	};
 	
 	const onSubmit = async (data) => {
 		data = {
@@ -122,12 +129,28 @@ function ClinicRegistry() {
 			>
 				<form action="/api/register-clinic" method="post" onSubmit={handleSubmit(onSubmit)}
 				      encType="multipart/form-data">
-					<Flex>
-						<Box w="full" mb={4}>
+					<Flex justifyContent="center" alignItems="center" mb={4}>
+						<Box>
+							<IconButton
+								icon={<AiOutlineArrowLeft />}
+								aria-label="Back"
+								onClick={handleBack}
+								bg="transparent"
+							/>
+						</Box>
+						<Box w="full" ml={3}>
 							<Text fontSize="xl" fontWeight="bold">
-								{steps[activeStep].description}
+							{steps[activeStep].description}
 							</Text>
 						</Box>
+						<Flex w="full" alignItems="center" justifyContent="end">
+							<Text textAlign="center">
+								Don't have an account?{" "}
+								<Text as="a" href="/register" textColor="blue.500" fontWeight="medium" _hover={{ textDecoration: "underline" }}>
+									Sign Up
+								</Text>
+							</Text>
+						</Flex>
 					</Flex>
 					<Flex w="full" h="full" grow={1} direction="column" ref={contentRef}>
 						{steps[activeStep].component}

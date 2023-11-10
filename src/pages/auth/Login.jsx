@@ -16,6 +16,7 @@ import {
 	Alert,
 	AlertIcon,
 	AlertTitle,
+	Link,
 } from "@chakra-ui/react";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 import {useState} from "react";
@@ -75,9 +76,15 @@ function Login() {
 							Call A Doctor
 						</Text>
 					</Box>
-					<Center>
-						<Image src="/src/assets/svg/login-doctor.svg" alt="Login" w="96" h="96" />
+					<Center my={3}>
+						<Image src="/src/assets/svg/login-doctor.svg" alt="Login" w="96" h="80" />
 					</Center>
+					<Text textAlign="center">
+						Registering a clinic?{' '}
+						<Link color="blue.500" href="/register-clinic">
+						Register here
+						</Link>
+					</Text>
 				</Box>
 				<Box my={7} mr={5} w="full">
 					<form action="/api/login" method="post" onSubmit={handleSubmit(onSubmit)}>

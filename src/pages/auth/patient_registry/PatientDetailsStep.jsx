@@ -3,9 +3,12 @@ import {
 	Flex,
 	FormControl,
 	FormErrorMessage,
+	FormHelperText,
 	FormLabel,
 	Grid,
-	Image,
+	InputGroup,
+	IconButton,
+	InputRightElement,
 	Input,
 	Select,
 	Text,
@@ -13,11 +16,6 @@ import {
 } from "@chakra-ui/react";
 import {useRef, useState} from "react";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
-import {register as registerUser} from "../../../api/auth.js";
-import {Navigate} from "react-router-dom";
-import {useForm} from "react-hook-form";
-import {useAuth} from "../../components/AuthCtx.jsx";
-
 
 const PatientDetailsStep = ({form, place}) => {
 	const {
@@ -62,7 +60,7 @@ const PatientDetailsStep = ({form, place}) => {
 					</FormControl>
 				</Box>
 
-				<Box w="full">
+				<Box w="full" mt={5}>
 					<FormControl isInvalid={errors.email}>
 						<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900" requiredIndicator>
 							Email <Text as="span" color="red.500" fontWeight="bold">*</Text>
@@ -92,11 +90,11 @@ const PatientDetailsStep = ({form, place}) => {
 					</FormControl>
 				</Box>
 
-				<Flex alignItems="center" justifyContent="space-between" mt={6}>
+				<Flex alignItems="center" justifyContent="space-between" mt={5}>
 					<Box flex="1" mr={4}>
-						<FormControl>
-							<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-								Age
+						<FormControl isInvalid={errors.age}>
+							<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900" requiredIndicator>
+								Age <Text as="span" color="red.500" fontWeight="bold">*</Text>
 							</FormLabel>
 							<InputGroup size="md">
 								<Input
@@ -104,6 +102,11 @@ const PatientDetailsStep = ({form, place}) => {
 									type="number"
 									name="age"
 									id="age"
+									{
+										...register("age", {
+											required: "Age cannot be empty",
+										})
+									}
 									rounded="xl"
 									borderWidth="1px"
 									borderColor="gray.300"
@@ -113,6 +116,9 @@ const PatientDetailsStep = ({form, place}) => {
 									focusBorderColor="blue.500"
 								/>
 							</InputGroup>
+							<FormErrorMessage>
+								{errors.age && errors.age.message}
+							</FormErrorMessage>
 						</FormControl>
 					</Box>
 					<Box flex="1">
@@ -199,9 +205,9 @@ const PatientDetailsStep = ({form, place}) => {
 						}
 					</FormControl>
 				</Box>
-				<Box mb={2} mt={6}>
+				<Box mb={2} mt={4}>
 					<FormControl id="confirm_password" isInvalid={errors.confirm_password}>
-						<FormLabel mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
+						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 							Confirm Password
 						</FormLabel>
 						<InputGroup>
@@ -255,9 +261,11 @@ const PatientDetailsStep = ({form, place}) => {
 				</Box>
 			</Box>
 			<Box w="full" h="full">
-				<Box mb={2} mt={6}>
-					<FormControl fontSize="sm" fontWeight="medium" color="gray.900"  id="phone" isInvalid={errors.phone}>
-						<FormLabel>Contact Number</FormLabel>
+				<Box mb={2}>
+					<FormControl fontSize="sm" fontWeight="medium" color="gray.900"  id="phone" isInvalid={errors.phone} requiredIndicator>
+						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
+							Contact Number <Text as="span" color="red.500" fontWeight="bold">*</Text>
+						</FormLabel>
 						<Input
 							variant="filled"
 							type="tel"
@@ -284,7 +292,7 @@ const PatientDetailsStep = ({form, place}) => {
 						</FormErrorMessage>
 					</FormControl>
 				</Box>
-				<Box mb={2} mt={6}>
+				<Box mb={2} mt={5}>
 					<FormControl isInvalid={errors.address}>
 						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 							Address <Text as="span" color="red.500" fontWeight="bold">*</Text>
@@ -315,7 +323,7 @@ const PatientDetailsStep = ({form, place}) => {
 						</FormErrorMessage>
 					</FormControl>
 				</Box>
-				<Box mb={2} mt={6}>
+				<Box mb={2} mt={5}>
 					<FormControl isInvalid={errors.panel_firms}>
 						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 							Panel Firms (Optional)
