@@ -2,6 +2,7 @@ import {Navigate, Outlet, useLocation, useNavigation} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {useAuth} from "../AuthCtx.jsx";
 import GlobalSpinner from "../GlobalSpinner.jsx";
+import {Box} from "@chakra-ui/react";
 
 const RootLayout = () => {
 	const {user, loading} = useAuth();
@@ -22,13 +23,17 @@ const RootLayout = () => {
 					<GlobalSpinner/> :
 					(location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/register-clinic") ?
 						!user ?
-							<Outlet/> :
+							<Box w="100%" h="100%" bg="#f4f4f4" overflow="auto" minH="100vh">
+								<Outlet/>
+							</Box> :
 							(
 								<Navigate to="/" />
 							)
 					:
 						user ?
-							<Outlet/> :
+							<Box w="100%" h="100%" bg="#f4f4f4" overflow="auto" minH="100vh">
+								<Outlet/>
+							</Box> :
 							(
 								<Navigate to="/login" />
 							)
