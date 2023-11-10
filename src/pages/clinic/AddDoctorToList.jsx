@@ -1,17 +1,16 @@
 import {
 	Box,
 	Button,
+	Center,
 	Flex,
 	FormControl,
+	FormErrorMessage,
 	FormHelperText,
-    FormErrorMessage,
 	FormLabel,
-	Grid,
 	IconButton,
 	Image,
 	Input,
 	InputGroup,
-    Center,
 	InputRightElement,
 	Select,
 	Text,
@@ -20,9 +19,12 @@ import {useRef, useState} from "react";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
 import {useForm} from "react-hook-form";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
+import {useAuth} from "../../components/AuthCtx.jsx";
+import {add_doctor} from "../../../api/clinic.js";
 
 function AddDoctorToList() {
     const {
+		reset,
 		handleSubmit,
 		register,
 		formState: {
@@ -32,6 +34,7 @@ function AddDoctorToList() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [isDragActive, setIsDragActive] = useState(false);
 	const [imageSrc, setImageSrc] = useState(null);
+	const {user} = useAuth();
 
     const imageRef = useRef(null);
 	const previewImageRef = useRef(null);
@@ -65,7 +68,6 @@ function AddDoctorToList() {
 			}
 		} else {
 			console.log("No file");
-			setImageSrc(null);
 		}
 	}
 	
@@ -85,13 +87,14 @@ function AddDoctorToList() {
 		return file.type.startsWith("image/");
 	};
 	
-	const onSubmit = async (e) => {
-		e.preventDefault();
-		const data = new FormData(e.target);
-		
-		if (res) {
-			console.log("Adding doctor to list");
+	const onSubmit = async (data) => {
+		data = {
+			...data,
+			image: imageRef.current.files[0],
+			clinic: Object.keys(user.clinic)[0],
 		}
+		
+		await add_doctor(data);
 	}
 	
 	return (
@@ -194,9 +197,12 @@ function AddDoctorToList() {
                                             color="gray.900"
                                             size="md"
                                             focusBorderColor="blue.500"
+                                            {
+												...register("gender")
+											}
                                         >
-                                            <option value="male">Male</option>
-                                            <option value="female">Female</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
                                         </Select>
                                     </FormControl>
                                 </Box>

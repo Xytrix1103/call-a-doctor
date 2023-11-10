@@ -1,9 +1,9 @@
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
-import {auth, db} from "./firebase.js";
+import {auth, db, secondaryAuth} from "./firebase.js";
 import {ref, set} from "firebase/database";
 
 export const register = async (data) => {
-	const {email, password, name, phone = "", address = "", role="Patient", clinic=null} = data;
+	const {email, password, name, phone = "", address = "", role="Patient", clinic=null, gender="Male"} = data;
 	
 	try {
 		const newUser = await createUserWithEmailAndPassword(auth, email, password);
@@ -15,10 +15,40 @@ export const register = async (data) => {
 				password: password,
 				role: role,
 				name: name,
+				gender: gender,
 				phone: phone,
 				address: address,
 				clinic: clinic
 			});
+			return newUser.user;
+		}
+	} catch (error) {
+		console.log(error);
+	}
+	return false;
+}
+
+export const register_doctor = async (data) => {
+	const {email, password, name, phone = "", address = "", role="Doctor", clinic=null, gender="Male"} = data;
+	
+	try {
+		const newUser = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+		
+		if (newUser) {
+			await set(ref(db, `users/${newUser.user.uid}`), {
+				uid: newUser.user.uid,
+				email: newUser.user.email,
+				password: password,
+				role: role,
+				name: name,
+				gender: gender,
+				phone: phone,
+				address: address,
+				clinic: clinic
+			});
+			
+			await set(ref(db, `clinics/${clinic}/doctors/${newUser.user.uid}`), true);
+			
 			return newUser.user;
 		}
 	} catch (error) {
