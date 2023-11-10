@@ -13,8 +13,12 @@ import {
 	StepStatus,
 	StepTitle,
 	IconButton,
-	Text,
 	useSteps,
+	Text,
+	Alert,
+	AlertIcon,
+	AlertDescription,
+	CloseButton,
 } from '@chakra-ui/react';
 import {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
@@ -31,6 +35,8 @@ function ClinicRegistry() {
 	const form = useForm();
 	const {handleSubmit, trigger} = form;
 	const [image, setImage] = useState(null);
+	const [error, setError] = useState(null);
+	const [success, setSuccess] = useState(null);
 	
 	const steps = [
 		{ title: 'First', description: 'Clinic Address', component: <ClinicLocationStep place= {place} setPlace={setPlace}/> },
@@ -46,6 +52,11 @@ function ClinicRegistry() {
 	const handleBack = () => {
 		navigate('/login');
 	};
+
+	const onClose = () => {
+		setError(null);
+		setSuccess(null);
+	}
 	
 	const onSubmit = async (data) => {
 		data = {
@@ -65,8 +76,10 @@ function ClinicRegistry() {
 			case 0:
 				if (place) {
 					setActiveStep(activeStep + 1);
+					setError(null);
+					setSuccess(null);
 				} else {
-					alert("Please select a location")
+					setError("Please select a location")
 				}
 				break;
 			case 1:
@@ -74,17 +87,26 @@ function ClinicRegistry() {
 				trigger(["clinic_name", "address", "phone", "start_time", "end_time", "start_day", "end_day"]).then(r => {
 					if (r && image) {
 						setActiveStep(activeStep + 1);
+						setError(null);
+						setSuccess(null);
 					} else {
-						alert("Please fill in all the fields")
+						setError("Please fill in all the fields")
 					}
 				});
 				break;
 			case 2:
-				onSubmit(form.getValues()).then(r => {
+				console.log("Step 3");
+				trigger(["admin_name", "email", "password", "confirm_password"]).then(r => {
 					if (r) {
-						alert("Clinic registered successfully");
+						onSubmit(form.getValues()).then(r => {
+							if (r) {
+								setSuccess("Clinic registered successfully");
+							} else {
+								setError("Please fill in all the fields")
+							}
+						});
 					} else {
-						alert("Please fill in all the fields")
+						setError("Please fill in all the fields")
 					}
 				});
 				break;
@@ -117,6 +139,37 @@ function ClinicRegistry() {
 	
 	return (
 		<Center w="100%" h="auto" bg="#f4f4f4" p={5}>
+			{
+                error && (
+                    <Alert 
+						status="error"
+						variant="left-accent"
+						position="fixed"
+						top="0"
+						zIndex={2}
+					>
+                        <AlertIcon />
+						<AlertDescription>{error}</AlertDescription>
+						<CloseButton position="absolute" right="8px" top="8px" onClick={onClose}/>
+                    </Alert>
+                )
+
+            }
+			{
+				success && (
+					<Alert
+						status="success"
+						variant="left-accent"
+						position="fixed"
+						top="0"
+						zIndex={2}
+					>
+						<AlertIcon />
+						<AlertDescription>{success}</AlertDescription>
+						<CloseButton position="absolute" right="8px" top="8px" onClick={onClose}/>
+					</Alert>
+				)
+			}
 			<Flex
 				w="85%"
 				h="full"

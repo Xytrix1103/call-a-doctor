@@ -16,6 +16,8 @@ import {
 	Alert,
 	AlertIcon,
 	AlertTitle,
+	AlertDescription,
+	CloseButton,
 	Link,
 } from "@chakra-ui/react";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
@@ -33,6 +35,10 @@ function Login() {
 	} = useForm();
 	const [show, setShow] = useState(false);
 	const [error, setError] = useState(null);
+
+	const onClose = () => {
+		setError(null);
+	}
 	
 	const onSubmit = async (data) => {
 		const res = await login(data);
@@ -52,12 +58,14 @@ function Login() {
                 error && (
                     <Alert 
 						status="error"
-						variant="subtle"
+						variant="left-accent"
 						position="fixed"
 						top="0"
+						zIndex={2}
 					>
                         <AlertIcon />
-                        <AlertTitle mr={2}>Login failed!  Invalid credentials.</AlertTitle>
+						<AlertDescription>Invalid credentials.</AlertDescription>
+						<CloseButton position="absolute" right="8px" top="8px" onClick={onClose}/>
                     </Alert>
                 )
             }

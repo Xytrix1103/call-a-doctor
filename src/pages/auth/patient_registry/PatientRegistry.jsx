@@ -16,6 +16,10 @@ import {
 	Link,
 	Text,
 	useSteps,
+	Alert,
+	AlertIcon,
+	AlertDescription,
+	CloseButton,
 } from '@chakra-ui/react';
 import {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
@@ -29,6 +33,7 @@ import PatientLocationStep from './PatientLocationStep';
 function PatientRegistry() {
 	const [place, setPlace] = useState(null);
     const [error, setError] = useState(null);
+	const [success, setSuccess] = useState(null);
     const {user} = useAuth();
 	const form = useForm();
 	const {handleSubmit, trigger} = form;
@@ -47,6 +52,11 @@ function PatientRegistry() {
 	const handleBack = () => {
 		navigate('/login');
 	};
+
+	const onClose = () => {
+		setError(null);
+		setSuccess(null);
+	}
 
     useEffect(() => {
         if (user) return <Navigate to="/" />;
@@ -86,7 +96,7 @@ function PatientRegistry() {
 				if (place) {
 					setActiveStep(activeStep + 1);
 				} else {
-					alert("Please select a location")
+					setError("Please select a location");
 				}
 				break;
 			case 1:
@@ -95,13 +105,13 @@ function PatientRegistry() {
 					if (r) {
                         onSubmit(form.getValues()).then(r => {
                             if (r) {
-                                alert("User details registered successfully");
+								setSuccess("User details registered successfully");
                             } else {
-                                alert("Please fill in all the fields")
+                                setError("Please fill in all the fields")
                             }
                         });
 					} else {
-						alert("Please fill in all the fields")
+						setError("Please fill in all the fields")
 					}
 				});
 				break;
@@ -112,28 +122,57 @@ function PatientRegistry() {
 
 	const [isContentOverflowing, setContentOverflowing] = useState(false);
 
-	const contentRef = useRef(null); // Create a ref for the content
+	const contentRef = useRef(null); 
 
 	useEffect(() => {
-	  const handleResize = () => {
-		// Check if the content height exceeds the window height
-		if (contentRef.current) {
-			const contentHeight = contentRef.current.getBoundingClientRect().height;
-			const windowHeight = window.innerHeight;
-			setContentOverflowing(contentHeight > windowHeight);
-		}
-	  };
-  
-	  // Add event listener for window resize
-	  window.addEventListener("resize", handleResize);
-  
-	  // Call it initially
-	  handleResize();
+		const handleResize = () => {
+
+			if (contentRef.current) {
+				const contentHeight = contentRef.current.getBoundingClientRect().height;
+				const windowHeight = window.innerHeight;
+				setContentOverflowing(contentHeight > windowHeight);
+			}
+		};
+
+		window.addEventListener("resize", handleResize);
+
+		handleResize();
   
 	}, [activeStep]);
 	
 	return (
 		<Center w="100%" h="auto" bg="#f4f4f4" p={5}>
+			{
+                error && (
+                    <Alert 
+						status="error"
+						variant="left-accent"
+						position="fixed"
+						top="0"
+						zIndex={2}
+					>
+                        <AlertIcon />
+						<AlertDescription>{error}</AlertDescription>
+						<CloseButton position="absolute" right="8px" top="8px" onClick={onClose}/>
+                    </Alert>
+                )
+
+            }
+			{
+				success && (
+					<Alert
+						status="success"
+						variant="left-accent"
+						position="fixed"
+						top="0"
+						zIndex={2}
+					>
+						<AlertIcon />
+						<AlertDescription>{success}</AlertDescription>
+						<CloseButton position="absolute" right="8px" top="8px" onClick={onClose}/>
+					</Alert>
+				)
+			}
 			<Flex
 				w="85%"
 				h="full"
