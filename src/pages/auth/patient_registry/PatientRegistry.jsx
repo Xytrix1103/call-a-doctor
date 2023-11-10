@@ -17,28 +17,30 @@ import {
 } from '@chakra-ui/react';
 import {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
-import {register_clinic} from "../../../../api/clinic_registry.js";
-import ClinicLocationStep from "./ClinicLocationStep.jsx";
-import ClinicDetailsStep from "./ClinicDetailsStep.jsx";
-import ClinicAdminStep from "./ClinicAdminStep.jsx";
+import PatientDetailsStep from './PatientDetailsStep';
+import PatientLocationStep from './PatientLocationStep';
 
-function ClinicRegistry() {
+function PatientRegistry() {
 	const [place, setPlace] = useState(null);
+    const [error, setError] = useState(null);
+    const {user} = useAuth();
 	
 	const form = useForm();
 	const {handleSubmit, trigger} = form;
-	const [image, setImage] = useState(null);
 	
 	const steps = [
-		{ title: 'First', description: 'Clinic Address', component: <ClinicLocationStep place= {place} setPlace={setPlace}/> },
-		{ title: 'Second', description: 'Clinic Registry', component: <ClinicDetailsStep form={form} image={image} setImage={setImage} place={place} setPlace={setPlace}/> },
-		{ title: 'Third', description: 'Admin Registry', component: <ClinicAdminStep form={form}/> },
+		{ title: 'First', description: 'Address', component: <PatientLocationStep place={place} setPlace={setPlace}/> },
+		{ title: 'Second', description: 'Details', component: <PatientDetailsStep form={form} place={place} setPlace={setPlace}/> },
 	];
 	
 	const {activeStep, setActiveStep} = useSteps({
 		steps,
 		initialStep: 0,
 	});
+
+    useEffect(() => {
+        if (user) return <Navigate to="/" />;
+    }, [user]);
 	
 	const onSubmit = async (data) => {
 		data = {
@@ -46,10 +48,22 @@ function ClinicRegistry() {
 			image: image,
 			placeId: place.placeId,
 		}
-		await register_clinic(data);
-		console.log(data);
-		
-		return true
+        const password = data["password"];
+        const confirm_password = data["confirm_password"];
+        
+        if (password !== confirm_password) {
+            alert("Passwords do not match!");
+            return;
+        }
+        const res = await registerUser(data);
+        
+		if (res) {
+			if (res.error) {
+				setError(res.error);
+			}
+		} else {
+			setError("An error occurred. Please try again later.");
+		}
 	}
 	
 	const onNext = () => {
@@ -65,17 +79,14 @@ function ClinicRegistry() {
 			case 1:
 				console.log("Step 2");
 				trigger(["clinic_name", "address", "phone", "start_time", "end_time", "start_day", "end_day"]).then(r => {
-					if (r && image) {
-						setActiveStep(activeStep + 1);
-					} else {
-						alert("Please fill in all the fields")
-					}
-				});
-				break;
-			case 2:
-				onSubmit(form.getValues()).then(r => {
 					if (r) {
-						alert("Clinic registered successfully");
+                        onSubmit(form.getValues()).then(r => {
+                            if (r) {
+                                alert("Clinic registered successfully");
+                            } else {
+                                alert("Please fill in all the fields")
+                            }
+                        });
 					} else {
 						alert("Please fill in all the fields")
 					}
@@ -212,4 +223,4 @@ function ClinicRegistry() {
 	);
 }
 
-export default ClinicRegistry;
+export default PatientRegistry;
