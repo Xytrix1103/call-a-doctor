@@ -14,6 +14,7 @@ import {
 	InputRightElement,
 	Select,
 	Text,
+    Textarea
 } from '@chakra-ui/react';
 import {useRef, useState} from "react";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
@@ -98,7 +99,7 @@ function AddDoctorToList() {
 	}
 	
 	return (
-        <Center h="100%" bg="#f4f4f4">
+        <Center w="full" h="auto" bg="#f4f4f4">
             <Box
                 w="85%"
                 h="auto"
@@ -124,7 +125,7 @@ function AddDoctorToList() {
                             <Box>
                                 <FormControl isInvalid={errors.name} id="name">
                                     <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                        Name
+                                        Name <Text as="span" color="red.500" fontWeight="bold">*</Text>
                                     </FormLabel>
                                     <Input
                                         variant="filled"
@@ -155,7 +156,7 @@ function AddDoctorToList() {
                                 <Box flex="1" mr={4}>
                                     <FormControl isInvalid={errors.age} id='age'>
                                         <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                            Age
+                                            Age <Text as="span" color="red.500" fontWeight="bold">*</Text>
                                         </FormLabel>
                                         <InputGroup size="md">
                                             <Input
@@ -208,9 +209,95 @@ function AddDoctorToList() {
                                 </Box>
                             </Flex>
                             <Box>
+                                <FormControl isInvalid={errors.phone}>
+                                    <FormLabel mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
+                                        Contact Number <Text as="span" color="red.500" fontWeight="bold">*</Text>
+                                    </FormLabel>
+                                    <Input
+                                        variant="filled"
+                                        type="tel"
+                                        id="phone"
+                                        {
+                                            ...register("phone", {
+                                                required: "Contact number is required",
+                                            })
+                                        }
+                                        placeholder="012-345-6789"
+                                        rounded="xl"
+                                        borderWidth="1px"
+                                        borderColor="gray.300"
+                                        color="gray.900"
+                                        size="md"
+                                        focusBorderColor="blue.500"
+                                        p={2.5}
+                                    />
+                                    <FormErrorMessage>
+                                        {errors.phone && errors.phone.message}
+                                    </FormErrorMessage>
+                                </FormControl>
+                            </Box>
+                            <Box>
+                                <FormControl isInvalid={errors.qualification}>
+                                    <FormLabel mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
+                                        Qualifications <Text as="span" color="red.500" fontWeight="bold">*</Text>
+                                    </FormLabel>
+                                    <Input
+                                        variant="filled"
+                                        type="text"
+                                        id="qualification"
+                                        {
+                                            ...register("qualification", {
+                                                required: "Qualifications are required",
+                                            })
+                                        }
+                                        placeholder="Please enter your qualifications..."
+                                        rounded="xl"
+                                        borderWidth="1px"
+                                        borderColor="gray.300"
+                                        color="gray.900"
+                                        size="md"
+                                        focusBorderColor="blue.500"
+                                        p={2.5}
+                                    />
+                                    <FormErrorMessage>
+                                        {errors.qualification && errors.qualification.message}
+                                    </FormErrorMessage>
+                                </FormControl>
+                            </Box>
+                            <Box mb={2} mt={6}>
+                                <FormControl isInvalid={errors.introduction}>
+                                    <FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
+                                        Introduction <Text as="span" color="red.500" fontWeight="bold">*</Text>
+                                    </FormLabel>
+                                    <Textarea
+                                        variant="filled"
+                                        name="introduction"
+                                        id="introduction"
+                                        placeholder="Enter a short description about yourself..."
+                                        rounded="xl"
+                                        borderWidth="1px"
+                                        borderColor="gray.300"
+                                        color="gray.900"
+                                        size="md"
+                                        focusBorderColor="blue.500"
+                                        w="full"
+                                        p={2.5}
+                                        rows={5}
+                                        {
+                                            ...register("introduction", {
+                                                required: "Introduction cannot be empty",
+                                            })
+                                        }
+                                    />
+                                    <FormErrorMessage>
+                                        {errors.introduction && errors.introduction.message}
+                                    </FormErrorMessage>
+                                </FormControl>
+                            </Box>
+                            <Box>
                                 <FormControl isInvalid={errors.email}>
                                     <FormLabel mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
-                                        Email
+                                        Email <Text as="span" color="red.500" fontWeight="bold">*</Text>
                                     </FormLabel>
                                     <Input
                                         variant="filled"
@@ -238,7 +325,7 @@ function AddDoctorToList() {
                             <Box>
                                 <FormControl isInvalid={errors.password}>
                                     <FormLabel mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900">
-                                        Password
+                                        Password <Text as="span" color="red.500" fontWeight="bold">*</Text>
                                     </FormLabel>
                                     <InputGroup size='md'>
                                         <Input
@@ -289,77 +376,77 @@ function AddDoctorToList() {
 									<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
 										Profile Picture
 									</FormLabel>
-									<Box
-										onDragEnter={handleDragEnter}
-										onDragOver={handleDragOver}
-										onDragLeave={handleDragLeave}
-										onDrop={handleDrop}
-										rounded="lg"
-										borderWidth="2px"
-										border={"dashed"}
-										borderColor={isDragActive ? "blue.500" : "gray.300"}
-										p={8}
-										textAlign="center"
-										position={"relative"}
-										cursor="pointer"
-									>
-										<Input
-											type="file"
-											accept="image/*"
-											opacity={0}
-											width="100%"
-											height="100%"
-											position="absolute"
-											top={0}
-											left={0}
-											zIndex={1}
-											cursor="pointer"
+                                    <Box
+                                        onDragEnter={handleDragEnter}
+                                        onDragOver={handleDragOver}
+                                        onDragLeave={handleDragLeave}
+                                        onDrop={handleDrop}
+                                        rounded="lg"
+                                        borderWidth="2px"
+                                        border={"dashed"}
+                                        borderColor={isDragActive ? "blue.500" : "gray.300"}
+                                        p={8}
+                                        textAlign="center"
+                                        position={"relative"}
+                                        cursor="pointer"
+                                    >
+                                        <Input
+                                            type="file"
+                                            accept="image/*"
+                                            opacity={0}
+                                            width="100%"
+                                            height="100%"
+                                            position="absolute"
+                                            top={0}
+                                            left={0}
+                                            zIndex={1}
+                                            cursor="pointer"
                                             isRequired
-											ref={imageRef}
-											onChange={handleFileInputChange}
-										/>
-										<Flex direction="column" alignItems="center">
-											<BsFillCloudArrowDownFill
-												onDragEnter={handleDragEnter}
-												onDragOver={handleDragOver}
-												onDragLeave={handleDragLeave}
-												onDrop={handleDrop}
-												size={32}
-												color={isDragActive ? "blue" : "gray"}
-											/>
-											<Text mb={2} fontSize="sm" fontWeight="semibold">
-												{isDragActive ? "Drop the file here" : "Drag & Drop or Click to upload"}
-											</Text>
-											<Text fontSize="xs" color="gray.500">
-												(SVG, PNG, JPG, or JPEG)
-											</Text>
-										</Flex>
-									</Box>
-								</Box>
-								<Box
-									w="full"
-									h="auto"
-									id="preview-image-container"
-									bg={!imageSrc ? "gray.200" : "transparent"}
-									rounded="lg"
-									display="flex"
-									flexDir="column"
-									alignItems="center"
-									justifyContent="center"
-									mt={8}
-									ref={previewImageContainerRef}
-								>
-									<Image
-										id="preview-image"
-										src={imageSrc || ""}
-										alt="Preview"
-										display={imageSrc ? "block" : "none"}
-										ref={previewImageRef}
-										w="full"
-										h="full"
-										objectFit="cover"
-									/>
-								</Box>
+                                            ref={imageRef}
+                                            onChange={handleFileInputChange}
+                                        />
+                                        <Flex direction="column" alignItems="center">
+                                            <BsFillCloudArrowDownFill
+                                                onDragEnter={handleDragEnter}
+                                                onDragOver={handleDragOver}
+                                                onDragLeave={handleDragLeave}
+                                                onDrop={handleDrop}
+                                                size={32}
+                                                color={isDragActive ? "blue" : "gray"}
+                                            />
+                                            <Text mb={2} fontSize="sm" fontWeight="semibold">
+                                                {isDragActive ? "Drop the file here" : "Drag & Drop or Click to upload"}
+                                            </Text>
+                                            <Text fontSize="xs" color="gray.500">
+                                                (SVG, PNG, JPG, or JPEG)
+                                            </Text>
+                                        </Flex>
+                                    </Box>
+                                </Box>
+                                <Box
+                                    w="full"
+                                    h="auto"
+                                    id="preview-image-container"
+                                    bg={!imageSrc ? "gray.200" : "transparent"}
+                                    rounded="lg"
+                                    display="flex"
+                                    flexDir="column"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    mt={4}
+                                    ref={previewImageContainerRef}
+                                >
+                                    <Image
+                                        id="preview-image"
+                                        src={imageSrc || ""}
+                                        alt="Preview"
+                                        display={imageSrc ? "block" : "none"}
+                                        ref={previewImageRef}
+                                        w="full"
+                                        h="64"
+                                        objectFit="cover"
+                                    />
+                                </Box>
                                 <Box>
                                     <Button
                                         type="submit"
