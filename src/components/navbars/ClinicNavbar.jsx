@@ -1,19 +1,24 @@
-import {Avatar, Flex, Link, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text} from "@chakra-ui/react";
+import {Avatar, Button, Flex, Link, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text} from "@chakra-ui/react";
 import {NavLink} from "react-router-dom";
 import {BiChevronDown} from "react-icons/bi";
+import {logout} from "../../../api/auth.js";
 
 const ClinicNavbar = () => {
+	const handleLogout = () => {
+		logout();
+	};
+
 	return (
 		<Flex
 			as="nav"
 			align="top"
 			padding="1rem"
-			bg="white" // Set the navbar background color to white
+			bg="white"
 			bgColor={"white"}
 			zIndex="999"
 			width="100%"
 			shadow="md"
-			justify="space-between" // Align items to the space between
+			justify="space-between"
 		>
 			<Flex align="center">
 				<Avatar
@@ -35,7 +40,17 @@ const ClinicNavbar = () => {
 				<Menu marginRight={6}>
 					<MenuButton as={Link} color="teal.500" display="flex" alignItems="center">
 						<Flex alignItems="center">
-							<Text>More</Text>
+							<MenuButton
+								as={Button}
+								rounded={'full'}
+								variant={'link'}
+								cursor={'pointer'}
+								minW={0}>
+								<Avatar
+								size={'sm'}
+								src="\src\assets\images\Default_User_Profile.png"
+							/>
+							</MenuButton>
 							<BiChevronDown />
 						</Flex>
 					</MenuButton>
@@ -51,7 +66,7 @@ const ClinicNavbar = () => {
 							Earnings
 						</MenuItem>
 						<MenuDivider />
-						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
+						<MenuItem as={NavLink} onClick={handleLogout} _focus={{ boxShadow: "none" }}>
 							Sign out
 						</MenuItem>
 					</MenuList>

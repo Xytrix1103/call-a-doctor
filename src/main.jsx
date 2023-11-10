@@ -11,23 +11,26 @@ import App from "./App.jsx";
 import {ChakraProvider, extendTheme} from "@chakra-ui/react";
 import {AuthProvider} from "./components/AuthCtx.jsx";
 import Test from './pages/auth/Test.jsx';
-import ClinicRegistry from "./pages/auth/ClinicRegistry.jsx";
+import ClinicRegistry from "./pages/auth/clinic_registry/ClinicRegistry.jsx";
+import PatientRegistry from './pages/auth/patient_registry/PatientRegistry';
 import ClinicList from "./pages/patient/ClinicList.jsx";
 import PatientLayout from "./components/layouts/PatientLayout.jsx";
+import ClinicDetails from './pages/patient/ClinicDetails';
 import ClinicLayout from "./components/layouts/ClinicLayout.jsx";
 import AdminLayout from "./components/layouts/AdminLayout.jsx";
+
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route element={<RootLayout/>}>
 			<Route path="/" element={<Test/>}/>
 			<Route path="login" element={<Login/>}/>
-			<Route path="register" element={<Register/>}/>
+			<Route path="register" element={<PatientRegistry/>}/>
 			<Route path="forgot" element={<></>}/>
 			<Route path="register-clinic" element={<ClinicRegistry/>}/>
 			<Route element={<PatientLayout/>}>
 				<Route path="clinics" element={<ClinicList/>}/>
-				<Route path="clinics/:id" element={<></>}/>
+				<Route path="clinics/:id" element={<ClinicDetails/>}/>
 				<Route path="clinics/:id/request" element={<DoctorRequestForm/>}/>
 			</Route>
 			<Route element={<ClinicLayout/>}>

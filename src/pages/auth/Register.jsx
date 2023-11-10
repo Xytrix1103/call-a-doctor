@@ -10,53 +10,77 @@ import {
     Input,
     InputGroup,
     InputRightElement,
+    FormErrorMessage,
     Link,
     Text,
-    Textarea,
-    VStack
+    Alert,
+    AlertIcon,
+    AlertTitle,
 } from '@chakra-ui/react';
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 import {useEffect, useState} from "react";
-import {register} from "../../../api/auth.js";
+import {register as registerUser} from "../../../api/auth.js";
 import {Navigate} from "react-router-dom";
+import {useForm} from "react-hook-form";
 import {useAuth} from "../../components/AuthCtx.jsx";
 
 function Register() {
+    const {
+		handleSubmit,
+		register,
+		formState: {
+			errors, isSubmitting
+		}
+	} = useForm();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [error, setError] = useState(null);
     const {user} = useAuth();
     
     useEffect(() => {
         if (user) return <Navigate to="/" />;
     }, [user]);
     
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const data = new FormData(e.target);
-        const password = data.get("password");
-        const confirm_password = data.get("confirm_password");
+    const onSubmit = async (data) => {
+        const password = data["password"];
+        const confirm_password = data["confirm_password"];
         
         if (password !== confirm_password) {
             alert("Passwords do not match!");
             return;
         }
-        const res = await register(Object.fromEntries(data.entries()));
+        const res = await registerUser(data);
         
-        if (res.error) {
-            alert(res.error);
-        } else {
-            window.location.href = "/";
-        }
+		if (res) {
+			if (res.error) {
+				setError(res.error);
+			}
+		} else {
+			setError("An error occurred. Please try again later.");
+		}
     }
 
     return (
-        <Center minH="100vh" bg={"#f4f4f4"}>
-            <Box w='67%' my={6}>
+        <Center h="full" bg={"#f4f4f4"}>
+            {
+                error && (
+                    <Alert 
+						status="error"
+						variant="subtle"
+						position="fixed"
+						top="0"
+					>
+                        <AlertIcon />
+                        <AlertTitle mr={2}>Registration failed!  Please try again.</AlertTitle>
+                    </Alert>
+                )
+            }
+            <Box w='85%' my={6}>
                 <Flex 	
                     bg="white"
                     boxShadow="xl"
                     rounded="xl"
-                    p={5}
+                    p={3}
                     gridGap={4}
                     gridTemplateColumns="1fr 1fr"
                 >
@@ -66,28 +90,27 @@ function Register() {
 								Call A Doctor
 							</Text>
 						</Box>
-                        <Box textAlign="center">
+                        <Box textAlign="center" p={10}>
                             <Image
                                 src="/src/assets/svg/register-doctor.svg"
                                 alt="Register"
-                                w="96"
-                                h="96"
+                                w="full"
+                                h="auto"
                             />
                         </Box>
                         <Text textAlign="center" mt="5">
                             Registering a clinic?{' '}
-                            <Link color="blue.500" textDecoration="underline" href="/clinic-registry">
+                            <Link color="blue.500" textDecoration="underline" href="/register-clinic">
                             Register here
                             </Link>
                         </Text>
                     </Box>
                     <Box my={7} mr={5} w="full">
                         <Text fontSize="xl" fontWeight="bold" mb={7}>
-								Register
-							</Text>
-                        <form action="/api/register" method="post" onSubmit={handleSubmit}>
-                            <VStack spacing="5">
-                                <FormControl id="name">
+                            Register
+                        </Text>
+                        <form action="/api/register" method="post" onSubmit={handleSubmit(onSubmit)}>
+                                <FormControl mb={2} mt={7} fontSize="sm" fontWeight="medium" color="gray.900" id="name" isInvalid={errors.name}>
                                     <FormLabel>Name</FormLabel>
                                     <Input
                                          variant="filled"
@@ -103,10 +126,18 @@ function Register() {
                                          focusBorderColor="blue.500"
                                          w="full"
                                          p={2.5}
-                                         isRequired
+                                         {
+                                            ...register("name", {
+                                                required: "Name is required",
+
+                                            })
+                                        }
                                     />
+                                    <FormErrorMessage>
+                                        {errors.name && errors.name.message}
+                                    </FormErrorMessage>
                                 </FormControl>
-                                <FormControl id="email">
+                                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="email" isInvalid={errors.email}>
                                     <FormLabel>Email</FormLabel>
                                     <Input
                                         variant="filled"
@@ -122,29 +153,45 @@ function Register() {
                                         focusBorderColor="blue.500"
                                         w="full"
                                         p={2.5}
-                                        isRequired
+                                        {
+                                            ...register("email", {
+                                                required: "Email is required",
+
+                                            })
+                                        }
                                     />
+                                    <FormErrorMessage>
+                                        {errors.email && errors.email.message}
+                                    </FormErrorMessage>
                                 </FormControl>
-                                <FormControl id="address">
-                                    <FormLabel>Address</FormLabel>
-                                    <Textarea
+                                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900"  id="phone_number" isInvalid={errors.phone_number}>
+                                    <FormLabel>Phone Number</FormLabel>
+                                    <Input
                                         variant="filled"
-                                        name="address"
-                                        id="address"
-                                        placeholder="Enter your address here..."
+                                        type="tel"
+                                        name="phone_number"
+                                        id="phone_number"
+                                        placeholder="+60 12-345 6789"
                                         rounded="xl"
                                         borderWidth="1px"
                                         borderColor="gray.300"
                                         color="gray.900"
                                         size="md"
-                                        isRequired
                                         focusBorderColor="blue.500"
                                         w="full"
                                         p={2.5}
-                                        rows={5}
+                                        {
+                                            ...register("phone_number", {
+                                                required: "Phone Number is required",
+
+                                            })
+                                        }
                                     />
+                                    <FormErrorMessage>
+                                        {errors.phone_number && errors.phone_number.message}
+                                    </FormErrorMessage>
                                 </FormControl>
-                                <FormControl id="password">
+                                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900"  id="password" isInvalid={errors.password}>
                                     <FormLabel>Password</FormLabel>
                                     <InputGroup>
                                         <Input
@@ -162,19 +209,29 @@ function Register() {
                                             w="full"
                                             p={2.5}
                                             pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
-                                            isRequired
+                                            {
+                                                ...register("password", {
+                                                    required: "Password is required",
+    
+                                                })
+                                            }
                                         />
                                         <InputRightElement>
                                             <IconButton aria-label="Show password" size="lg" variant="ghost"
-                                                        icon={showPassword ? <IoMdEyeOff/> : <IoMdEye/>}
-                                                        _focus={{bg: "transparent", borderColor: "transparent", outline: "none"}}
-                                                        _hover={{bg: "transparent", borderColor: "transparent", outline: "none"}}
-                                                        _active={{bg: "transparent", borderColor: "transparent", outline: "none"}}
-                                                        onClick={() => setShowPassword(!showPassword)}/>
+                                                icon={showPassword ? <IoMdEyeOff/> : <IoMdEye/>}
+                                                _focus={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+                                                _hover={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+                                                _active={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                tabIndex="-1"
+                                            />
                                         </InputRightElement>
                                     </InputGroup>
+                                    <FormErrorMessage>
+                                        {errors.password && errors.password.message}
+                                    </FormErrorMessage>
                                 </FormControl>
-                                <FormControl id="confirm_password">
+                                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900"  id="confirm_password" isInvalid={errors.name}>
                                     <FormLabel>Confirm Password</FormLabel>
                                     <InputGroup>
                                         <Input
@@ -192,17 +249,27 @@ function Register() {
                                             w="full"
                                             p={2.5}
                                             pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
-                                            isRequired
+                                            {
+                                                ...register("confirm_password", {
+                                                    required: "Confirm Password is required",
+    
+                                                })
+                                            }
                                         />
                                         <InputRightElement>
                                             <IconButton aria-label="Show password" size="lg" variant="ghost"
-                                                        icon={showConfirmPassword ? <IoMdEyeOff/> : <IoMdEye/>}
-                                                        _focus={{bg: "transparent", borderColor: "transparent", outline: "none"}}
-                                                        _hover={{bg: "transparent", borderColor: "transparent", outline: "none"}}
-                                                        _active={{bg: "transparent", borderColor: "transparent", outline: "none"}}
-                                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}/>
+                                                icon={showConfirmPassword ? <IoMdEyeOff/> : <IoMdEye/>}
+                                                _focus={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+                                                _hover={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+                                                _active={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+                                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                tabIndex="-1"
+                                            />  
                                         </InputRightElement>
                                     </InputGroup>
+                                    <FormErrorMessage>
+                                        {errors.confirm_password && errors.confirm_password.message}
+                                    </FormErrorMessage>
                                 </FormControl>
                                 <Center>
                                     <Text>
@@ -218,12 +285,11 @@ function Register() {
                                     rounded="xl"
                                     px={4}
                                     py={2}
-                                    mt={7}
+                                    mt={8}
                                     w="full"
                                 >
                                     Register
                                 </Button>
-                            </VStack>
                         </form>
                     </Box>
                 </Flex>

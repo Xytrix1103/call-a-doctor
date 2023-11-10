@@ -1,57 +1,137 @@
-import {Box, Flex, Grid, Link, Text,} from '@chakra-ui/react'
+import {
+    Badge,
+    Box,
+    Flex,
+    Image,
+    Input,
+    InputGroup,
+    InputLeftElement,
+    Link,
+    SimpleGrid,
+    Text,
+    VStack
+} from '@chakra-ui/react'
+import {useEffect, useState} from "react";
+import {db} from "../../../api/firebase.js";
+import {BiSearchAlt2} from "react-icons/bi";
+import {onValue, query, ref} from "firebase/database";
 import {NavLink} from "react-router-dom";
-
-const clinics = [
-    // Define your clinic data here
-    { id: 1, name: 'Clinic 1', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
-    { id: 2, name: 'Clinic 2', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
-    { id: 3, name: 'Clinic 3', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
-    { id: 4, name: 'Clinic 4', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
-    { id: 5, name: 'Clinic 5', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
-    { id: 6, name: 'Clinic 6', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
-    { id: 7, name: 'Clinic 7', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
-    { id: 8, name: 'Clinic 8', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
-    { id: 9, name: 'Clinic 9', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
-    { id: 10, name: 'Clinic 10', imageUrl: '/src/assets/images/Picture-Placeholder.jpg' },
-  ];
+import {AiFillStar} from "react-icons/ai";
 
 function ClinicList() {
+    const [clinics, setClinics] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    
+    useEffect(() => {
+        onValue(query(ref(db, "clinics")), (snapshot) => {
+            const clinics = [];
+            snapshot.forEach((childSnapshot) => {
+                clinics.push({
+                    id: childSnapshot.key,
+                    ...childSnapshot.val(),
+                });
+            });
+            console.log(clinics);
+            setClinics(clinics);
+        });
+    }, []);
+
+    const filteredClinics = clinics.filter((clinic) =>
+        clinic.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    
     return (
-        <Grid
-            w="full"
-            h="auto"
-            templateColumns="repeat(4, 1fr)"
-            gap={10}
-            p={2}
-        >
-            {clinics.map((clinic) => (
-                <Link as={NavLink} to={`/patient/clinics/${clinic.id}`} key={clinic.id}>
-                    <Flex
-                        direction="column"
-                        alignItems="center"
-                        justifyContent="flex-end" // Align text to the bottom
-                        bg="white"
-                        w="100%"
-                        h="48"
-                        shadow="lg"
-                        borderRadius="lg"
-                        transition="transform 0.2s"
-                    >
-                        <Box
-                            w="100%"
-                            h="100%" // Set the height for the image
-                            bgImage={`url(${clinic.imageUrl})`} // Set the image
-                            bgSize="cover"
-                            bgPosition="center"
-                            borderTopRadius="8px" // Rounded top corners
-                        />
-                        <Text fontSize="md" fontWeight="bold" margin="0.5rem" maxW={60} isTruncated> {/* Add space between image and text */}
-                            {clinic.name}
-                        </Text>
-                    </Flex>
-                </Link>
-            ))}
-        </Grid>
+        <Box w="full" h="full" p={2} direction="column" mb={4}>
+            <Box
+                w="30%"
+                h="auto"
+                py={2}
+                mb={4}
+            >
+                <InputGroup size="md">
+                    <InputLeftElement
+                        pointerEvents="none"
+                        children={<BiSearchAlt2 color="gray.500" />}
+                    />
+                    <Input
+                        type="text"
+                        placeholder="Search clinics..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        size="md"
+                        focusBorderColor="blue.500"
+                        borderRadius="xl"
+                        borderColor="gray.300"
+                        backgroundColor="white"
+                        color="gray.800"
+                    />
+                </InputGroup>
+            </Box>
+            <Flex w="full" h="auto" pb={6}>
+                <SimpleGrid
+                    columns={[1, 1, 2, 3, 4]}
+                    gap={10}
+                >
+                    {filteredClinics.map((clinic) => (
+                        <Flex bg="white" h="full" shadow="lg" borderRadius="lg" transition="transform 0.2s" _hover={{ transform: 'scale(1.05)', shadow: 'xl' }}>
+                            <Link as={NavLink} to={`/clinics/${clinic.id}`} key={clinic.id} style={{ textDecoration: 'none' }} w="full" h="full">
+                                <VStack w="full" h="full">
+                                    <Image
+                                        w="full"
+                                        h="32"
+                                        fit="cover"
+                                        src={clinic.image}
+                                        alt={clinic.name}
+                                        borderTopRadius="lg"
+                                    />
+                                    <Box px={4} py={3} w="full" h="full">
+                                        <Box display='flex' alignItems='baseline' mb={1}>
+                                            <Badge borderRadius='full' px='2' colorScheme='blue'>
+                                                Immunology
+                                            </Badge>
+                                            <Box
+                                                color='gray.500'
+                                                fontWeight='semibold'
+                                                letterSpacing='wide'
+                                                fontSize='xs'
+                                                textTransform='uppercase'
+                                                ml='2'
+                                            >
+                                                3.75 km away
+                                            </Box>
+                                        </Box>
+                                        
+                                        <Text fontSize="lg" fontWeight="bold" isTruncated w="full">
+                                            {clinic.name}
+                                        </Text>
+                                        
+                                        <Text fontSize="md" fontWeight="md" isTruncated w="full">
+                                            {clinic.address}
+                                        </Text>
+                                        
+                                        <Box display='flex' mt={1} alignItems='center'>
+                                            {
+                                                Array(5)
+                                                    .fill('')
+                                                    .map((_, i) => (
+                                                        <AiFillStar
+                                                            key={i}
+                                                            color={i < 4 ? 'gold' : 'gray'}
+                                                        />
+                                                    ))
+                                            }
+                                            <Box as='span' ml='2' color='gray.600' fontSize='sm'>
+                                                4.0 reviews
+                                            </Box>
+                                        </Box>
+                                    </Box>
+                                </VStack>
+                            </Link>
+                        </Flex>
+                    ))}
+                </SimpleGrid>
+            </Flex>
+        </Box>
     );
 }
 
