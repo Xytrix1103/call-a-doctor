@@ -220,6 +220,10 @@ function AddDoctorToList() {
                                         {
                                             ...register("phone", {
                                                 required: "Contact number is required",
+                                                pattern: {
+                                                    value: /^(\+?\d{1,3}[- ]?)?\d{10}$/,
+                                                    message: "Invalid phone number format",
+                                                },
                                             })
                                         }
                                         placeholder="012-345-6789"
@@ -335,6 +339,10 @@ function AddDoctorToList() {
                                             {
                                                 ...register("password", {
                                                     required: "Password is required",
+                                                    pattern: {
+                                                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                                                        message: "Invalid password format",
+                                                    },            
                                                 })
                                             }
                                             placeholder="•••••••••"
