@@ -375,31 +375,6 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 						</FormErrorMessage>
 					</FormControl>
 				</Box>
-				<Box mb={2} mt={6}>
-					<FormControl isInvalid={errors.panel_firms}>
-						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
-							Panel Firms (Optional)
-						</FormLabel>
-						<Input
-							type="text"
-							variant="filled"
-							name="panel_firm"
-							id="panel_firm"
-							placeholder="Enter clinic panel firms here..."
-							rounded="xl"
-							borderWidth="1px"
-							borderColor="gray.300"
-							color="gray.900"
-							size="md"
-							focusBorderColor="blue.500"
-							w="full"
-							p={2.5}
-							{
-								...register("panel_firms")
-							}
-						/>
-					</FormControl>
-				</Box>
 			</Box>
 			<Box w="full">
 				<FormControl w="full" h="full" display="grid" gridTemplateRows="auto 1fr">

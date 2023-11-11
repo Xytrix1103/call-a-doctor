@@ -388,23 +388,6 @@ function ClinicDetails() {
 								pointerEvents={'none'}
 							/>
 						</Box>
-						<Box mb={3}>
-							<Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.500">
-								Panel Firms
-							</Text>
-							<Textarea
-								fontSize="md"
-								fontWeight="semiBold"
-								border="1px solid #E2E8F0"
-								borderRadius="md"
-								placeholder='No panel firms available'
-								p={2}
-								w="full"
-								readOnly
-								value={data.panel_firms}
-								pointerEvents={'none'}
-							/>
-						</Box>
 						<Flex w="full">
 							<Box w="full">
 								<NavLink to={`/clinics/${id}/request`}>
