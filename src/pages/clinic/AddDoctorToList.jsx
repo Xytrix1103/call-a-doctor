@@ -154,23 +154,23 @@ function AddDoctorToList() {
                             </Box>
                             <Flex alignItems="center" justifyContent="space-between" mt={6}>
                                 <Box flex="1" mr={4}>
-                                    <FormControl isInvalid={errors.age} id='age'>
+                                    <FormControl isInvalid={errors.age} id='date_of_birth'>
                                         <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                            Age <Text as="span" color="red.500" fontWeight="bold">*</Text>
+                                            Date of Birth <Text as="span" color="red.500" fontWeight="bold">*</Text>
                                         </FormLabel>
                                         <InputGroup size="md">
                                             <Input
                                                 variant="filled"
-                                                type="number"
-                                                name="age"
-                                                id="age"
+                                                type="date"
+                                                name="date_of_birth"
+                                                id="date_of_birth"
                                                 rounded="xl"
                                                 borderWidth="1px"
                                                 borderColor="gray.300"
                                                 color="gray.900"
                                                 {
-                                                    ...register("age", {
-                                                        required: "Age is required",
+                                                    ...register("date_of_birth", {
+                                                        required: "Date of birth is required",
                                                     })
                                                 }
                                                 size="md"
@@ -178,7 +178,7 @@ function AddDoctorToList() {
                                             />
                                         </InputGroup>
                                         <FormErrorMessage>
-                                            {errors.age && errors.age.message}
+                                            {errors.date_of_birth && errors.date_of_birth.message}
                                         </FormErrorMessage>  
                                     </FormControl>
                                 </Box>
