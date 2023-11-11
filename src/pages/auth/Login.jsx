@@ -24,6 +24,7 @@ import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 import {useState} from "react";
 import {useForm} from "react-hook-form";
 import {login} from "../../../api/auth.js";
+// import { set } from "lodash";
 
 function Login() {
 	const {
@@ -46,6 +47,8 @@ function Login() {
 		if (res) {
 			if (res.error) {
 				setError(res.error);
+			} else {
+				setError(null);
 			}
 		} else {
 			setError("An error occurred. Please try again later.");
