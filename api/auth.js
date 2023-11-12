@@ -29,7 +29,7 @@ export const register = async (data) => {
 }
 
 export const register_doctor = async (data) => {
-	const {email, password, name, phone = "", address = "", role="Doctor", clinic=null, gender="Male"} = data;
+	const {email, password, name, date_of_birth, qualification, introduction, phone = "", address = "", role="Doctor", clinic=null, gender="Male"} = data;
 	
 	try {
 		const newUser = await createUserWithEmailAndPassword(secondaryAuth, email, password);
@@ -41,6 +41,9 @@ export const register_doctor = async (data) => {
 				password: password,
 				role: role,
 				name: name,
+				dob: date_of_birth,
+				qualification: qualification,
+				introduction: introduction,
 				gender: gender,
 				phone: phone,
 				address: address,

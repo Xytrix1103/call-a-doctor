@@ -14,7 +14,7 @@ import {
 	InputRightElement,
 	Select,
 	Text,
-    Textarea
+	Textarea
 } from '@chakra-ui/react';
 import {useRef, useState} from "react";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
@@ -154,7 +154,7 @@ function AddDoctorToList() {
                             </Box>
                             <Flex alignItems="center" justifyContent="space-between" mt={6}>
                                 <Box flex="1" mr={4}>
-                                    <FormControl isInvalid={errors.age} id='date_of_birth'>
+                                    <FormControl isInvalid={errors.date_of_birth} id='date_of_birth'>
                                         <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
                                             Date of Birth <Text as="span" color="red.500" fontWeight="bold">*</Text>
                                         </FormLabel>
