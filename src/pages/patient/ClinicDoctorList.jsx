@@ -1,12 +1,10 @@
 import {
-    Badge,
     Box,
     Flex,
     Image,
     Input,
     InputGroup,
     InputLeftElement,
-    Link,
     SimpleGrid,
     Divider,
     Text,
@@ -16,14 +14,11 @@ import {useEffect, useState} from "react";
 import {db} from "../../../api/firebase.js";
 import {BiSearchAlt2} from "react-icons/bi";
 import {onValue, query, ref, orderByChild, equalTo} from "firebase/database";
-import {NavLink, useParams} from "react-router-dom";
 import {AiFillStar} from "react-icons/ai";
 import {MdOutlineWork} from "react-icons/md";
 import {FcAbout} from "react-icons/fc";
 
-function ClinicDoctorList() {
-    const {id} = useParams();
-    console.log(id);
+export const ClinicDoctorList = ({clinicId}) => {
     const [doctors, setDoctors] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     
@@ -40,7 +35,7 @@ function ClinicDoctorList() {
                 snapshot.forEach((childSnapshot) => {
                     const user = childSnapshot.val();
                     console.log(user);
-                    if (user.clinic === (id)) { // Filter doctors by clinic ID
+                    if (user.clinic === (clinicId)) { // Filter doctors by clinic ID
                         console.log(user.clinic);
                         doctors.push({
                         id: childSnapshot.key,
@@ -52,7 +47,7 @@ function ClinicDoctorList() {
                 setDoctors(doctors);
             }
         );
-    }, [id]);
+    }, [clinicId]);
 
     const filteredDoctors = doctors.filter((doctor) =>
         doctor.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -87,7 +82,7 @@ function ClinicDoctorList() {
             </Box>
             <Flex w="full" h="auto" pb={6}>
                 <SimpleGrid
-                    columns={[1, 1, 2, 3, 4]}
+                    columns={[1, 1, 2, 3]}
                     gap={10}
                     w="full"
                 >
@@ -186,5 +181,3 @@ function ClinicDoctorList() {
         </Box>
     );
 }
-
-export default ClinicDoctorList;
