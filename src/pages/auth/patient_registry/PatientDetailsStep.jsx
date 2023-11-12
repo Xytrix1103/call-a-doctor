@@ -113,7 +113,7 @@ const PatientDetailsStep = ({form, place}) => {
 									...register("password", {
 										required: "Password cannot be empty",
 										pattern: {
-											value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+											value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%#*?&])[A-Za-z\d@$!%#*?&]{8,}$/,
 											message: "Invalid password format",
 										},
 									})
@@ -177,7 +177,7 @@ const PatientDetailsStep = ({form, place}) => {
 									...register("confirm_password", {
 										required: "Confirm password cannot be empty",
 										pattern: {
-											value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+											value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
 											message: "Invalid password format",
 										},
 									})
