@@ -1,7 +1,4 @@
 import {
-    Alert,
-    AlertIcon,
-    AlertTitle,
     Box,
     Button,
     Center,
@@ -50,33 +47,19 @@ function Register() {
         
 		if (res) {
 			if (res.error) {
-                setError(res.error);
-                setTimeout(() => {
-                    setError(null);
-                }, 5000);
-			} else {
-                setError(null);
-            }
-		} else {
-			setError("An error occurred. Please try again later.");
+                toast({
+                    title: "Registration failed.",
+                    description: "Please try again with valid credentials.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+			}
 		}
     }
 
     return (
         <Center h="full" bg={"#f4f4f4"}>
-            {
-                error && !loading (
-                    <Alert
-						status="error"
-						variant="subtle"
-						position="fixed"
-						top="0"
-					>
-                        <AlertIcon />
-                        <AlertTitle mr={2}>Registration failed!  Please try again.</AlertTitle>
-                    </Alert>
-                )
-            }
             <Box w='85%' my={6}>
                 <Flex 	
                     bg="white"

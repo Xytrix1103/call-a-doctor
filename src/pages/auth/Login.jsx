@@ -32,7 +32,6 @@ function Login() {
 		}
 	} = useForm();
 	const [show, setShow] = useState(false);
-	const [error, setError] = useState(null);
 	const toast = useToast();
 	
 	const onSubmit = async (data) => {
@@ -49,8 +48,6 @@ function Login() {
 					isClosable: true,
 				});
 			}
-		} else {
-			setError("An error occurred. Please try again later.");
 		}
 	}
 
