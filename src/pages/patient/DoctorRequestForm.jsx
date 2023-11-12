@@ -4,18 +4,17 @@ import {
     Center,
     Flex,
     FormControl,
-    FormLabel,
     FormErrorMessage,
+    FormLabel,
     Input,
     Select,
+    Switch,
     Text,
     Textarea,
-    Switch,
 } from '@chakra-ui/react'
 import {useForm} from "react-hook-form";
-import {useRef, useState, useEffect} from "react";
-import {auth, db} from "../../../api/firebase.js";
-import {onValue, query, ref, get} from "firebase/database";
+import {useEffect, useState} from "react";
+import {useAuth} from "../../components/AuthCtx.jsx";
 
 function DoctorRequestForm() {
     const {
@@ -27,48 +26,7 @@ function DoctorRequestForm() {
 		}
 	} = useForm();
     const [usePersonalDetails, setUsePersonalDetails] = useState(false);
-    const [user, setUser] = useState(null);
-
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((authUser) => {
-            if (authUser) {
-                // User is signed in
-                const uid = authUser.uid;
-
-                // Get user data from Realtime Database using the uid
-                const userRef = ref(db, `users/${uid}`);
-
-                get(userRef).then((snapshot) => {
-                    const userData = snapshot.val();
-                    setUser(userData);
-                    console.log(userData);
-                }).catch((error) => {
-                    console.error("Error getting user data:", error);
-                });
-            } else {
-                // User is signed out
-                setUser(null);
-            }
-        });
-    
-        // Cleanup the subscription when the component unmounts
-        return () => unsubscribe();
-    }, []); // Empty dependency array means this effect runs once on mount
-
-    const handleUsePersonalDetailsChange = () => {
-        setUsePersonalDetails(!usePersonalDetails);
-        if (!usePersonalDetails) {
-            setValue("patient_name", user.name);
-            setValue("age", user.dob);
-            setValue("gender", user.gender);
-            setValue("address", user.address);
-        } else {
-            setValue("patient_name", "");
-            setValue("age", "");
-            setValue("gender", "");
-            setValue("address", "");
-        }
-    };
+    const {user, loading} = useAuth();
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
@@ -78,6 +36,18 @@ function DoctorRequestForm() {
 			console.log("Requesting a doctor");
 		}
 	}
+    
+    useEffect(() => {
+        if (usePersonalDetails) {
+            setValue("patient_name", user.name);
+            setValue("date_of_birth", user.dob);
+            setValue("address", user.address);
+        } else {
+            setValue("patient_name", "");
+            setValue("date_of_birth", "");
+            setValue("address", "");
+        }
+    }, [usePersonalDetails]);
 	
     return (
         <Center w="100%" h="100%" bg="#f4f4f4">
@@ -114,9 +84,9 @@ function DoctorRequestForm() {
                             </Text>
                             <Box mx={5}> 
                                 <Switch 
-                                    id='use-personal-details-switch' 
-                                    onChange={handleUsePersonalDetailsChange}
-                                    isChecked={usePersonalDetails}   
+                                    id='use-personal-details-switch'
+                                    onChange={() => setUsePersonalDetails(!usePersonalDetails)}
+                                    isChecked={usePersonalDetails}
                                 />
                             </Box>                            
                         </Flex>
@@ -140,6 +110,7 @@ function DoctorRequestForm() {
                                         }
                                         placeholder="John Doe"
                                         defaultValue=""
+                                        isDisabled={usePersonalDetails}
                                         rounded="xl"
                                         borderWidth="1px"
                                         borderColor="gray.300"
@@ -169,7 +140,7 @@ function DoctorRequestForm() {
                                                     required: "Date of birth cannot be empty",
                                                 })
                                             }
-                                            defaultValue=""
+                                            isDisabled={usePersonalDetails}
                                             rounded="xl"
                                             borderWidth="1px"
                                             borderColor="gray.300"
@@ -198,6 +169,7 @@ function DoctorRequestForm() {
                                             borderColor="gray.300"
                                             color="gray.900"
                                             size="md"
+                                            isDisabled={usePersonalDetails}
                                             focusBorderColor="blue.500"
                                         >
                                             <option value="male">Male</option>
@@ -221,7 +193,7 @@ function DoctorRequestForm() {
                                             })
                                         }
                                         placeholder="123 Main St, New York, NY 10030"
-                                        defaultValue=""
+                                        isDisabled={usePersonalDetails}
                                         rounded="xl"
                                         borderWidth="1px"
                                         borderColor="gray.300"
