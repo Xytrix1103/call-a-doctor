@@ -39,6 +39,9 @@ const AdminNavbar = () => {
 				<Link as={NavLink} color="teal.500" to="/clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
 					Clinic List
 				</Link>
+				<Link as={NavLink} color="teal.500" to="/approve-clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
+					Clinic Approval
+				</Link>
 				<Menu marginRight={6}>
 					<MenuButton as={Link} color="teal.500" display="flex" alignItems="center">
 						<Flex alignItems="center">
