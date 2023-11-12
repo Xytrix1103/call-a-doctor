@@ -1,4 +1,4 @@
-import {Avatar, Flex, Link, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text} from "@chakra-ui/react";
+import {Avatar, Flex, Link, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, Button} from "@chakra-ui/react";
 import {NavLink, useLocation} from "react-router-dom";
 import {BiChevronDown} from "react-icons/bi";
 import {logout} from "../../../api/auth.js";
@@ -39,7 +39,7 @@ const AdminNavbar = () => {
 				<Link as={NavLink} color="teal.500" to="/clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
 					Clinic List
 				</Link>
-				<Link as={NavLink} color="teal.500" to="/approve-clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
+				<Link as={NavLink} color="teal.500" to="/admin/approve-clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
 					Clinic Approval
 				</Link>
 				<Menu marginRight={6}>
