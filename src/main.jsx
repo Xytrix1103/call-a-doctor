@@ -41,7 +41,7 @@ const router = createBrowserRouter(
 				<Route path="doctors" element={<></>}/>
 				<Route path="doctors/add" element={<AddDoctorToList/>}/>
 			</Route>
-			<Route path="/admin" element={<AdminLayout/>}>
+			<Route element={<AdminLayout/>}>
 				<Route path="clinics" element={<></>}/>
 				<Route path="approve-clinics" element={<ClinicRegistryApproval/>}/>
 				<Route path="approve-clinics/:id" element={<ClinicRegistryDetails/>}/>
