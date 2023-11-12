@@ -180,7 +180,7 @@ function ClinicRegistryApproval() {
                                         Clinic Name
                                     </Text>    
                                     <Box ml='auto'>
-                                        <NavLink>
+                                        <NavLink to={`/approve-clinics/1`} >
                                             <Box display='flex' alignItems='center'>
                                                 <Text textDecoration='underline' mr={2}>View Clinic Details</Text>
                                                 <Icon as={BsArrowRight} size={20} />
