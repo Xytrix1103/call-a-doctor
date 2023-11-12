@@ -54,7 +54,9 @@ function Register() {
 		if (res) {
 			if (res.error) {
 				setError(res.error);
-			}
+			} else {
+                setError(null);
+            }
 		} else {
 			setError("An error occurred. Please try again later.");
 		}
