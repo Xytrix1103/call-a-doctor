@@ -18,6 +18,7 @@ import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRend
 import {NavLink, useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
 import {AiFillStar, AiOutlineSend} from "react-icons/ai";
+import {MdKeyboardArrowRight} from "react-icons/md";
 import {FaUserCircle} from "react-icons/fa";
 import {BiLinkExternal} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
@@ -395,12 +396,31 @@ function ClinicDetails() {
 										w={'full'}
 										colorScheme="blue"
 										rounded="xl"
-										mt={6}
+										mt={8}
 									>
 										Send Doctor Request
 									</Button>
 								</NavLink>                                     
 							</Box>
+						</Flex>
+						<Flex w="full" alignItems="center" justifyContent="center">
+							<NavLink 
+								to={`/clinics/${id}/doctors`}
+								w="full"
+							>
+								<Flex alignItems="center" mt={5} >
+									<Text 
+										fontSize="md" 
+										fontWeight="medium" 
+										color="blue.500"
+										mr={2}
+										textDecoration={'underline'}
+									>
+										View List of Doctors 
+									</Text>
+									<MdKeyboardArrowRight size={20} color="blue.500" />
+								</Flex>
+							</NavLink>							
 						</Flex>
 					</Box>
 					<Box mx={5} my={7} w="full">
