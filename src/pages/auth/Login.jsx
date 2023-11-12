@@ -4,26 +4,23 @@ import {
 	Center,
 	Checkbox,
 	Flex,
+	FormControl,
+	FormErrorMessage,
+	FormLabel,
 	IconButton,
 	Image,
 	Input,
 	InputGroup,
-	FormControl,
-	FormLabel,
-	FormErrorMessage,
 	InputRightElement,
-	Text,
-	Alert,
-	AlertIcon,
-	AlertTitle,
-	AlertDescription,
-	CloseButton,
 	Link,
+	Text,
+	useToast
 } from "@chakra-ui/react";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 import {useState} from "react";
 import {useForm} from "react-hook-form";
 import {login} from "../../../api/auth.js";
+
 // import { set } from "lodash";
 
 function Login() {
@@ -36,19 +33,21 @@ function Login() {
 	} = useForm();
 	const [show, setShow] = useState(false);
 	const [error, setError] = useState(null);
-
-	const onClose = () => {
-		setError(null);
-	}
+	const toast = useToast();
 	
 	const onSubmit = async (data) => {
 		const res = await login(data);
+		console.log(res);
 		
 		if (res) {
 			if (res.error) {
-				setError(res.error);
-			} else {
-				setError(null);
+				toast({
+					title: "Login failed.",
+					description: "Please try again with valid credentials.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		} else {
 			setError("An error occurred. Please try again later.");
@@ -57,21 +56,6 @@ function Login() {
 
 	return (
 		<Center h="full" bg={"#f4f4f4"}>
-			{
-                error && (
-                    <Alert 
-						status="error"
-						variant="left-accent"
-						position="fixed"
-						top="0"
-						zIndex={2}
-					>
-                        <AlertIcon />
-						<AlertDescription>Invalid credentials.</AlertDescription>
-						<CloseButton position="absolute" right="8px" top="8px" onClick={onClose}/>
-                    </Alert>
-                )
-            }
 			<Box w="85%">
 				<Flex
 					bg="white"
@@ -205,6 +189,6 @@ function Login() {
 			</Box>
 		</Center>
 	);
-};
+}
 
 export default Login;

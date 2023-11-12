@@ -1,26 +1,26 @@
 import {
+    Alert,
+    AlertIcon,
+    AlertTitle,
     Box,
     Button,
     Center,
     Flex,
     FormControl,
+    FormErrorMessage,
     FormLabel,
     IconButton,
     Image,
     Input,
     InputGroup,
     InputRightElement,
-    FormErrorMessage,
     Link,
     Text,
-    Alert,
-    AlertIcon,
-    AlertTitle,
+    useToast
 } from '@chakra-ui/react';
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {register as registerUser} from "../../../api/auth.js";
-import {Navigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {useAuth} from "../../components/AuthCtx.jsx";
 
@@ -35,11 +35,8 @@ function Register() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState(null);
-    const {user} = useAuth();
-    
-    useEffect(() => {
-        if (user) return <Navigate to="/" />;
-    }, [user]);
+    const {user, loading} = useAuth();
+    const toast = useToast();
     
     const onSubmit = async (data) => {
         const password = data["password"];
@@ -53,7 +50,10 @@ function Register() {
         
 		if (res) {
 			if (res.error) {
-				setError(res.error);
+                setError(res.error);
+                setTimeout(() => {
+                    setError(null);
+                }, 5000);
 			} else {
                 setError(null);
             }
@@ -65,8 +65,8 @@ function Register() {
     return (
         <Center h="full" bg={"#f4f4f4"}>
             {
-                error && (
-                    <Alert 
+                error && !loading (
+                    <Alert
 						status="error"
 						variant="subtle"
 						position="fixed"
