@@ -1,9 +1,14 @@
 import {
+	Alert,
+	AlertDescription,
+	AlertIcon,
 	Box,
 	Button,
 	Center,
+	CloseButton,
 	Flex,
 	IconButton,
+	Link,
 	Step,
 	StepDescription,
 	StepIcon,
@@ -13,18 +18,13 @@ import {
 	StepSeparator,
 	StepStatus,
 	StepTitle,
-	Link,
 	Text,
 	useSteps,
-	Alert,
-	AlertIcon,
-	AlertDescription,
-	CloseButton,
 } from '@chakra-ui/react';
 import {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import {useAuth} from "../../../components/AuthCtx.jsx";
-import {useNavigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 import {register as registerUser} from "../../../../api/auth.js";
 import {AiOutlineArrowLeft} from "react-icons/ai";
 import PatientDetailsStep from './PatientDetailsStep';
