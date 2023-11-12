@@ -1,11 +1,7 @@
 import {
-	Alert,
-	AlertDescription,
-	AlertIcon,
 	Box,
 	Button,
 	Center,
-	CloseButton,
 	Flex,
 	IconButton,
 	Link,
@@ -20,6 +16,7 @@ import {
 	StepTitle,
 	Text,
 	useSteps,
+	useToast,
 } from '@chakra-ui/react';
 import {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
@@ -32,12 +29,11 @@ import PatientLocationStep from './PatientLocationStep';
 
 function PatientRegistry() {
 	const [place, setPlace] = useState(null);
-    const [error, setError] = useState(null);
-	const [success, setSuccess] = useState(null);
     const {user} = useAuth();
 	const form = useForm();
 	const {handleSubmit, trigger} = form;
 	const navigate = useNavigate();
+	const toast = useToast();
 	
 	const steps = [
 		{ title: 'First', description: 'Address', component: <PatientLocationStep place={place} setPlace={setPlace}/> },
@@ -53,11 +49,6 @@ function PatientRegistry() {
 		navigate('/login');
 	};
 
-	const onClose = () => {
-		setError(null);
-		setSuccess(null);
-	}
-
     useEffect(() => {
         if (user) return <Navigate to="/" />;
     }, [user]);
@@ -71,20 +62,40 @@ function PatientRegistry() {
         const confirm_password = data["confirm_password"];
         
         if (password !== confirm_password) {
-            alert("Passwords do not match!");
+            toast({
+				title: "Registration failed.",
+				description: "Passwords do not match",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+				position: "top"
+			});
             return;
         }
         const res = await registerUser(data);
         
 		if (res) {
 			if (res.error) {
-				setError(res.error);
+				toast({
+					title: "Registration failed.",
+					description: res.error,
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+					position: "top"
+				});
 			} else {
-				setError(null);
 				return true;
 			}
 		} else {
-			setError("An error occurred. Please try again later.");
+			toast({
+				title: "Registration failed.",
+				description: res.error,
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+				position: "top"
+			});
 			return false;
 		}
 	}
@@ -96,7 +107,14 @@ function PatientRegistry() {
 				if (place) {
 					setActiveStep(activeStep + 1);
 				} else {
-					setError("Please select a location");
+					toast({
+						title: "Failed to proceed to next step.",
+						description: "Please select a location.",
+						status: "error",
+						duration: 3000,
+						isClosable: true,
+						position: "top"
+					});
 				}
 				break;
 			case 1:
@@ -105,13 +123,33 @@ function PatientRegistry() {
 					if (r) {
                         onSubmit(form.getValues()).then(r => {
                             if (r) {
-								setSuccess("User details registered successfully");
+								toast({
+									title: "Registration successful.",
+									status: "success",
+									duration: 3000,
+									isClosable: true,
+									position: "top"
+								});
                             } else {
-                                setError("Please fill in all the fields")
+								toast({
+									title: "Registration failed.",
+									description: "Please fill in all the fields",
+									status: "error",
+									duration: 3000,
+									isClosable: true,
+									position: "top"
+								});
                             }
                         });
 					} else {
-						setError("Please fill in all the fields")
+						toast({
+							title: "Registration failed.",
+							description: "Please fill in all the fields",
+							status: "error",
+							duration: 3000,
+							isClosable: true,
+							position: "top"
+						});
 					}
 				});
 				break;
@@ -142,37 +180,6 @@ function PatientRegistry() {
 	
 	return (
 		<Center w="100%" h="auto" bg="#f4f4f4" p={5}>
-			{
-                error && (
-                    <Alert 
-						status="error"
-						variant="left-accent"
-						position="fixed"
-						top="0"
-						zIndex={2}
-					>
-                        <AlertIcon />
-						<AlertDescription>{error}</AlertDescription>
-						<CloseButton position="absolute" right="8px" top="8px" onClick={onClose}/>
-                    </Alert>
-                )
-
-            }
-			{
-				success && (
-					<Alert
-						status="success"
-						variant="left-accent"
-						position="fixed"
-						top="0"
-						zIndex={2}
-					>
-						<AlertIcon />
-						<AlertDescription>{success}</AlertDescription>
-						<CloseButton position="absolute" right="8px" top="8px" onClick={onClose}/>
-					</Alert>
-				)
-			}
 			<Flex
 				w="85%"
 				h="full"

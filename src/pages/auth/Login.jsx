@@ -44,8 +44,9 @@ function Login() {
 					title: "Login failed.",
 					description: "Please try again with valid credentials.",
 					status: "error",
-					duration: 5000,
+					duration: 3000,
 					isClosable: true,
+					position: "top"
 				});
 			}
 		}
