@@ -14,7 +14,6 @@ import Test from './pages/auth/Test.jsx';
 import ClinicRegistry from "./pages/auth/clinic_registry/ClinicRegistry.jsx";
 import PatientRegistry from './pages/auth/patient_registry/PatientRegistry';
 import ClinicList from "./pages/patient/ClinicList.jsx";
-import ClinicDoctorList from './pages/patient/ClinicDoctorList';
 import PatientLayout from "./components/layouts/PatientLayout.jsx";
 import ClinicDetails from './pages/patient/ClinicDetails';
 import ClinicLayout from "./components/layouts/ClinicLayout.jsx";
@@ -33,7 +32,6 @@ const router = createBrowserRouter(
 				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="clinics/:id" element={<ClinicDetails/>}/>
 				<Route path="clinics/:id/request" element={<DoctorRequestForm/>}/>
-				<Route path="clinics/:id/doctors" element={<ClinicDoctorList/>}/>
 			</Route>
 			<Route element={<ClinicLayout/>}>
 				<Route path="patients" element={<></>}/>
