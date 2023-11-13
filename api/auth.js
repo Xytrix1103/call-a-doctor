@@ -3,11 +3,9 @@ import {auth, db} from "./firebase.js";
 import {ref, set} from "firebase/database";
 
 export const register = async (data) => {
-	const {email, password, name, gender, phone = "", address = "", role="Patient", clinic=null} = data;
+	const {email, password, name, date_of_birth="", phone = "", address = "", role="Patient", clinic=null} = data;
 	
-	try {
-		const newUser = await createUserWithEmailAndPassword(auth, email, password);
-		
+	return await createUserWithEmailAndPassword(auth, email, password).then(async (newUser) => {
 		if (newUser) {
 			await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
@@ -15,22 +13,49 @@ export const register = async (data) => {
 				password: password,
 				role: role,
 				name: name,
-				gender: gender,
+				dob: date_of_birth,
 				phone: phone,
 				address: address,
 				clinic: clinic
 			});
 			return newUser.user;
+		} else {
+			return {error: "Error creating user"};
 		}
-	} catch (error) {
+	})
+	.catch((error) => {
 		console.log(error);
-	}
-	return false;
+		return {error: error};
+	});
+}
+
+export const register_clinic_admin = async (data) => {
+	const {email, password, name, role="ClinicAdmin", clinic=null} = data;
+	
+	return await createUserWithEmailAndPassword(auth, email, password).then(async (newUser) => {
+		if (newUser) {
+			await set(ref(db, `users/${newUser.user.uid}`), {
+				uid: newUser.user.uid,
+				email: newUser.user.email,
+				password: password,
+				role: role,
+				name: name,
+				clinic: clinic
+			});
+			return newUser.user;
+		} else {
+			return {error: "Error creating user"};
+		}
+	})
+	.catch((error) => {
+		console.log(error);
+		return {error: error};
+	});
 }
 
 export const login = async (cred) => {
 	const {email, password} = cred;
-	await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+	return await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
 		return userCredential.user;
 	}).catch((error) => {
 		console.log(error);
