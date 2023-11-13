@@ -3,6 +3,7 @@ import {
 	Button,
 	Center,
 	Flex,
+	IconButton,
 	Step,
 	StepDescription,
 	StepIcon,
@@ -12,19 +13,18 @@ import {
 	StepSeparator,
 	StepStatus,
 	StepTitle,
-	IconButton,
-	useSteps,
 	Text,
+	useSteps,
 	useToast,
 } from '@chakra-ui/react';
 import {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import {useNavigate} from "react-router-dom";
-import {register_clinic} from "../../../../api/clinic_registry.js";
 import {AiOutlineArrowLeft} from "react-icons/ai";
 import ClinicLocationStep from "./ClinicLocationStep.jsx";
 import ClinicDetailsStep from "./ClinicDetailsStep.jsx";
 import ClinicAdminStep from "./ClinicAdminStep.jsx";
+import {register_clinic_request} from "../../../../api/clinic_registry.js";
 
 function ClinicRegistry() {
 	const [place, setPlace] = useState(null);
@@ -55,7 +55,7 @@ function ClinicRegistry() {
 			image: image,
 			placeId: place.placeId,
 		}
-		await register_clinic(data);
+		await register_clinic_request(data);
 		console.log(data);
 		
 		return true
