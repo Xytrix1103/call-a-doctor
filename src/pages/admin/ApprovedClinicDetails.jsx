@@ -170,7 +170,7 @@ function Map({ placeId, onDistanceChange }) {
 	);
 }
 
-function ClinicRegistryDetails() {
+function ApprovedClinicDetails() {
 	const [data, setData] = useState({});
 	const {id} = useParams();
     
@@ -207,7 +207,7 @@ function ClinicRegistryDetails() {
 						<Flex alignItems="center">
 							<Box
 								w="28"
-								bgImage={data.image ? data.image : 'https://source.unsplash.com/random'}
+								bgImage={data.image}
 								bgSize="cover"
 								bgPosition="center"
 								rounded={'lg'}
@@ -217,7 +217,7 @@ function ClinicRegistryDetails() {
 							</Box>
 							<Box>
 								<Text fontSize="xl" fontWeight="semibold" letterSpacing="wide">
-									{data.name ? data.name : 'No clinic name available'}
+									{data.name}
 								</Text>
 								<Box
 									color="gray.500"
@@ -243,7 +243,23 @@ function ClinicRegistryDetails() {
 								mr={8}
 							>
 								{distance ? distance : "0"} km away from your location
-							</Box>				
+							</Box>
+							<Box display='flex' alignItems='center'>
+								{
+									Array(5)
+										.fill('')
+										.map((_, i) => (
+											<AiFillStar
+												size={20}
+												key={i}
+												color={i < 4 ? 'gold' : 'gray'}
+											/>
+										))
+								}
+								<Box as='span' ml='2' color='gray.600' fontSize='sm'>
+									4.0 reviews
+								</Box>
+							</Box>							
 						</Flex>
 					</Box>
 				</Flex>
@@ -264,11 +280,10 @@ function ClinicRegistryDetails() {
 								pointerEvents="none"
 								tabIndex="-1"
 							>
-								{data.name ? data.name : 'No clinic name available'}
+								{data.name}
 							</Text>
 						</Box>
-
-						<Box>
+                        <Box>
 							<Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.500">
 								Business Registration Number
 							</Text>
@@ -285,7 +300,6 @@ function ClinicRegistryDetails() {
 								{data.business_reg_num ? data.business_reg_num : 'No business registration number available'}
 							</Text>
 						</Box>
-
 						<Flex alignItems="center" justifyContent="space-between">
 							<Box flex="1">
 								<Text fontSize="sm" fontWeight="medium" color="gray.500" mt={6} mb={2}>
@@ -302,7 +316,7 @@ function ClinicRegistryDetails() {
 										pointerEvents="none"
 										tabIndex="-1"
 									>
-										{data.start_time ? data.start_time : '08:00 AM'}
+										{data.start_time}
 									</Text>
 									<Text mx={3} fontSize="md" color="gray.700">
 										to
@@ -317,7 +331,7 @@ function ClinicRegistryDetails() {
 										pointerEvents="none"
 										tabIndex="-1"
 									>
-										{data.end_time ? data.end_time : '10:00 PM'}
+										{data.end_time}
 									</Text>
 								</Flex>
 							</Box>
@@ -336,7 +350,7 @@ function ClinicRegistryDetails() {
 										pointerEvents="none"
 										tabIndex="-1"
 									>
-										{data.start_day ? data.start_day : 'Monday'}
+										{data.start_day}
 									</Text>
 									<Text mx={3} fontSize="md" color="gray.700">
 										to
@@ -351,7 +365,7 @@ function ClinicRegistryDetails() {
 										pointerEvents="none"
 										tabIndex="-1"
 									>
-										{data.end_day ? data.end_day : 'Sunday'}
+										{data.end_day}
 									</Text>
 								</Flex>
 							</Box>
@@ -391,6 +405,23 @@ function ClinicRegistryDetails() {
 								pointerEvents={'none'}
 							/>
 						</Box>
+						<Box mb={3}>
+							<Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.500">
+								Panel Firms
+							</Text>
+							<Textarea
+								fontSize="md"
+								fontWeight="semiBold"
+								border="1px solid #E2E8F0"
+								borderRadius="md"
+								placeholder='No panel firms available'
+								p={2}
+								w="full"
+								readOnly
+								value={data.panel_firms}
+								pointerEvents={'none'}
+							/>
+						</Box>
 					</Box>
 					<Box mx={5} my={7} w="full">
 						<Flex direction="column" alignItems="center">
@@ -403,6 +434,150 @@ function ClinicRegistryDetails() {
 							</Box>
 							
 						</Flex>
+						<Box mt={4}>
+							<Box mt={4} w="full">
+								<Box
+									borderBottom="1px"
+									borderColor="gray.300"
+									mt={4}
+									mb={4}
+								/>
+
+								<Box 
+									mt={4} 
+									maxHeight={300}
+									overflowY='scroll'
+								>
+									<Flex mb={3} w="full">
+										<Avatar size="sm" name="Ryan Florence" src="https://bit.ly/ryan-florence" mr={3} />
+										<Box w="full">
+											<Flex alignItems="center">
+												<Box w="full">
+													<Text fontSize="sm" fontWeight="semibold" letterSpacing="wide">
+														Meow meow
+													</Text>
+												</Box>
+												<Box w="full">
+													<Flex justifyContent="end" alignItems="center">
+														<Box display="flex" alignItems="center">
+															{
+																Array(5)
+																.fill('')
+																.map((_, i) => (
+																	<AiFillStar
+																		size={20}
+																		key={i}
+																		color={i < 2 ? 'gold' : 'gray'}
+																	/>
+																))
+															}
+															<Box as="span" mx="2" color="gray.600" fontSize="sm">
+																2.0
+															</Box>
+														</Box>
+													</Flex>
+												</Box>
+											</Flex>
+											<Box>
+												<Text fontSize="sm" letterSpacing="wide">
+													Meow meow meow! meow meow.. mow mow mow
+													Meow meow meow! meow meow.. mow mow mow
+													Meow meow meow! meow meow.. mow mow mow
+												</Text>
+											</Box>
+										</Box>
+									</Flex>
+
+									<Flex mb={3} w="full">
+										<Avatar size="sm" name="Ryan Florence" src="https://bit.ly/ryan-florence" mr={3} />
+										<Box w="full">
+											<Flex alignItems="center">
+												<Box w="full">
+													<Text fontSize="sm" fontWeight="semibold" letterSpacing="wide">
+														Halp me I am under da water
+													</Text>
+												</Box>
+												<Box w="full">
+													<Flex justifyContent="end" alignItems="center">
+														<Box display="flex" alignItems="center">
+															{
+																Array(5)
+																.fill('')
+																.map((_, i) => (
+																	<AiFillStar
+																		size={20}
+																		key={i}
+																		color={i < 5 ? 'gold' : 'gray'}
+																	/>
+																))
+															}
+															<Box as="span" mx="2" color="gray.600" fontSize="sm">
+																5.0
+															</Box>
+														</Box>
+													</Flex>
+												</Box>
+											</Flex>
+											<Box>
+												<Text fontSize="sm" letterSpacing="wide">
+													Wow!!??!?!?!?! 5-star SHEEEEEEESHERR
+												</Text>
+											</Box>
+										</Box>
+									</Flex>
+
+									<Flex mb={3} w="full">
+										<Avatar size="sm" name="Ryan Florence" src="https://bit.ly/ryan-florence" mr={3} />
+										<Box w="full">
+											<Flex alignItems="center">
+												<Box w="full">
+													<Text fontSize="sm" fontWeight="semibold" letterSpacing="wide">
+														Mike Oxlong
+													</Text>
+												</Box>
+												<Box w="full">
+													<Flex justifyContent="end" alignItems="center">
+														<Box display="flex" alignItems="center">
+															{
+																Array(5)
+																.fill('')
+																.map((_, i) => (
+																	<AiFillStar
+																		size={20}
+																		key={i}
+																		color={i < 4 ? 'gold' : 'gray'}
+																	/>
+																))
+															}
+															<Box as="span" mx="2" color="gray.600" fontSize="sm">
+																4.0
+															</Box>
+														</Box>
+													</Flex>
+												</Box>
+											</Flex>
+											<Box>
+												<Text fontSize="sm" letterSpacing="wide">
+													Super Idol的笑容
+													都没你的甜
+													八月正午的阳光
+													都没你耀眼
+													热爱105°C的你
+													滴滴清纯的蒸馏水
+													Super Idol的笑容
+													都没你的甜
+													八月正午的阳光
+													都没你耀眼
+													热爱105°C的你
+													滴滴清纯的蒸馏水
+												</Text>
+											</Box>
+										</Box>
+									</Flex>
+
+								</Box>
+							</Box>
+						</Box>
 					</Box>
 				</Flex>
 			</Box>
@@ -410,4 +585,4 @@ function ClinicRegistryDetails() {
 	);
 }
 
-export default ClinicRegistryDetails;
+export default ApprovedClinicDetails;

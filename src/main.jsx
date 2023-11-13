@@ -20,6 +20,8 @@ import ClinicLayout from "./components/layouts/ClinicLayout.jsx";
 import AdminLayout from "./components/layouts/AdminLayout.jsx";
 import ClinicRegistryApproval from "./pages/admin/ClinicRegistryApproval.jsx";
 import ClinicRegistryDetails from './pages/admin/ClinicRegistryDetails';
+import ApprovedClinicDetails from './pages/admin/ApprovedClinicDetails';
+import ApprovedClinicList from './pages/admin/ApprovedClinicList';
 
 
 const router = createBrowserRouter(
@@ -41,11 +43,11 @@ const router = createBrowserRouter(
 				<Route path="doctors" element={<></>}/>
 				<Route path="doctors/add" element={<AddDoctorToList/>}/>
 			</Route>
-			<Route element={<AdminLayout/>}>
-				<Route path="clinics" element={<></>}/>
+			<Route path='/admin' element={<AdminLayout/>}>
+				<Route path="clinics" element={<ApprovedClinicList/>}/>
 				<Route path="approve-clinics" element={<ClinicRegistryApproval/>}/>
 				<Route path="approve-clinics/:id" element={<ClinicRegistryDetails/>}/>
-				<Route path="clinics/:id" element={<></>}/>
+				<Route path="clinics/:id" element={<ApprovedClinicDetails/>}/>
 				<Route path="clinics/:id/doctors" element={<></>}/>
 				<Route path="clinics/:id/patients" element={<></>}/>
 				<Route path="doctors" element={<></>}/>
