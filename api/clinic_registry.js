@@ -2,7 +2,7 @@ import {equalTo, get, orderByChild, push, query, ref, set} from "firebase/databa
 import {getDownloadURL, ref as sRef, uploadBytes} from "firebase/storage";
 import {fetchSignInMethodsForEmail} from "firebase/auth";
 import {auth, db, storage} from "./firebase";
-import {register} from "./auth";
+import {register_clinic_admin} from "./auth";
 
 export const register_clinic_request = async (data) => {
 	const {
@@ -79,6 +79,7 @@ export const register_clinic = async (data) => {
 		end_time,
 		start_day,
 		end_day,
+		business_reg_num,
 		phone,
 		address,
 		placeId,
@@ -118,27 +119,35 @@ export const register_clinic = async (data) => {
 				console.log("User already exists");
 				throw {error: "User already exists in Database"};
 			}
-			return register(adminData)
+			return register_clinic_admin(adminData)
 				.then(registerUser => {
-						if (registerUser.error) {
-							throw {error: registerUser.error};
-						} else {
-							uid = registerUser.uid;
+					if (registerUser.error) {
+						throw {error: registerUser.error};
+					} else {
+						uid = registerUser.uid;
+					}
+					
+					return get(query(clinicRef, orderByChild('business_reg_num'), equalTo(business_reg_num)))
+				})
+				.then(existingClinics => {
+					if (existingClinics !== null && existingClinics.exists()) {
+						console.log("Clinic already exists");
+						throw {error: "Clinic already exists in Database"};
+					}
+					return set(newClinicRef, {
+						name: clinic_name,
+						start_time: start_time,
+						end_time: end_time,
+						start_day: start_day,
+						end_day: end_day,
+						contact: phone,
+						address: address,
+						business_reg_num: business_reg_num,
+						placeId: placeId,
+						admins: {
+							[uid]: true
 						}
-						
-						return set(newClinicRef, {
-							name: clinic_name,
-							start_time: start_time,
-							end_time: end_time,
-							start_day: start_day,
-							end_day: end_day,
-							contact: phone,
-							address: address,
-							placeId: placeId,
-							admins: {
-								[uid]: true
-							}
-						})
+					})
 				})
 				.then(() => {
 					console.log("Clinic added to database");
@@ -150,11 +159,11 @@ export const register_clinic = async (data) => {
 				.then(imageURL => {
 					return set(ref(db, `clinics/${newClinicRef.key}/image`), imageURL);
 				})
-				.then(addImageToDb => {
+				.then(() => {
 					console.log("Clinic created");
 					return set(ref(db, `clinics/${newClinicRef.key}/admins/${uid}`), true);
 				})
-				.then(setAdmin => {
+				.then(() => {
 					console.log("Admin user added to clinic");
 					return {success: true};
 				})
