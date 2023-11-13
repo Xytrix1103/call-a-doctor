@@ -4,6 +4,7 @@ import {
 	Center,
 	Flex,
 	IconButton,
+	Link,
 	Step,
 	StepDescription,
 	StepIcon,
@@ -13,14 +14,14 @@ import {
 	StepSeparator,
 	StepStatus,
 	StepTitle,
-	Link,
 	Text,
 	useSteps,
+	useToast,
 } from '@chakra-ui/react';
 import {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import {useAuth} from "../../../components/AuthCtx.jsx";
-import {useNavigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 import {register as registerUser} from "../../../../api/auth.js";
 import {AiOutlineArrowLeft} from "react-icons/ai";
 import PatientDetailsStep from './PatientDetailsStep';
@@ -28,11 +29,11 @@ import PatientLocationStep from './PatientLocationStep';
 
 function PatientRegistry() {
 	const [place, setPlace] = useState(null);
-    const [error, setError] = useState(null);
     const {user} = useAuth();
 	const form = useForm();
 	const {handleSubmit, trigger} = form;
 	const navigate = useNavigate();
+	const toast = useToast();
 	
 	const steps = [
 		{ title: 'First', description: 'Address', component: <PatientLocationStep place={place} setPlace={setPlace}/> },
@@ -61,20 +62,40 @@ function PatientRegistry() {
         const confirm_password = data["confirm_password"];
         
         if (password !== confirm_password) {
-            alert("Passwords do not match!");
+            toast({
+				title: "Registration failed.",
+				description: "Passwords do not match",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+				position: "top"
+			});
             return;
         }
         const res = await registerUser(data);
         
 		if (res) {
 			if (res.error) {
-				setError(res.error);
+				toast({
+					title: "Registration failed.",
+					description: res.error,
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+					position: "top"
+				});
 			} else {
-				setError(null);
 				return true;
 			}
 		} else {
-			setError("An error occurred. Please try again later.");
+			toast({
+				title: "Registration failed.",
+				description: res.error,
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+				position: "top"
+			});
 			return false;
 		}
 	}
@@ -86,7 +107,14 @@ function PatientRegistry() {
 				if (place) {
 					setActiveStep(activeStep + 1);
 				} else {
-					alert("Please select a location")
+					toast({
+						title: "Failed to proceed to next step.",
+						description: "Please select a location.",
+						status: "error",
+						duration: 3000,
+						isClosable: true,
+						position: "top"
+					});
 				}
 				break;
 			case 1:
@@ -95,13 +123,33 @@ function PatientRegistry() {
 					if (r) {
                         onSubmit(form.getValues()).then(r => {
                             if (r) {
-                                alert("User details registered successfully");
+								toast({
+									title: "Registration successful.",
+									status: "success",
+									duration: 3000,
+									isClosable: true,
+									position: "top"
+								});
                             } else {
-                                alert("Please fill in all the fields")
+								toast({
+									title: "Registration failed.",
+									description: "Please fill in all the fields",
+									status: "error",
+									duration: 3000,
+									isClosable: true,
+									position: "top"
+								});
                             }
                         });
 					} else {
-						alert("Please fill in all the fields")
+						toast({
+							title: "Registration failed.",
+							description: "Please fill in all the fields",
+							status: "error",
+							duration: 3000,
+							isClosable: true,
+							position: "top"
+						});
 					}
 				});
 				break;
@@ -112,23 +160,21 @@ function PatientRegistry() {
 
 	const [isContentOverflowing, setContentOverflowing] = useState(false);
 
-	const contentRef = useRef(null); // Create a ref for the content
+	const contentRef = useRef(null); 
 
 	useEffect(() => {
-	  const handleResize = () => {
-		// Check if the content height exceeds the window height
-		if (contentRef.current) {
-			const contentHeight = contentRef.current.getBoundingClientRect().height;
-			const windowHeight = window.innerHeight;
-			setContentOverflowing(contentHeight > windowHeight);
-		}
-	  };
-  
-	  // Add event listener for window resize
-	  window.addEventListener("resize", handleResize);
-  
-	  // Call it initially
-	  handleResize();
+		const handleResize = () => {
+
+			if (contentRef.current) {
+				const contentHeight = contentRef.current.getBoundingClientRect().height;
+				const windowHeight = window.innerHeight;
+				setContentOverflowing(contentHeight > windowHeight);
+			}
+		};
+
+		window.addEventListener("resize", handleResize);
+
+		handleResize();
   
 	}, [activeStep]);
 	

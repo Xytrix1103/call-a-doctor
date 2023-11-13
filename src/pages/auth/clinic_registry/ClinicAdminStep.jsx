@@ -109,10 +109,13 @@ const ClinicAdminStep = ({form}) => {
 								focusBorderColor="blue.500"
 								w="full"
 								p={2.5}
-								pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
 								{
 									...register("password", {
 										required: "Password cannot be empty",
+										pattern: {
+											value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+											message: "Invalid password format",
+										},
 									})
 								}
 							/>
@@ -170,10 +173,13 @@ const ClinicAdminStep = ({form}) => {
 								focusBorderColor="blue.500"
 								w="full"
 								p={2.5}
-								pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
 								{
 									...register("confirm_password", {
 										required: "Confirm password cannot be empty",
+										pattern: {
+											value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+											message: "Invalid password format",
+										},
 									})
 								}
 							/>
