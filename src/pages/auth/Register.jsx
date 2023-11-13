@@ -4,23 +4,20 @@ import {
     Center,
     Flex,
     FormControl,
+    FormErrorMessage,
     FormLabel,
     IconButton,
     Image,
     Input,
     InputGroup,
     InputRightElement,
-    FormErrorMessage,
     Link,
     Text,
-    Alert,
-    AlertIcon,
-    AlertTitle,
+    useToast
 } from '@chakra-ui/react';
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {register as registerUser} from "../../../api/auth.js";
-import {Navigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {useAuth} from "../../components/AuthCtx.jsx";
 
@@ -35,11 +32,8 @@ function Register() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState(null);
-    const {user} = useAuth();
-    
-    useEffect(() => {
-        if (user) return <Navigate to="/" />;
-    }, [user]);
+    const {user, loading} = useAuth();
+    const toast = useToast();
     
     const onSubmit = async (data) => {
         const password = data["password"];
@@ -53,30 +47,19 @@ function Register() {
         
 		if (res) {
 			if (res.error) {
-				setError(res.error);
-			} else {
-                setError(null);
-            }
-		} else {
-			setError("An error occurred. Please try again later.");
+                toast({
+                    title: "Registration failed.",
+                    description: "Please try again with valid credentials.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+			}
 		}
     }
 
     return (
         <Center h="full" bg={"#f4f4f4"}>
-            {
-                error && (
-                    <Alert 
-						status="error"
-						variant="subtle"
-						position="fixed"
-						top="0"
-					>
-                        <AlertIcon />
-                        <AlertTitle mr={2}>Registration failed!  Please try again.</AlertTitle>
-                    </Alert>
-                )
-            }
             <Box w='85%' my={6}>
                 <Flex 	
                     bg="white"
