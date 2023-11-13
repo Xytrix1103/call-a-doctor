@@ -345,6 +345,35 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 					</FormControl>
 				</Box>
 				<Box mb={2} mt={6}>
+					<FormControl isInvalid={errors.business_reg_num}>
+						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
+							Business Registration Number <Text as="span" color="red.500" fontWeight="bold">*</Text>
+						</FormLabel>
+						<Input
+							variant="filled"
+							type="text"
+							id="business_reg_num"
+							{
+								...register("business_reg_num", {
+									required: "Business registration number cannot be empty",
+								})
+							}
+							placeholder="1234567890"
+							rounded="xl"
+							borderWidth="1px"
+							borderColor="gray.300"
+							color="gray.900"
+							size="md"
+							focusBorderColor="blue.500"
+							w="full"
+							p={2.5}
+						/>
+						<FormErrorMessage>
+							{errors.business_reg_num && errors.business_reg_num.message}
+						</FormErrorMessage>
+					</FormControl>
+				</Box>
+				<Box mb={2} mt={6}>
 					<FormControl isInvalid={errors.address}>
 						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 							Address <Text as="span" color="red.500" fontWeight="bold">*</Text>
@@ -373,31 +402,6 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 						<FormErrorMessage>
 							{errors.address && errors.address.message}
 						</FormErrorMessage>
-					</FormControl>
-				</Box>
-				<Box mb={2} mt={6}>
-					<FormControl isInvalid={errors.panel_firms}>
-						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
-							Panel Firms (Optional)
-						</FormLabel>
-						<Input
-							type="text"
-							variant="filled"
-							name="panel_firm"
-							id="panel_firm"
-							placeholder="Enter clinic panel firms here..."
-							rounded="xl"
-							borderWidth="1px"
-							borderColor="gray.300"
-							color="gray.900"
-							size="md"
-							focusBorderColor="blue.500"
-							w="full"
-							p={2.5}
-							{
-								...register("panel_firms")
-							}
-						/>
 					</FormControl>
 				</Box>
 			</Box>

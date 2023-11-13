@@ -4,24 +4,24 @@ import {
 	Button,
 	Center,
 	Flex,
-	FormControl,
-	Input,
-	InputGroup,
-	InputLeftElement,
-	InputRightElement,
 	Text,
 	Link,
 	HStack,
-	Textarea
+	Textarea,
+	Accordion,
+	AccordionItem,
+	AccordionButton,
+	AccordionPanel,
+	AccordionIcon,
 } from '@chakra-ui/react'
-import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
+import {GoogleMap, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
 import {NavLink, useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
-import {AiFillStar, AiOutlineSend} from "react-icons/ai";
-import {FaUserCircle} from "react-icons/fa";
+import {AiFillStar} from "react-icons/ai";
 import {BiLinkExternal} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
+import {ClinicDoctorList} from "./ClinicDoctorList.jsx";
 
 function Map({ placeId, onDistanceChange }) {
 	const mapStyle = {
@@ -173,6 +173,7 @@ function Map({ placeId, onDistanceChange }) {
 function ClinicDetails() {
 	const [data, setData] = useState({});
 	const {id} = useParams();
+	console.log(id);
     
     useEffect(() => {
         onValue(query(ref(db, `clinics/${id}`)), (snapshot) => {
@@ -197,13 +198,13 @@ function ClinicDetails() {
 				bg="white"
 				boxShadow="xl"
 				rounded="xl"
-				p={3}
+				p={10}
 				gridGap={4}
 				gap={6}
 				gridTemplateColumns="1fr 1fr"
 			>
-				<Flex>
-					<Box my={7} mx={5} w="full">
+				<Flex mb={7}>
+					<Box w="full">
 						<Flex alignItems="center">
 							<Box
 								w="28"
@@ -232,7 +233,7 @@ function ClinicDetails() {
 						</Flex>
 					</Box>
 
-					<Box my={7} mx={5} w="full">
+					<Box w="full">
 						<Flex alignItems="center" justifyContent="end">
 							<Box
 								color='gray.500'
@@ -265,7 +266,7 @@ function ClinicDetails() {
 				</Flex>
 				
 				<Flex>
-					<Box mx={5} mb={4} w="full">
+					<Box mb={4} w="full">
 						<Box>
 							<Text mb={2} fontSize="sm" fontWeight="medium" color="gray.500">
 								Clinic Name
@@ -285,7 +286,7 @@ function ClinicDetails() {
 						</Box>
 						<Flex alignItems="center" justifyContent="space-between">
 							<Box flex="1">
-								<Text fontSize="sm" fontWeight="medium" color="gray.500" mt={6} mb={2}>
+								<Text fontSize="sm" fontWeight="medium" color="gray.500" mt={8} mb={2}>
 									Operating Hours
 								</Text>
 								<Flex alignItems="center">
@@ -319,7 +320,7 @@ function ClinicDetails() {
 								</Flex>
 							</Box>
 							<Box flex="1" ml={4}>
-								<Text mt={6} mb={2} fontSize="sm" fontWeight="medium" color="gray.500">
+								<Text mt={8} mb={2} fontSize="sm" fontWeight="medium" color="gray.500">
 									Operating Days
 								</Text>
 								<Flex alignItems="center">
@@ -355,7 +356,7 @@ function ClinicDetails() {
 						</Flex>
 
 						<Box>
-							<Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.500">
+							<Text mb={2} mt={8} fontSize="sm" fontWeight="medium" color="gray.500">
 								Contact Number
 							</Text>
 							<Text
@@ -373,7 +374,7 @@ function ClinicDetails() {
 						</Box>
 
 						<Box>
-							<Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.500">
+							<Text mb={2} mt={8} fontSize="sm" fontWeight="medium" color="gray.500">
 								Address
 							</Text>
 							<Textarea
@@ -388,23 +389,6 @@ function ClinicDetails() {
 								pointerEvents={'none'}
 							/>
 						</Box>
-						<Box mb={3}>
-							<Text mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.500">
-								Panel Firms
-							</Text>
-							<Textarea
-								fontSize="md"
-								fontWeight="semiBold"
-								border="1px solid #E2E8F0"
-								borderRadius="md"
-								placeholder='No panel firms available'
-								p={2}
-								w="full"
-								readOnly
-								value={data.panel_firms}
-								pointerEvents={'none'}
-							/>
-						</Box>
 						<Flex w="full">
 							<Box w="full">
 								<NavLink to={`/clinics/${id}/request`}>
@@ -412,7 +396,7 @@ function ClinicDetails() {
 										w={'full'}
 										colorScheme="blue"
 										rounded="xl"
-										mt={6}
+										mt={14}
 									>
 										Send Doctor Request
 									</Button>
@@ -420,7 +404,7 @@ function ClinicDetails() {
 							</Box>
 						</Flex>
 					</Box>
-					<Box mx={5} my={7} w="full">
+					<Box ml={5} my={7} w="full">
 						<Flex direction="column" alignItems="center">
 							<Box
 								w="full"
@@ -576,6 +560,28 @@ function ClinicDetails() {
 							</Box>
 						</Box>
 					</Box>
+				</Flex>
+
+				<Flex>
+					<Box w='full'>
+						<Accordion
+							allowToggle={true}
+						>
+							<AccordionItem>
+								<h2>
+									<AccordionButton>
+										<Box as="span" flex='1' textAlign='left'>
+											Meet our experts!
+										</Box>
+										<AccordionIcon />
+									</AccordionButton>
+								</h2>				
+								<AccordionPanel>
+									<ClinicDoctorList clinicId={id} />
+								</AccordionPanel>			
+							</AccordionItem>
+						</Accordion>
+					</Box>					
 				</Flex>
 			</Box>
 		</Center>

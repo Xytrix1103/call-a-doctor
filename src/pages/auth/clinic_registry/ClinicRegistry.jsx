@@ -13,8 +13,9 @@ import {
 	StepStatus,
 	StepTitle,
 	IconButton,
-	Text,
 	useSteps,
+	Text,
+	useToast,
 } from '@chakra-ui/react';
 import {useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
@@ -31,6 +32,7 @@ function ClinicRegistry() {
 	const form = useForm();
 	const {handleSubmit, trigger} = form;
 	const [image, setImage] = useState(null);
+	const toast = useToast();
 	
 	const steps = [
 		{ title: 'First', description: 'Clinic Address', component: <ClinicLocationStep place= {place} setPlace={setPlace}/> },
@@ -66,25 +68,66 @@ function ClinicRegistry() {
 				if (place) {
 					setActiveStep(activeStep + 1);
 				} else {
-					alert("Please select a location")
+					toast({
+						title: "Failed to proceed to the next step.",
+						description: "Please select a location",
+						status: "error",
+						duration: 3000,
+						isClosable: true,
+						position: "top"
+					});
 				}
 				break;
 			case 1:
 				console.log("Step 2");
-				trigger(["clinic_name", "address", "phone", "start_time", "end_time", "start_day", "end_day"]).then(r => {
+				trigger(["clinic_name", "address", "phone", "start_time", "end_time", "start_day", "end_day", "business_reg_num"]).then(r => {
 					if (r && image) {
 						setActiveStep(activeStep + 1);
 					} else {
-						alert("Please fill in all the fields")
+						toast({
+							title: "Failed to proceed to the next step.",
+							description: "Please fill in all the fields",
+							status: "error",
+							duration: 3000,
+							isClosable: true,
+							position: "top"
+						});
 					}
 				});
 				break;
 			case 2:
-				onSubmit(form.getValues()).then(r => {
+				console.log("Step 3");
+				trigger(["admin_name", "email", "password", "confirm_password"]).then(r => {
 					if (r) {
-						alert("Clinic registered successfully");
+						onSubmit(form.getValues()).then(r => {
+							if (r) {
+								toast({
+									title: "Registration successful.",
+									status: "success",
+									duration: 3000,
+									isClosable: true,
+									position: "top"
+								});
+							} else {
+								toast({
+									title: "Registration failed.",
+									description: "Please fill in all the fields",
+									status: "error",
+									duration: 3000,
+									isClosable: true,
+									position: "top"
+								});
+							}
+						});
 					} else {
-						alert("Please fill in all the fields")
+						toast({
+							title: "Registration failed.",
+							description: "Please fill in all the fields",
+							status: "error",
+							duration: 3000,
+							isClosable: true,
+							position: "top"
+						});
 					}
 				});
 				break;

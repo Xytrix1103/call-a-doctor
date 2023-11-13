@@ -28,7 +28,7 @@ const PatientDetailsStep = ({form, place}) => {
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	
 	return (
-		<Grid templateColumns="repeat(2, 1fr)" gap={6} w="full" h="full">
+		<Grid templateColumns="repeat(2, 1fr)" gap={6} w="full" h="full" mt={6}>
 			<Box w="full" h="full">
 				<Box w="full">
 					<FormControl isInvalid={errors.name}>
@@ -60,7 +60,7 @@ const PatientDetailsStep = ({form, place}) => {
 					</FormControl>
 				</Box>
 
-				<Box w="full" mt={5}>
+				<Box w="full" mt={6}>
 					<FormControl isInvalid={errors.email}>
 						<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900" requiredIndicator>
 							Email <Text as="span" color="red.500" fontWeight="bold">*</Text>
@@ -89,61 +89,6 @@ const PatientDetailsStep = ({form, place}) => {
 						</FormErrorMessage>
 					</FormControl>
 				</Box>
-
-				<Flex alignItems="center" justifyContent="space-between" mt={5}>
-					<Box flex="1" mr={4}>
-						<FormControl isInvalid={errors.age}>
-							<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900" requiredIndicator>
-								Age <Text as="span" color="red.500" fontWeight="bold">*</Text>
-							</FormLabel>
-							<InputGroup size="md">
-								<Input
-									variant="filled"
-									type="number"
-									name="age"
-									id="age"
-									{
-										...register("age", {
-											required: "Age cannot be empty",
-										})
-									}
-									rounded="xl"
-									borderWidth="1px"
-									borderColor="gray.300"
-									color="gray.900"
-									isRequired
-									size="md"
-									focusBorderColor="blue.500"
-								/>
-							</InputGroup>
-							<FormErrorMessage>
-								{errors.age && errors.age.message}
-							</FormErrorMessage>
-						</FormControl>
-					</Box>
-					<Box flex="1">
-						<FormControl>
-							<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-								Gender
-							</FormLabel>
-							<Select
-								variant="filled"
-								name="gender"
-								id="gender"
-								rounded="xl"
-								borderWidth="1px"
-								isRequired
-								borderColor="gray.300"
-								color="gray.900"
-								size="md"
-								focusBorderColor="blue.500"
-							>
-								<option value="male">Male</option>
-								<option value="female">Female</option>
-							</Select>
-						</FormControl>
-					</Box>
-				</Flex>
 				<Box mb={2} mt={6}>
 					<FormControl id="password" isInvalid={errors.password}>
 						<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
@@ -164,10 +109,13 @@ const PatientDetailsStep = ({form, place}) => {
 								focusBorderColor="blue.500"
 								w="full"
 								p={2.5}
-								pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
 								{
 									...register("password", {
 										required: "Password cannot be empty",
+										pattern: {
+											value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%#*?&])[A-Za-z\d@$!%#*?&]{8,}$/,
+											message: "Invalid password format",
+										},
 									})
 								}
 							/>
@@ -205,7 +153,7 @@ const PatientDetailsStep = ({form, place}) => {
 						}
 					</FormControl>
 				</Box>
-				<Box mb={2} mt={4}>
+				<Box mb={2} mt={6}>
 					<FormControl id="confirm_password" isInvalid={errors.confirm_password}>
 						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 							Confirm Password
@@ -225,10 +173,13 @@ const PatientDetailsStep = ({form, place}) => {
 								focusBorderColor="blue.500"
 								w="full"
 								p={2.5}
-								pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
 								{
 									...register("confirm_password", {
 										required: "Confirm password cannot be empty",
+										pattern: {
+											value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+											message: "Invalid password format",
+										},
 									})
 								}
 							/>
@@ -261,7 +212,61 @@ const PatientDetailsStep = ({form, place}) => {
 				</Box>
 			</Box>
 			<Box w="full" h="full">
-				<Box mb={2}>
+			<Flex alignItems="center" justifyContent="space-between">
+					<Box flex="1" mr={4}>
+						<FormControl isInvalid={errors.date_of_birth}>
+							<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900" requiredIndicator>
+								Date of Birth <Text as="span" color="red.500" fontWeight="bold">*</Text>
+							</FormLabel>
+							<InputGroup size="md">
+								<Input
+									variant="filled"
+									type="date"
+									name="date_of_birth"
+									id="date_of_birth"
+									{
+										...register("date_of_birth", {
+											required: "Date of birth cannot be empty",
+										})
+									}
+									rounded="xl"
+									borderWidth="1px"
+									borderColor="gray.300"
+									color="gray.900"
+									isRequired
+									size="md"
+									focusBorderColor="blue.500"
+								/>
+							</InputGroup>
+							<FormErrorMessage>
+								{errors.date_of_birth && errors.date_of_birth.message}
+							</FormErrorMessage>
+						</FormControl>
+					</Box>
+					<Box flex="1">
+						<FormControl>
+							<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+								Gender
+							</FormLabel>
+							<Select
+								variant="filled"
+								name="gender"
+								id="gender"
+								rounded="xl"
+								borderWidth="1px"
+								isRequired
+								borderColor="gray.300"
+								color="gray.900"
+								size="md"
+								focusBorderColor="blue.500"
+							>
+								<option value="male">Male</option>
+								<option value="female">Female</option>
+							</Select>
+						</FormControl>
+					</Box>
+				</Flex>
+				<Box mb={2} mt={6}>
 					<FormControl fontSize="sm" fontWeight="medium" color="gray.900"  id="phone" isInvalid={errors.phone} requiredIndicator>
 						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 							Contact Number <Text as="span" color="red.500" fontWeight="bold">*</Text>
@@ -283,7 +288,10 @@ const PatientDetailsStep = ({form, place}) => {
 							{
 								...register("phone", {
 									required: "Contact Number is required",
-
+									pattern: {
+										value: /^(\+?\d{1,3}[- ]?)?\d{10}$/,
+										message: "Invalid phone number format",
+									},
 								})
 							}
 						/>
@@ -321,31 +329,6 @@ const PatientDetailsStep = ({form, place}) => {
 						<FormErrorMessage>
 							{errors.address && errors.address.message}
 						</FormErrorMessage>
-					</FormControl>
-				</Box>
-				<Box mb={2} mt={5}>
-					<FormControl isInvalid={errors.panel_firms}>
-						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
-							Panel Firms (Optional)
-						</FormLabel>
-						<Input
-							type="text"
-							variant="filled"
-							name="panel_firm"
-							id="panel_firm"
-							placeholder="Enter clinic panel firms here..."
-							rounded="xl"
-							borderWidth="1px"
-							borderColor="gray.300"
-							color="gray.900"
-							size="md"
-							focusBorderColor="blue.500"
-							w="full"
-							p={2.5}
-							{
-								...register("panel_firms")
-							}
-						/>
 					</FormControl>
 				</Box>
 			</Box>
