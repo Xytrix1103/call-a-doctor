@@ -175,7 +175,7 @@ function ClinicRegistryDetails() {
 	const {id} = useParams();
     
     useEffect(() => {
-        onValue(query(ref(db, `clinics/${id}`)), (snapshot) => {
+        onValue(query(ref(db, `clinic_requests/${id}`)), (snapshot) => {
 	        const data = snapshot.val();
 	        setData(data);
         });
