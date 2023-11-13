@@ -4,15 +4,15 @@ import {
 	Button,
 	Center,
 	Flex,
-	FormControl,
-	Input,
-	InputGroup,
-	InputLeftElement,
-	InputRightElement,
 	Text,
 	Link,
 	HStack,
-	Textarea
+	Textarea,
+	Accordion,
+	AccordionItem,
+	AccordionButton,
+	AccordionPanel,
+	AccordionIcon,
 } from '@chakra-ui/react'
 import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
 import {NavLink, useParams} from 'react-router-dom';
@@ -22,6 +22,7 @@ import {FaUserCircle} from "react-icons/fa";
 import {BiLinkExternal} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
+import {ClinicDoctorList} from "../patient/ClinicDoctorList.jsx";
 
 function Map({ placeId, onDistanceChange }) {
 	const mapStyle = {
@@ -579,6 +580,28 @@ function ApprovedClinicDetails() {
 							</Box>
 						</Box>
 					</Box>
+				</Flex>
+
+				<Flex>
+					<Box w='full'>
+						<Accordion
+							allowToggle={true}
+						>
+							<AccordionItem>
+								<h2>
+									<AccordionButton>
+										<Box as="span" flex='1' textAlign='left'>
+											Meet our experts!
+										</Box>
+										<AccordionIcon />
+									</AccordionButton>
+								</h2>				
+								<AccordionPanel>
+									<ClinicDoctorList clinicId={id} />
+								</AccordionPanel>			
+							</AccordionItem>
+						</Accordion>
+					</Box>					
 				</Flex>
 			</Box>
 		</Center>
