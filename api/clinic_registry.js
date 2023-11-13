@@ -11,6 +11,7 @@ export const register_clinic_request = async (data) => {
 		end_time,
 		start_day,
 		end_day,
+		business_reg_num,
 		phone,
 		address,
 		placeId,
@@ -22,6 +23,7 @@ export const register_clinic_request = async (data) => {
 	
 	const userRef = ref(db, 'users');
 	const clinicRequestRef = ref(db, 'clinic_requests');
+	const clinicRef = ref(db, 'clinics');
 	const newClinicReqRef = push(clinicRequestRef);
 	const storageRef = sRef(storage, `clinics/${newClinicReqRef.key}`);
 	
@@ -37,6 +39,13 @@ export const register_clinic_request = async (data) => {
 			if (existingDBUsers !== null && existingDBUsers.exists()) {
 				console.log("User already exists");
 				throw {error: "User already exists in Database"};
+			}
+			return get(query(clinicRef, orderByChild('business_reg_num'), equalTo(business_reg_num)))
+		})
+		.then(existingClinics => {
+			if (existingClinics !== null && existingClinics.exists()) {
+				console.log("Clinic already exists");
+				throw {error: "Clinic already exists in Database"};
 			}
 			return set(newClinicReqRef, {
 				name: clinic_name,
