@@ -55,6 +55,7 @@ export const register_clinic_request = async (data) => {
 				end_day: end_day,
 				contact: phone,
 				address: address,
+				business_reg_num: business_reg_num,
 				placeId: placeId,
 				admin_name: admin_name,
 				email: email,
