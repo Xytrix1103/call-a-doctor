@@ -119,6 +119,10 @@ function ClinicRegistry() {
 								});
 							}
 						});
+
+						setTimeout(() => {
+							navigate('/login');
+						} , 2000);
 					} else {
 						toast({
 							title: "Registration failed.",
