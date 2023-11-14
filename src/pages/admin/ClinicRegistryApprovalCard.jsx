@@ -17,7 +17,6 @@ import {
     FormControl,
     FormLabel,
     Textarea,
-    FormHelperText,
 } from '@chakra-ui/react'
 import {useState, useEffect} from "react";
 import {db} from "../../../api/firebase.js";
