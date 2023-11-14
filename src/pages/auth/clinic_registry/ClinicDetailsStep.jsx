@@ -17,6 +17,7 @@ import {useRef, useState} from "react";
 const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 	const {
 		register,
+		getValues,
 		formState: {
 			errors
 		}
@@ -279,8 +280,11 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 							color="gray.900"
 							size="md"
 							focusBorderColor="blue.500"
+							{
+								...register("specialist_clinic")
+							}
 						>
-							<option value="None">None</option>
+							<option value="">General (No Specialization)</option>
 							<option value="Allergy and Clinical Immunology">Allergy and Clinical Immunology</option>
 							<option value="Cardiology">Cardiology</option>
 							<option value="Dermatology">Dermatology</option>
