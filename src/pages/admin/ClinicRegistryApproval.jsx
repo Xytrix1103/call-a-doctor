@@ -50,7 +50,7 @@ function ClinicRegistryApproval() {
                         w='full'
                         rounded='lg'
                         background={'#f4f4f4'}
-                        my={6}
+                        my={8}
                         position='relative'
                     >
                         <Box
@@ -102,7 +102,7 @@ function ClinicRegistryApproval() {
                                         <Flex alignItems='center'>
                                             <FaFileSignature size={20} />
                                             <Text fontSize='md' letterSpacing='wide' ml={3} display='flex'>
-                                            <Text fontWeight='medium'>Business Registration Number</Text>: {clinic.business_registration_number}
+                                            <Text fontWeight='medium'>Business Registration Number</Text>: {clinic.business_reg_num}
                                             </Text>                                    
                                         </Flex>
                                     </Box>
