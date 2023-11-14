@@ -12,6 +12,7 @@ export const register_clinic_request = async (data) => {
 		start_day,
 		end_day,
 		business_reg_num,
+		specialist_clinic,
 		phone,
 		address,
 		placeId,
@@ -56,6 +57,7 @@ export const register_clinic_request = async (data) => {
 				contact: phone,
 				address: address,
 				business_reg_num: business_reg_num,
+				specialist_clinic: specialist_clinic,
 				placeId: placeId,
 				admin_name: admin_name,
 				email: email,
@@ -90,6 +92,7 @@ export const register_clinic = async (data) => {
 		start_day,
 		end_day,
 		business_reg_num,
+		specialist_clinic,
 		phone,
 		address,
 		placeId,
@@ -153,6 +156,7 @@ export const register_clinic = async (data) => {
 						contact: phone,
 						address: address,
 						business_reg_num: business_reg_num,
+						specialist_clinic: specialist_clinic !== "" ? specialist_clinic : null,
 						placeId: placeId,
 						admins: {
 							[uid]: true
