@@ -14,6 +14,10 @@ import {
     useDisclosure,
     Button,
     Divider,
+    FormControl,
+    FormLabel,
+    Textarea,
+    FormHelperText,
 } from '@chakra-ui/react'
 import {useState, useEffect} from "react";
 import {db} from "../../../api/firebase.js";
@@ -143,6 +147,7 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
                                 bgColor='green'
                                 size="md"
                                 _hover={{ transform: 'scale(1.1)' }}
+                                _focus={{ boxShadow: 'none', outline: 'none' }}
                                 onClick={onOpenApprove}
                             />
                             <IconButton
@@ -154,11 +159,12 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
                                 bgColor='red'
                                 ml={3}
                                 _hover={{ transform: 'scale(1.1)' }}
+                                _focus={{ boxShadow: 'none', outline: 'none' }}
                                 onClick={onOpenReject}
                             />
                         </Flex>
 
-                        <Modal isCentered isOpen={isOpenApprove} onClose={onCloseApprove}>
+                        <Modal size='xl' isCentered isOpen={isOpenApprove} onClose={onCloseApprove}>
                             <ModalOverlay
                                 bg='blackAlpha.300'
                                 backdropFilter='blur(3px) hue-rotate(90deg)'
@@ -174,10 +180,10 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
                                     <Text fontSize='md' letterSpacing='wide' fontWeight='bold' mb={2}>
                                         Confirm Approval for {clinic.name}?
                                     </Text>
-                                    <Text>
+                                    <Text mb={2}>
                                         Approving {clinic.name} will officially register the clinic in the system.
                                     </Text>
-                                    <Text>This action cannot be undone.</Text>
+                                    <Text fontSize='sm' fontWeight='light' letterSpacing='wide'>This action cannot be undone.</Text>
                                 </ModalBody>
                                 <ModalFooter>
                                     <Box display='flex'>
@@ -188,7 +194,7 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
                             </ModalContent>
                         </Modal>
 
-                        <Modal isCentered isOpen={isOpenReject} onClose={onCloseReject}>
+                        <Modal size='xl' isCentered isOpen={isOpenReject} onClose={onCloseReject}>
                             <ModalOverlay
                                 bg='blackAlpha.200'
                                 backdropFilter='blur(3px) hue-rotate(90deg)'
@@ -204,10 +210,16 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
                                     <Text fontSize='md' letterSpacing='wide' fontWeight='bold' mb={2}>
                                         Confirm Rejection for {clinic.name}?
                                     </Text>
-                                    <Text>
+                                    <Text letterSpacing='wide'>
                                         Rejecting {clinic.name} will decline its registration in the system.
                                     </Text>
-                                    <Text>This action cannot be undone.</Text>
+                                    <FormControl my={2}>
+                                        <FormLabel>
+                                            Reason for Rejection <Text as="span" color="red.500" fontWeight="bold">*</Text>
+                                        </FormLabel>
+                                        <Textarea placeholder='Enter reason for rejection here...' />
+                                    </FormControl>
+                                    <Text fontSize='sm' fontWeight='light' letterSpacing='wide'>This action cannot be undone.</Text>
                                 </ModalBody>
                                 <ModalFooter>
                                     <Box display='flex'>
