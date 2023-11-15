@@ -30,11 +30,8 @@ function ClinicRegistryApproval() {
         <Center h="auto" bg="#f4f4f4">
             <Box
                 w="85%"
-                bg="white"
-                boxShadow="xl"
-                rounded="xl"
-                p={5}
                 h='100%'
+                bg='transparent'
             >
                 <Box m={3}>
                     <Text fontSize='xl' fontWeight='bold' letterSpacing='wide'>Clinic Registry Approval</Text>

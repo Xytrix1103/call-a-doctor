@@ -26,6 +26,7 @@ import {BiSolidPhone} from "react-icons/bi";
 import {BsCalendarDayFill, BsFillClockFill, BsArrowRight} from "react-icons/bs";
 import {FaMapMarkerAlt, FaClinicMedical, FaHospital} from "react-icons/fa";
 import {FaX, FaCheck, FaFileSignature} from "react-icons/fa6";
+import { GoDotFill } from "react-icons/go";
 import { NavLink } from 'react-router-dom';
 
 export const ClinicRegistryApprovalCard = ({ clinicId }) => {
@@ -47,6 +48,7 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
 
     return (
         <Link
+            as={NavLink}
             to={`/admin/approve-clinics/${clinicId}`}
             key={clinic.id}
             _hover={{
@@ -65,6 +67,7 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
                     boxShadow: 'xl',
                     transform: 'scale(1.02)',
                 }}
+                bg='white'
             >
                 <Box
                     minW="80"
@@ -82,7 +85,7 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
                     gridGap={4}
                     gridTemplateColumns="1fr 1fr"
                 >
-                    <Flex px={4} pt={2} direction='column'>
+                    <Flex px={4} pt={3} direction='column' mb={2}>
                         <Box mb={2} w='full'>
                             <Flex alignItems='center'>
                                 <Text fontSize='xl' fontWeight='bold' letterSpacing='wide' ml={3}>
@@ -98,71 +101,78 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
                             </Flex>
                         </Box>
                     </Flex>
+                    
                     <Flex px={4} pt={2}>
                         <Flex direction='column' w='full'>
+                            <Flex alignItems='center' mb={2}>
+                                <Box mb={2} w='full'>
+                                    <Flex alignItems='center' mx={3}>
+                                        <FaFileSignature size={15} />
+                                        <Text fontSize='sm' letterSpacing='wide' ml={4}>
+                                        <Text fontWeight='medium' color='grey'>Registration Number</Text> {clinic.business_reg_num}
+                                        </Text>                                    
+                                    </Flex>
+                                </Box>      
+                                <GoDotFill size={40} color='grey' />
+                                <Box mb={2} w='full' >
+                                    <Flex alignItems='center' justifyContent='center' mx={3}>
+                                        <FaHospital size={20} />
+                                        <Text fontSize='sm' letterSpacing='wide' ml={4} >
+                                        <Text fontWeight='medium' color='grey'>Specialisation</Text> {clinic.specialist_clinic ? clinic.specialist_clinic : "General Clinic"}
+                                        </Text>                                    
+                                    </Flex>
+                                </Box>
+                                <GoDotFill size={40} color='grey' />
+                                <Box mb={2} w='full'>
+                                    <Flex alignItems='center' justifyContent='center' mx={3}>
+                                        <BiSolidPhone size={20} />
+                                        <Text fontSize='sm' letterSpacing='wide' ml={4} >
+                                        <Text fontWeight='medium' color='grey'>Contact</Text> {clinic.contact}
+                                        </Text>                                    
+                                    </Flex>
+                                </Box>                                                        
+                            </Flex>
+
                             <Box mb={2} w='full'>
-                                <Flex alignItems='center'>
-                                    <FaFileSignature size={20} />
-                                    <Text fontSize='md' letterSpacing='wide' ml={3} display='flex'>
-                                    <Text fontWeight='medium'>Business Registration Number</Text>: {clinic.business_reg_num}
+                                <Flex alignItems='center' mx={3}>
+                                    <BsCalendarDayFill size={15} />
+                                    <Text fontSize='sm' letterSpacing='wide' ml={4}>
+                                        <Text fontWeight='medium' color='grey'>Operating Duration</Text> 
+                                        <Text>{clinic.start_day} - {clinic.end_day}</Text>
+                                        <Text>{clinic.start_time} - {clinic.end_time}</Text>
                                     </Text>                                    
                                 </Flex>
-                            </Box>
-                            <Box mb={2} w='full'>
-                                <Flex alignItems='center'>
-                                    <BsCalendarDayFill size={20} />
-                                    <Text fontSize='md' letterSpacing='wide' ml={3} display='flex'>
-                                        <Text fontWeight='medium'>Operating Days</Text>: {clinic.start_day} - {clinic.end_day}
-                                    </Text>                                    
-                                </Flex>
-                            </Box>
-                            <Box mb={2} w='full'>
-                                <Flex alignItems='center'>
-                                    <BsFillClockFill size={20} />
-                                    <Text fontSize='md' letterSpacing='wide' ml={3} display='flex'>
-                                        <Text fontWeight='medium'>Operating Hours</Text>: {clinic.start_time} - {clinic.end_time}
-                                    </Text>                                    
-                                </Flex>
-                            </Box>
-                            <Box mb={2} w='full'>
-                                <Flex alignItems='center'>
-                                    <FaHospital size={20} />
-                                    <Text fontSize='md' letterSpacing='wide' ml={3} >
-                                        {clinic.specialist_clinic ? clinic.specialist_clinic : "General Clinic"}
-                                    </Text>                                    
-                                </Flex>
-                            </Box>
-                            <Box mb={2} w='full'>
-                                <Flex alignItems='center'>
-                                    <BiSolidPhone size={20} />
-                                    <Text fontSize='md' letterSpacing='wide' ml={3} >
-                                        {clinic.contact}
-                                    </Text>                                    
-                                </Flex>
-                            </Box>
-                            <Flex position='absolute' bottom={3} right={3}>
+                            </Box>                           
+
+                            <Flex position='absolute' bottom={4} right={4}>
                                 <IconButton
                                     aria-label="Approve Clinic"
                                     icon={<FaCheck />}
                                     color='white'
                                     variant="solid"
                                     bgColor='green'
-                                    size="md"
+                                    size="lg"
                                     _hover={{ transform: 'scale(1.1)' }}
                                     _focus={{ boxShadow: 'none', outline: 'none' }}
-                                    onClick={onOpenApprove}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        onOpenApprove();
+                                    }}
                                 />
                                 <IconButton
                                     aria-label="Reject Clinic"
                                     icon={<FaX />}
                                     variant="solid"
-                                    size="md"
+                                    size="lg"
                                     color='white'
                                     bgColor='red'
                                     ml={3}
                                     _hover={{ transform: 'scale(1.1)' }}
                                     _focus={{ boxShadow: 'none', outline: 'none' }}
-                                    onClick={onOpenReject}
+                                    onClick={(e) => {
+                                        e.preventDefault(); 
+                                        onOpenReject();
+                                    }}
                                 />
                             </Flex>
 
