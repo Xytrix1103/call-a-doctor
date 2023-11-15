@@ -94,7 +94,6 @@ function UserList() {
     const phoneBodyTemplate = (rowData) => {
         return (
             <Box display='flex' alignItems='center' gap={1}>
-                <Text fontWeight='medium'>+60</Text>
                 {rowData.phone}
             </Box>
         );
