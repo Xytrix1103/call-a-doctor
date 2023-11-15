@@ -7,12 +7,12 @@ import {
 	HStack,
 	Textarea,
 	Divider,
+	IconButton,
 } from '@chakra-ui/react'
 import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
-import {NavLink, useParams} from 'react-router-dom';
+import {NavLink, useParams, useNavigate} from 'react-router-dom';
 import {useEffect, useState} from "react";
-import {AiFillStar, AiOutlineSend} from "react-icons/ai";
-import {FaUserCircle} from "react-icons/fa";
+import {AiOutlineArrowLeft} from "react-icons/ai";
 import {BiLinkExternal} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
@@ -166,7 +166,9 @@ function Map({ placeId, onDistanceChange }) {
 
 function ClinicRegistryDetails() {
 	const [data, setData] = useState({});
+	const [distance, setDistance] = useState(null);	
 	const {id} = useParams();
+	const navigate = useNavigate();
     
     useEffect(() => {
         onValue(query(ref(db, `clinic_requests/${id}`)), (snapshot) => {
@@ -175,13 +177,13 @@ function ClinicRegistryDetails() {
         });
     }, []);
 
-	const [distance, setDistance] = useState(null);
-
 	const handleDistance = (distance) => {
 	  	setDistance(distance); // Set the distance state
 	};
-    
-    console.log(data)
+
+	const handleBack = () => {
+		navigate('/admin/approve-clinics');
+	};
 	
 	return (
 		<Center w="100%" h="auto" bg="#f4f4f4">
@@ -199,6 +201,14 @@ function ClinicRegistryDetails() {
 				<Flex>
 					<Box my={7} mx={5} w="full">
 						<Flex alignItems="center">
+							<Box>
+								<IconButton
+									icon={<AiOutlineArrowLeft />}
+									aria-label="Back"
+									onClick={handleBack}
+									bg="transparent"
+								/>
+							</Box>
 							<Box
 								w="28"
 								bgImage={data.image ? data.image : 'https://source.unsplash.com/random'}
@@ -206,7 +216,7 @@ function ClinicRegistryDetails() {
 								bgPosition="center"
 								rounded={'lg'}
 								h="16"
-								mr={5}
+								mx={5}
 							>
 							</Box>
 							<Box>
