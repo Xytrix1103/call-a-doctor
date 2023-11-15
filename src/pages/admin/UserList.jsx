@@ -368,6 +368,8 @@ function UserList() {
                             _hover={{ bg: 'blue.600' }}
                             _active={{ bg: 'blue.600' }}
                             _focus={{ boxShadow: 'none' }}
+                            as={NavLink}
+                            to={`/admin/add-new-admin`}
                         >
                             Add New Admin
                         </Button>
