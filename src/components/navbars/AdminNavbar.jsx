@@ -33,16 +33,16 @@ const AdminNavbar = () => {
 			</Flex>
 			
 			<Flex alignItems="center">
-				<Link as={NavLink} color="teal.500" to="/" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
+				<Link as={NavLink} color="teal.500" to="/" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }} _hover={{  textDecoration: "none" }}>
 					Home
 				</Link>
-				<Link as={NavLink} color="teal.500" to="/admin/clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
+				<Link as={NavLink} color="teal.500" to="/admin/clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }} _hover={{  textDecoration: "none" }}>
 					Clinic List
 				</Link>
-				<Link as={NavLink} color="teal.500" to="/admin/approve-clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
+				<Link as={NavLink} color="teal.500" to="/admin/approve-clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }} _hover={{  textDecoration: "none" }}>
 					Clinic Approval
 				</Link>
-				<Link as={NavLink} color="teal.500" to="/admin/users" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
+				<Link as={NavLink} color="teal.500" to="/admin/users" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }} _hover={{  textDecoration: "none" }}>
 					Users
 				</Link>
 				<Menu marginRight={6}>
