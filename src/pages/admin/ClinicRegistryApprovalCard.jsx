@@ -107,7 +107,7 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
                             <Flex alignItems='center' mb={2}>
                                 <Box mb={2} w='full'>
                                     <Flex alignItems='center' mx={3}>
-                                        <FaFileSignature size={20} color='#ae00ff'/>
+                                        <FaFileSignature size={20} color='#3f2975'/>
                                         <Text fontSize='sm' letterSpacing='wide' ml={4}>
                                         <Text fontWeight='medium' color='grey'>Registration Number</Text> {clinic.business_reg_num}
                                         </Text>                                    
