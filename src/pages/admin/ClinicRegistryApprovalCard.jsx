@@ -107,25 +107,25 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
                             <Flex alignItems='center' mb={2}>
                                 <Box mb={2} w='full'>
                                     <Flex alignItems='center' mx={3}>
-                                        <FaFileSignature size={15} />
+                                        <FaFileSignature size={20} color='#ae00ff'/>
                                         <Text fontSize='sm' letterSpacing='wide' ml={4}>
                                         <Text fontWeight='medium' color='grey'>Registration Number</Text> {clinic.business_reg_num}
                                         </Text>                                    
                                     </Flex>
                                 </Box>      
-                                <GoDotFill size={40} color='grey' />
+                                <GoDotFill size={40} color='black' />
                                 <Box mb={2} w='full' >
                                     <Flex alignItems='center' justifyContent='center' mx={3}>
-                                        <FaHospital size={20} />
+                                        <FaHospital size={20} color='#ed645a'/>
                                         <Text fontSize='sm' letterSpacing='wide' ml={4} >
                                         <Text fontWeight='medium' color='grey'>Specialisation</Text> {clinic.specialist_clinic ? clinic.specialist_clinic : "General Clinic"}
                                         </Text>                                    
                                     </Flex>
                                 </Box>
-                                <GoDotFill size={40} color='grey' />
+                                <GoDotFill size={40} color='black' />
                                 <Box mb={2} w='full'>
                                     <Flex alignItems='center' justifyContent='center' mx={3}>
-                                        <BiSolidPhone size={20} />
+                                        <BiSolidPhone size={20} color='#3d98ff'/>
                                         <Text fontSize='sm' letterSpacing='wide' ml={4} >
                                         <Text fontWeight='medium' color='grey'>Contact</Text> {clinic.contact}
                                         </Text>                                    
@@ -135,7 +135,7 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
 
                             <Box mb={2} w='full'>
                                 <Flex alignItems='center' mx={3}>
-                                    <BsCalendarDayFill size={15} />
+                                    <BsCalendarDayFill size={20} />
                                     <Text fontSize='sm' letterSpacing='wide' ml={4}>
                                         <Text fontWeight='medium' color='grey'>Operating Duration</Text> 
                                         <Text>{clinic.start_day} - {clinic.end_day}</Text>
