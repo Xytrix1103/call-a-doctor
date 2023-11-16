@@ -21,30 +21,50 @@ const TimelineItem = ({ title, date, description }) => (
   
 
 const VerticalTimeline = ({ events }) => (
-  <Flex direction="column">
-    {events.map((event, index) => (
-      <TimelineItem key={index} {...event} />
-    ))}
-  </Flex>
+    <Flex direction="column">
+        {events.map((event, index) => (
+            <TimelineItem key={index} {...event} />
+        ))}
+    </Flex>
 );
 
 // Example usage
 const events = [
-  {
-    title: 'Event 1',
-    date: '2023-01-01',
-    description: 'Description of event 1.',
-  },
-  {
-    title: 'Event 2',
-    date: '2023-02-01',
-    description: 'Description of event 2.',
-  },
-  {
-    title: 'Event 3',
-    date: '2023-03-01',
-    description: 'Description of event 3.',
-  },
+    {
+        title: 'Event 1',
+        date: '2023-01-01',
+        description: 'Description of event 1.',
+    },
+    {
+        title: 'Event 2',
+        date: '2023-02-01',
+        description: 'Description of event 2.',
+    },
+    {
+        title: 'Event 3',
+        date: '2023-03-01',
+        description: 'Description of event 3.',
+    },
+    {
+        title: 'Event 4',
+        date: '2023-03-01',
+        description: 'Description of event 3.',
+    },
+    {
+        title: 'Event 5',
+        date: '2023-03-01',
+        description: 'Description of event 3.',
+    },
+    {
+        title: 'Event 4',
+        date: '2023-03-01',
+        description: 'Description of event 3.',
+    },
+    {
+        title: 'Event 5',
+        date: '2023-03-01',
+        description: 'Description of event 3.',
+    },
 ];
 
 export const AppointmentTimelineChart = () => (

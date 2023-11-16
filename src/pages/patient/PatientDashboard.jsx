@@ -73,9 +73,6 @@ function PatientDashboard() {
                 <Box w='full' >
                     
                 </Box>
-                <Box w='full' >
-                
-                </Box>
             </Flex>
             <Flex
                 w='30%'
@@ -150,11 +147,27 @@ function PatientDashboard() {
                         </Box>
                     </Flex>
                 </Box>
-                <Flex w='full' direction='column' p={4}>
+                <Flex w='full' direction='column' p={4} maxH={'700px'}>
                     <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide'>
                         Your appointment timeline
                     </Text>
-                    <AppointmentTimelineChart />
+                    <Box 
+                        overflowY={'scroll'}
+                        sx={{ 
+                            '&::-webkit-scrollbar': {
+                              width: '4px',
+                            },
+                            '&::-webkit-scrollbar-thumb': {
+                                backgroundColor: '#c1c9c3',
+                                borderRadius: '8px',
+                            },
+                            '&::-webkit-scrollbar-track': {
+                                backgroundColor: '#f1f1f1',
+                            },
+                        }}
+                    >
+                        <AppointmentTimelineChart />
+                    </Box>
                 </Flex>
             </Flex>
         </Flex>
