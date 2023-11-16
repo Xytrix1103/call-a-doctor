@@ -23,6 +23,7 @@ import ClinicRegistryDetails from './pages/admin/ClinicRegistryDetails';
 import ApprovedClinicDetails from './pages/admin/ApprovedClinicDetails';
 import ApprovedClinicList from './pages/admin/ApprovedClinicList';
 import PatientDashboard from './pages/patient/PatientDashboard';
+import ClinicDashboard from './pages/clinic/ClinicDashboard';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -39,7 +40,7 @@ const router = createBrowserRouter(
 				<Route path="clinics/:id/request" element={<DoctorRequestForm/>}/>
 			</Route>
 			<Route element={<ClinicLayout/>}>
-				<Route path="clinic-dashboard" element={<></>}/>
+				<Route path="clinic-dashboard" element={<ClinicDashboard/>}/>
 				<Route path="patients" element={<></>}/>
 				<Route path="patients/:id" element={<></>}/>
 				<Route path="doctors" element={<></>}/>

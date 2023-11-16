@@ -27,7 +27,7 @@ const RootLayout = () => {
 								<Outlet/>
 							</Box> :
 							(
-								<Navigate to="/home" />
+								<Navigate to="/" />
 							)
 					:
 						user ?

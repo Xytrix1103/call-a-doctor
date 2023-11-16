@@ -14,11 +14,14 @@ import {useAuth} from "../../components/AuthCtx.jsx";
 import {NavLink} from "react-router-dom";
 import {AiFillStar} from "react-icons/ai";
 import {AppointmentTimelineChart} from "../../components/charts/AppointmentTimelineChart.jsx"
-import { TimelineChart } from '../../components/charts/TimelineChart.jsx';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
 
 function PatientDashboard() {
     const {user, loading} = useAuth();
     const [clinics, setClinics] = useState([]);
+    const [appointments, setAppointments] = useState([]);
 
     useEffect(() => {
         const clinicsRef = ref(db, "clinics");
@@ -38,6 +41,24 @@ function PatientDashboard() {
             setClinics(clinics);
         });
     }, []);
+
+    // Function to generate dummy data
+    const generateDummyAppointments = (count) => {
+        const dummyAppointments = [];
+        const clinics = ['Clinic A', 'Clinic B', 'Clinic C'];
+        const prescriptions = ['Prescription A', 'Prescription B', 'Prescription C'];
+        
+        for (let i = 1; i <= count; i++) {
+          dummyAppointments.push({
+            Date: `2023-01-${i < 10 ? '0' + i : i}`, // Assuming January 2023
+            Time: `10:00 AM`, // Assuming the same time for all
+            Clinic: clinics[i % clinics.length], // Rotate through the clinics
+            Prescription: prescriptions[i % prescriptions.length], // Rotate through the prescriptions
+            Rating: Math.floor(Math.random() * 5) + 1, // Random rating between 1 and 5
+          });
+        }
+        return dummyAppointments;
+    };
 
     return (
         <Flex w='full' h='auto' p={6} gap={10} bg="#f4f4f4">
@@ -71,13 +92,23 @@ function PatientDashboard() {
                         </Box>
                     </Flex>
                 </Box>
-                <Box w='full' >
-                    
+                <Box w='full' bg='white' p={5} rounded='lg' boxShadow='lg'>
+                    <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide' mb={4}>
+                        Recent Appointment Details
+                    </Text>
+                    <DataTable value={appointments} removableSort stripedRows showGridlines paginator rows={10} rowsPerPageOptions={[10, 25, 50]}>
+                        <Column field="Date" sortable  header="Date"></Column>
+                        <Column field="Time" sortable  header="Time"></Column>
+                        <Column field="Clinic" sortable  header="Clinic"></Column>
+                        <Column field="Prescription" sortable  header="Prescription"></Column>
+                        <Column field="Rating" sortable  header="Rating"></Column>
+                    </DataTable>                        
                 </Box>
             </Flex>
             <Flex
                 w='30%'
                 direction='column'
+                h='full'
                 bg='white'
                 rounded='lg'
                 boxShadow='lg'
@@ -117,11 +148,11 @@ function PatientDashboard() {
                                                     </Box>
                                                 </Box>
                                                 
-                                                <Text fontSize="lg" fontWeight="bold" isTruncated w="full">
+                                                <Text fontSize="lg" fontWeight="bold" isTruncated w="full" color='black'>
                                                     {clinic.name}
                                                 </Text>
                                                 
-                                                <Text fontSize="md" fontWeight="md" isTruncated w="full">
+                                                <Text fontSize="md" fontWeight="md" isTruncated w="full" color='black'>
                                                     {clinic.address}
                                                 </Text>
                                                 
@@ -168,7 +199,7 @@ function PatientDashboard() {
                             },
                         }}
                     >
-                        <TimelineChart />
+                        <AppointmentTimelineChart />
                     </Box>
                 </Flex>
             </Flex>
