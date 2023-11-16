@@ -14,6 +14,7 @@ import {useAuth} from "../../components/AuthCtx.jsx";
 import {NavLink} from "react-router-dom";
 import {AiFillStar} from "react-icons/ai";
 import {AppointmentTimelineChart} from "../../components/charts/AppointmentTimelineChart.jsx"
+import { TimelineChart } from '../../components/charts/TimelineChart.jsx';
 
 function PatientDashboard() {
     const {user, loading} = useAuth();
@@ -153,6 +154,7 @@ function PatientDashboard() {
                     </Text>
                     <Box 
                         overflowY={'scroll'}
+                        overflowX={'hidden'}
                         sx={{ 
                             '&::-webkit-scrollbar': {
                               width: '4px',
@@ -166,7 +168,7 @@ function PatientDashboard() {
                             },
                         }}
                     >
-                        <AppointmentTimelineChart />
+                        <TimelineChart />
                     </Box>
                 </Flex>
             </Flex>

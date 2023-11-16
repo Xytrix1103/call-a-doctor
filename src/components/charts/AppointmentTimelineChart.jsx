@@ -1,5 +1,6 @@
-import { Box, Flex, Text, Popover, PopoverTrigger, PopoverContent, Divider } from '@chakra-ui/react';
+import { Box, Flex, Text, Popover, PopoverTrigger, PopoverContent, Divider, Avatar } from '@chakra-ui/react';
 import { FaEarthAsia } from "react-icons/fa6";
+import { GoDotFill } from "react-icons/go";
 
 const TimelineItem = ({ title, date, description }) => (
     <Flex mb={4}>
@@ -8,13 +9,39 @@ const TimelineItem = ({ title, date, description }) => (
             <FaEarthAsia size='15' color='blue'/>
             <Box bgColor="blue.500" w="2px" h="40%" my={3} ml={'6px'}/>
         </Box>
-        <Box ml={5} mt={3} p={2} borderWidth="1px" borderRadius="md">
-            <Text fontSize="lg" fontWeight="bold" mb={2}>
-                {title}
-            </Text>
-            <Text color="gray.500" mb={2}>
-                {date}
-            </Text>
+        <Box ml={5} mt={3} p={2} borderWidth="1px" borderRadius="md" w='90%'>
+            <Flex alignItems='center' mb={1} gap={2} maxW='350px' >
+                <Text fontSize="xs" color="gray.700">
+                    {date}
+                </Text>  
+                <GoDotFill size='7' color='gray'/>
+                <Text fontSize="xs" color="gray.700">
+                    10:00 AM
+                </Text>  
+                <GoDotFill size='7' color='gray'/>
+                <Text fontSize="xs" color="gray.700" maxW='150px' isTruncated>
+                    Klinik Menara
+                </Text>  
+            </Flex>
+            <Flex>
+                <Avatar src="\src\assets\images\Default_User_Profile.png" size='sm' mt={1}/>
+                <Box>
+                    <Flex alignItems='center'>
+                        <Box ml={2}>
+                            <Text fontSize="sm" fontWeight="semibold" maxW='300px' isTruncated>
+                                Doctor Name 
+                            </Text>       
+                            <Text fontSize='xs' fontWeight='medium' maxW='300px' isTruncated>
+                                Cardiologist
+                            </Text>        
+                            <Divider my={1} w='290px' />
+                            <Text fontSize='xs' fontWeight='medium' maxW='300px'>
+                                Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description
+                            </Text>               
+                        </Box>                    
+                    </Flex>                    
+                </Box>
+            </Flex>
         </Box>
     </Flex>
 );
