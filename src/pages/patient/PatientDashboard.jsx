@@ -21,6 +21,7 @@ import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.
 function PatientDashboard() {
     const {user, loading} = useAuth();
     const [clinics, setClinics] = useState([]);
+    const [requests, setRequests] = useState([]);
     const [appointments, setAppointments] = useState([]);
 
     useEffect(() => {
@@ -40,6 +41,9 @@ function PatientDashboard() {
             console.log(clinics);
             setClinics(clinics);
         });
+
+        setRequests(generateDummyRequests(10));
+        setAppointments(generateDummyAppointments(10));
     }, []);
 
     // Function to generate dummy data
@@ -50,14 +54,33 @@ function PatientDashboard() {
         
         for (let i = 1; i <= count; i++) {
           dummyAppointments.push({
-            Date: `2023-01-${i < 10 ? '0' + i : i}`, // Assuming January 2023
-            Time: `10:00 AM`, // Assuming the same time for all
-            Clinic: clinics[i % clinics.length], // Rotate through the clinics
-            Prescription: prescriptions[i % prescriptions.length], // Rotate through the prescriptions
-            Rating: Math.floor(Math.random() * 5) + 1, // Random rating between 1 and 5
+            Date: `2023-01-${i < 10 ? '0' + i : i}`, 
+            Time: `10:00 AM`, 
+            Clinic: clinics[i % clinics.length], 
+            Prescription: prescriptions[i % prescriptions.length], 
+            Rating: Math.floor(Math.random() * 5) + 1, 
           });
         }
         return dummyAppointments;
+    };
+
+    // Function to generate dummy data
+    const generateDummyRequests = (count) => {
+        const dummyRequests = [];
+        const clinics = ['Clinic A', 'Clinic B', 'Clinic C'];
+        const approval = ['Pending', 'Accepted', 'Rejected'];
+        const doctors = ['Doctor A', 'Doctor B', 'Doctor C'];
+        
+        for (let i = 1; i <= count; i++) {
+            dummyRequests.push({
+            Date: `2023-01-${i < 10 ? '0' + i : i}`, 
+            Time: `10:00 AM`, 
+            Clinic: clinics[i % clinics.length], 
+            Approval: approval[i % approval.length], 
+            Doctor: doctors[i % doctors.length], 
+            });
+        }
+        return dummyRequests;
     };
 
     return (
@@ -94,9 +117,21 @@ function PatientDashboard() {
                 </Box>
                 <Box w='full' bg='white' p={5} rounded='lg' boxShadow='lg'>
                     <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide' mb={4}>
+                        Appointment Requests
+                    </Text>
+                    <DataTable value={requests} removableSort stripedRows showGridlines paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]}>
+                        <Column field="Date" sortable  header="Date"></Column>
+                        <Column field="Time" sortable  header="Time"></Column>
+                        <Column field="Clinic" sortable  header="Clinic"></Column>
+                        <Column field="Approval" sortable  header="Approval"></Column>
+                        <Column field="Doctor" sortable  header="Doctor"></Column>
+                    </DataTable>
+                </Box>             
+                <Box w='full' bg='white' p={5} rounded='lg' boxShadow='lg'>
+                    <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide' mb={4}>
                         Recent Appointment Details
                     </Text>
-                    <DataTable value={appointments} removableSort stripedRows showGridlines paginator rows={10} rowsPerPageOptions={[10, 25, 50]}>
+                    <DataTable value={appointments} removableSort stripedRows showGridlines paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]}>
                         <Column field="Date" sortable  header="Date"></Column>
                         <Column field="Time" sortable  header="Time"></Column>
                         <Column field="Clinic" sortable  header="Clinic"></Column>
@@ -179,8 +214,8 @@ function PatientDashboard() {
                         </Box>
                     </Flex>
                 </Box>
-                <Flex w='full' direction='column' p={4} maxH={'700px'}>
-                    <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide'>
+                <Flex w='full' direction='column' p={4} maxH={'800px'}>
+                    <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide' mb={3}>
                         Your appointment timeline
                     </Text>
                     <Box 
