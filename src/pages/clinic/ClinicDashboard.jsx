@@ -12,19 +12,27 @@ import {
     VStack,
     Button,
     IconButton,
+    Tabs, 
+    TabList, 
+    TabPanels, 
+    Tab, 
+    TabPanel,
+    Divider,
 } from '@chakra-ui/react';
 import {useRef, useState, useEffect} from "react";
 import {onValue, query, ref, orderByChild, equalTo} from "firebase/database";
 import {db} from "../../../api/firebase.js";
 import {useAuth} from "../../components/AuthCtx.jsx";
 import {NavLink} from "react-router-dom";
-import { FaUser, FaStethoscope, FaStar, FaRegStar } from "react-icons/fa";
-import {BiSearchAlt2} from "react-icons/bi";
+import { FaUser, FaStethoscope, FaStar } from "react-icons/fa";
+import { BiSearchAlt2 } from "react-icons/bi";
+import { GiMedicines } from "react-icons/gi";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { BarChart } from '../../components/charts/BarChart';
 import { DoughnutChart } from '../../components/charts/DoughnutChart';
+import {AppointmentTimelineChart} from "../../components/charts/AppointmentTimelineChart.jsx"
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
 
 function ClinicDashboard() {
@@ -32,6 +40,7 @@ function ClinicDashboard() {
     const clinicId = Object.keys(user.clinic)[0];
     const [clinic, setClinic] = useState('');
     const [doctors, setDoctors] = useState([]);
+    const [doctorsCount, setDoctorsCount] = useState(0);
 
 	const [appointments, setAppointments] = useState([]);
 
@@ -70,6 +79,7 @@ function ClinicDashboard() {
                     }
                 });
                 setDoctors(doctors);
+                setDoctorsCount(doctors.length);
             }
         );
 
@@ -150,6 +160,62 @@ function ClinicDashboard() {
         setPatientFilters(_filters);
         setGlobalPatientFilterValue(value);
     };
+
+    const GenderDoughnutChart = () => {
+        const chartData = {
+            labels: ['A', 'B', 'C'],
+            datasets: [
+                {
+                    data: [300, 50, 100],
+                },
+            ],
+        };
+    
+        const chartOptions = {
+            cutout: '60%',
+        };
+    
+        const chartColors = ['#ff6384', '#36a2eb', '#ffce56'];
+    
+        return <DoughnutChart data={chartData} options={chartOptions} colors={chartColors} />;
+    };
+
+    const PatientActivityBarChart = () => {
+        const chartData = {
+            labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9'],
+            datasets: [
+                {
+                    barPercentage: 0.5,
+                    barThickness: 24,
+                    maxBarThickness: 48,
+                    minBarLength: 2,
+                    label: 'Sales',
+                    data: [540, 325, 702, 620, 212, 980, 1200, 400, 800],
+                    backgroundColor: [
+                        'rgb(255, 159, 64)',
+                        'rgb(75, 192, 192)',
+                        'rgb(54, 162, 235)',
+                        'rgb(153, 102, 255)',
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 159, 64)',
+                        'rgb(255, 99, 132)',
+                        'rgb(255, 159, 64)',
+                        'rgb(75, 192, 192)',
+                    ],
+                },
+            ],
+        };
+    
+        const chartOptions = {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+        };
+    
+        return <BarChart data={chartData} options={chartOptions} />;
+    };
 	
     return (
         <Flex w='full' h='auto' p={4} gap={8} bg="#f4f4f4">
@@ -168,7 +234,7 @@ function ClinicDashboard() {
                                 <Text fontSize='md' fontWeight='semibold' letterSpacing='wide' mt={3} mx={3} textAlign='center'>
                                     Latest Patient Activity
                                 </Text>
-                                <BarChart/>
+                                <PatientActivityBarChart/>
                             </Flex>
 						</Box>
                         <Flex w='40%' gap={5}>
@@ -176,11 +242,11 @@ function ClinicDashboard() {
                                 <Box w='full' h='full' bg='white' rounded='lg' boxShadow='md'>
                                     <Flex w='full' h='full' alignItems='center' justifyContent='center'>
                                         <FaUser size={30} color='#4d0a32'/>
-                                        <Box ml={2}>
+                                        <Box ml={3} justifyContent='center'>
                                             <Text fontWeight='medium' fontSize='sm' color='gray.600'>
                                                 Total Patients
                                             </Text>            
-                                            <Text fontWeight='semibold'>213</Text>                                
+                                            <Text fontWeight='semibold'>10</Text>                                
                                         </Box>
                                     </Flex>
                                 </Box>
@@ -200,7 +266,7 @@ function ClinicDashboard() {
                                                         />
                                                     ))
                                             }
-                                            <Text fontWeight='medium' ml={2}>4.0</Text>
+                                            <Text fontWeight='medium' ml={3}>4.0</Text>
                                         </Box>
                                     </Flex>
                                 </Box>
@@ -209,19 +275,23 @@ function ClinicDashboard() {
                                 <Box w='full' h='full' bg='white' rounded='lg' boxShadow='md'>
                                     <Flex w='full' h='full' alignItems='center' justifyContent='center'>
                                         <FaStethoscope size={30} color='#008a20'/>
-                                        <Box ml={2}>
+                                        <Box ml={3}>
                                             <Text fontWeight='medium' fontSize='sm' color='gray.600'>
                                                 Total Doctors
                                             </Text>            
-                                            <Text fontWeight='semibold'>213</Text>                                
+                                            <Text fontWeight='semibold'>{doctorsCount}</Text>                                
                                         </Box>
                                     </Flex>
                                 </Box>
                                 <Box w='full' h='full' bg='white' rounded='lg' boxShadow='md'>
                                     <Flex w='full' h='full' alignItems='center' justifyContent='center'>
-                                        <Text>
-                                            mewo
-                                        </Text>
+                                        <GiMedicines size={40} color='#039dfc'/>
+                                        <Box ml={2}>
+                                            <Text fontWeight='medium' fontSize='sm' color='gray.600'>
+                                                Treatments
+                                            </Text>            
+                                            <Text fontWeight='semibold'>21</Text>                                
+                                        </Box>
                                     </Flex>
                                 </Box>
                             </Flex>
@@ -235,7 +305,7 @@ function ClinicDashboard() {
                                 <Text fontSize='md' fontWeight='semibold' letterSpacing='wide' mt={3} mx={3} textAlign='center'>
                                     Distribution of Patients
                                 </Text>
-                                <DoughnutChart/>
+                                <GenderDoughnutChart/>
                             </Flex>
                         </Box>
                         <Box w='33%' bg='white' rounded='lg' boxShadow='md'>
@@ -243,7 +313,7 @@ function ClinicDashboard() {
                                 <Text fontSize='md' fontWeight='semibold' letterSpacing='wide' mt={3} mx={3} textAlign='center'>
                                     Patient Gender Distribution
                                 </Text>
-                                <DoughnutChart/>
+                                <GenderDoughnutChart/>
                             </Flex>
                         </Box>
                         <Box w='33%' bg='white' rounded='lg' boxShadow='md'>
@@ -251,7 +321,7 @@ function ClinicDashboard() {
                                 <Text fontSize='md' fontWeight='semibold' letterSpacing='wide' mt={3} mx={3} textAlign='center'>
                                     Patient Age Distribution
                                 </Text>
-                                <DoughnutChart/>
+                                <GenderDoughnutChart/>
                             </Flex>
                         </Box>                        
                     </Flex>
@@ -333,9 +403,6 @@ function ClinicDashboard() {
             >
                 <Box w='full' h='full' p={4} bgGradient="linear(to-b, blue.800, blue.500)" roundedTop='lg'>
                     <Flex w='full' direction='column'>
-                        <Text fontSize='md' fontWeight='semibold' color='white' letterSpacing='wide' mb={3} textAlign='center'>
-                            Clinic Card
-                        </Text>
                         <Box w='full' bg='white' rounded='lg'>
                             <Flex bg="white" h="full" shadow="lg" borderRadius="lg" transition="transform 0.3s" _hover={{ transform: 'scale(1.02)', shadow: 'xl' }}>
                                 <Link as={NavLink} to={`/clinics/${clinicId}`} key={clinicId} style={{ textDecoration: 'none' }} w="full" h="full">
@@ -395,45 +462,116 @@ function ClinicDashboard() {
                         </Box>
                     </Flex>
                 </Box>
-                <Flex w='full' maxH={'500px'} bg='white' direction='column' roundedBottom='lg' p={4}>
-                    <Flex w='full' alignItems='center' justifyContent='center' my={3}>
-                        <Text fontSize='md' fontWeight='semibold' letterSpacing='wide'>
-                            Upcoming Requests
-                        </Text>
-                    </Flex>
-                    <Flex 
-                        w='full' 
-                        direction='column' 
-                        alignItems='center' 
-                        justifyContent='center' 
-                        overflowY={'scroll'}
-                        overflowX={'hidden'}
-                        sx={{ 
-                            '&::-webkit-scrollbar': {
-                              width: '4px',
-                            },
-                            '&::-webkit-scrollbar-thumb': {
-                                backgroundColor: '#c1c9c3',
-                                borderRadius: '8px',
-                            },
-                            '&::-webkit-scrollbar-track': {
-                                backgroundColor: '#f1f1f1',
-                            },
-                        }}
-                    >
-                        <Box w='18rem' h='12rem' border='1px' rounded='lg' borderColor='gray.400' mb={6}>
-
-                        </Box>
-                        <Box w='18rem' h='12rem' border='1px' rounded='lg' borderColor='gray.400' mb={6}>
-
-                        </Box>
-                        <Box w='18rem' h='12rem' border='1px' rounded='lg' borderColor='gray.400' mb={6}>
-
-                        </Box>   
-                        <Box w='18rem' h='12rem' border='1px' rounded='lg' borderColor='gray.400' mb={6}>
-
-                        </Box>  
-                    </Flex>
+                <Flex w='full' direction='column' alignItems='center' justifyContent='center' p={4} bg='white' roundedBottom='lg'>
+                    <Tabs w='full' isFitted variant='line' isLazy>
+                        <TabList >
+                            <Tab _focus={{ outline: 'none' }}>Upcoming Requests</Tab>
+                            <Tab _focus={{ outline: 'none' }}>Appointments</Tab>
+                        </TabList>
+                        <TabPanels>
+                            <TabPanel>        
+                                <Box 
+                                    w='full' 
+                                    maxH={'800px'} 
+                                    overflowY={'scroll'}
+                                    overflowX={'hidden'}
+                                    sx={{ 
+                                        '&::-webkit-scrollbar': {
+                                            width: '4px',
+                                        },
+                                        '&::-webkit-scrollbar-thumb': {
+                                            backgroundColor: '#c1c9c3',
+                                            borderRadius: '8px',
+                                        },
+                                        '&::-webkit-scrollbar-track': {
+                                            backgroundColor: '#f1f1f1',
+                                        },
+                                    }}
+                                >
+                                    <Flex 
+                                        w='full' 
+                                        h='full'
+                                        direction='column' 
+                                        alignItems='center' 
+                                        justifyContent='center' 
+                                        gap={6}
+                                    >
+                                        <Box w='16rem' h='8rem' border='2px' rounded='lg' borderColor='pink.200' p={2} justifyContent='center' alignItems='center'>
+                                            <Box w='15rem' h='6rem'>
+                                                <Flex alignItems='center' w='full'>
+                                                    <Avatar src="\src\assets\images\Default_User_Profile.png" size='sm'/>
+                                                    <Box ml={2} w='full'>
+                                                        <Text fontSize="sm" fontWeight="semibold" maxW='80%' isTruncated>
+                                                            John Doe
+                                                        </Text>            
+                                                    </Box>                    
+                                                </Flex>    
+                                                <Divider my={1} w='full' />
+                                                <Text fontSize='xs' fontWeight='medium' maxW='full' noOfLines={4}>
+                                                    Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description
+                                                </Text>                                                                        
+                                            </Box>
+                                        </Box>
+                                        <Box w='16rem' h='8rem' border='2px' rounded='lg' borderColor='pink.200' p={2} justifyContent='center' alignItems='center'>
+                                            <Box w='15rem' h='6rem'>
+                                                <Flex alignItems='center' w='full'>
+                                                    <Avatar src="\src\assets\images\Default_User_Profile.png" size='sm'/>
+                                                    <Box ml={2} w='full'>
+                                                        <Text fontSize="sm" fontWeight="semibold" maxW='80%' isTruncated>
+                                                            John Doe
+                                                        </Text>            
+                                                    </Box>                    
+                                                </Flex>    
+                                                <Divider my={1} w='full' />
+                                                <Text fontSize='xs' fontWeight='medium' maxW='full' noOfLines={4}>
+                                                    Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description
+                                                </Text>                                                                        
+                                            </Box>
+                                        </Box>
+                                        <Box w='16rem' h='8rem' border='2px' rounded='lg' borderColor='pink.200' p={2} justifyContent='center' alignItems='center'>
+                                            <Box w='15rem' h='6rem'>
+                                                <Flex alignItems='center' w='full'>
+                                                    <Avatar src="\src\assets\images\Default_User_Profile.png" size='sm'/>
+                                                    <Box ml={2} w='full'>
+                                                        <Text fontSize="sm" fontWeight="semibold" maxW='80%' isTruncated>
+                                                            John Doe
+                                                        </Text>            
+                                                    </Box>                    
+                                                </Flex>    
+                                                <Divider my={1} w='full' />
+                                                <Text fontSize='xs' fontWeight='medium' maxW='full' noOfLines={4}>
+                                                    Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description
+                                                </Text>                                                                        
+                                            </Box>
+                                        </Box>
+                                        
+                                    </Flex>
+                                </Box>
+                            </TabPanel>
+                            <TabPanel>
+                                <Box
+                                    w='full' 
+                                    maxH={'800px'} 
+                                    overflowY={'scroll'}
+                                    overflowX={'hidden'}
+                                    sx={{ 
+                                        '&::-webkit-scrollbar': {
+                                            width: '4px',
+                                        },
+                                        '&::-webkit-scrollbar-thumb': {
+                                            backgroundColor: '#c1c9c3',
+                                            borderRadius: '8px',
+                                        },
+                                        '&::-webkit-scrollbar-track': {
+                                            backgroundColor: '#f1f1f1',
+                                        },
+                                    }}       
+                                >
+                                    <AppointmentTimelineChart />
+                                </Box>
+                            </TabPanel>
+                        </TabPanels>
+                    </Tabs>
                 </Flex>
 
             </Flex>

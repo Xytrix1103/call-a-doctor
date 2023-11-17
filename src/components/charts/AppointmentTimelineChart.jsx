@@ -3,11 +3,11 @@ import { FaEarthAsia } from "react-icons/fa6";
 import { GoDotFill } from "react-icons/go";
 
 const TimelineItem = ({ title, date, description }) => (
-    <Flex mb={4}>
+    <Flex>
         <Box justifyContent='center' alignItems='center' mb={5}>
-            <Box bgColor="blue.500" w="2px" h="40%" my={3} ml={'6px'}/>
+            <Box bgColor="blue.500" w="2px" h="50%" my={3} ml={'6px'}/>
             <FaEarthAsia size='15' color='blue'/>
-            <Box bgColor="blue.500" w="2px" h="40%" my={3} ml={'6px'}/>
+            <Box bgColor="blue.500" w="2px" h="50%" my={3} ml={'6px'}/>
         </Box>
         <Box ml={5} mt={3} p={2} borderWidth="1px" borderRadius="md" w='90%'>
             <Flex alignItems='center' mb={1} gap={2} maxW='350px' >
@@ -28,14 +28,14 @@ const TimelineItem = ({ title, date, description }) => (
                 <Box>
                     <Flex alignItems='center'>
                         <Box ml={2}>
-                            <Text fontSize="sm" fontWeight="semibold" maxW='300px' isTruncated>
+                            <Text fontSize="sm" fontWeight="semibold" maxW='90%' isTruncated>
                                 Doctor Name 
                             </Text>       
-                            <Text fontSize='xs' fontWeight='medium' maxW='300px' isTruncated>
+                            <Text fontSize='xs' fontWeight='medium' maxW='90%' isTruncated>
                                 Cardiologist
                             </Text>        
-                            <Divider my={1} w='290px' />
-                            <Text fontSize='xs' fontWeight='medium' maxW='300px'>
+                            <Divider my={1} w='90%' />
+                            <Text fontSize='xs' fontWeight='medium' maxW='90%' noOfLines={3}>
                                 Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description
                             </Text>               
                         </Box>                    
@@ -48,7 +48,7 @@ const TimelineItem = ({ title, date, description }) => (
   
 
 const VerticalTimeline = ({ events }) => (
-    <Flex direction="column">
+    <Flex direction="column" gap={1}>
         {events.map((event, index) => (
             <TimelineItem key={index} {...event} />
         ))}
