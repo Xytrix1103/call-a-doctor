@@ -1,55 +1,69 @@
 import {
     Box,
-    Flex,
-    Text,
-    Icon,
-    Link,
-    IconButton,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-    useDisclosure,
     Button,
     Divider,
+    Flex,
     FormControl,
+    FormErrorMessage,
     FormLabel,
+    IconButton,
+    Link,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Text,
     Textarea,
+    useDisclosure,
 } from '@chakra-ui/react'
-import {useState, useEffect} from "react";
-import {db} from "../../../api/firebase.js";
-import {onValue, query, ref} from "firebase/database";
 import {BiSolidPhone} from "react-icons/bi";
-import {BsCalendarDayFill, BsFillClockFill, BsArrowRight} from "react-icons/bs";
-import {FaMapMarkerAlt, FaClinicMedical, FaHospital} from "react-icons/fa";
-import {FaX, FaCheck, FaFileSignature} from "react-icons/fa6";
-import { GoDotFill } from "react-icons/go";
-import { NavLink } from 'react-router-dom';
+import {BsCalendarDayFill} from "react-icons/bs";
+import {FaHospital} from "react-icons/fa";
+import {FaCheck, FaFileSignature, FaX} from "react-icons/fa6";
+import {GoDotFill} from "react-icons/go";
+import {NavLink} from 'react-router-dom';
+import {register_clinic, reject_clinic_request} from "../../../api/clinic_registry.js";
 
-export const ClinicRegistryApprovalCard = ({ clinicId }) => {
-    const [clinic, setClinic] = useState({});
+export const ClinicRegistryApprovalCard = ({ clinic, form }) => {
     const { isOpen: isOpenApprove, onOpen: onOpenApprove, onClose: onCloseApprove } = useDisclosure();
     const { isOpen: isOpenReject, onOpen: onOpenReject, onClose: onCloseReject } = useDisclosure();
-    console.log(clinicId);
-    useEffect(() => {
-        onValue(query(ref(db, `clinic_requests/${clinicId}`)), (snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                setClinic(data);
-                console.log(data)
-            } else {
-                console.log(`Clinic with ID ${clinicId} not found.`);
-            }
+    const {
+        handleSubmit,
+        formState: {
+            errors
+        },
+        register
+    } = form;
+    
+    console.log(clinic);
+    
+    const handleApprove = async () => {
+        console.log('Approving clinic...');
+        onCloseApprove();
+        await register_clinic(clinic).then((res) => {
+            console.log(res);
         });
-    }, [clinicId]);
+    }
+    
+	const handleReject = async (data) => {
+        console.log('Rejecting clinic...');
+        data = {
+            ...data,
+            id: clinic.id,
+        }
+        await reject_clinic_request(data).then((res) => {
+            console.log(res);
+            onCloseReject();
+        });
+    }
 
     return (
         <Link
             as={NavLink}
-            to={`/admin/approve-clinics/${clinicId}`}
+            to={`/admin/approve-clinics/${clinic.id}`}
             key={clinic.id}
             _hover={{
                 textDecoration: 'none',
@@ -61,8 +75,8 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
                 rounded='lg'
                 my={8}
                 position='relative'
-                boxShadow="lg"  
-                transition="box-shadow 0.3s, transform 0.3s" 
+                boxShadow="lg"
+                transition="box-shadow 0.3s, transform 0.3s"
                 _hover={{
                     boxShadow: 'xl',
                     transform: 'scale(1.02)',
@@ -71,7 +85,7 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
             >
                 <Box
                     minW="80"
-                    h="64"
+                    h="auto"
                     bgImage={clinic.image ? `url(${clinic.image})` : `https://source.unsplash.com/random`}
                     bgSize="cover"
                     bgPosition="center"
@@ -109,7 +123,7 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
                                     <Flex alignItems='center' mx={3}>
                                         <FaFileSignature size={20} color='#3f2975'/>
                                         <Text fontSize='sm' letterSpacing='wide' ml={4}>
-                                        <Text fontWeight='medium' color='grey'>Registration Number</Text> {clinic.business_reg_num}
+                                        <Text fontWeight='medium' color='grey'>Registration Number</Text> {clinic.id}
                                         </Text>                                    
                                     </Flex>
                                 </Box>      
@@ -199,7 +213,7 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
                                     </ModalBody>
                                     <ModalFooter>
                                         <Box display='flex'>
-                                            <Button mr={3} backgroundColor='green' color='white'>Approve</Button>
+                                            <Button mr={3} backgroundColor='green' color='white' onClick={handleApprove}>Approve</Button>
                                             <Button backgroundColor='blue.400' color='white' onClick={onCloseApprove}>Close</Button>
                                         </Box>
                                     </ModalFooter>
@@ -207,46 +221,59 @@ export const ClinicRegistryApprovalCard = ({ clinicId }) => {
                             </Modal>
 
                             <Modal size='xl' isCentered isOpen={isOpenReject} onClose={onCloseReject}>
-                                <ModalOverlay
-                                    bg='blackAlpha.200'
-                                    backdropFilter='blur(3px) hue-rotate(90deg)'
-                                />
-                                <ModalContent>
-                                    <ModalHeader>Rejection Confirmation</ModalHeader>
-                                    <ModalCloseButton _focus={{
-                                        boxShadow: 'none',
-                                        outline: 'none',
-                                    }} />
-                                    <Divider mb={2} borderWidth='1px' borderColor="blackAlpha.300"/>
-                                    <ModalBody>
-                                        <Text fontSize='md' letterSpacing='wide' fontWeight='bold' mb={2}>
-                                            Confirm Rejection for {clinic.name}?
-                                        </Text>
-                                        <Text letterSpacing='wide'>
-                                            Rejecting {clinic.name} will decline its registration in the system.
-                                        </Text>
-                                        <FormControl my={2}>
-                                            <FormLabel>
-                                                Reason for Rejection <Text as="span" color="red.500" fontWeight="bold">*</Text>
-                                            </FormLabel>
-                                            <Textarea placeholder='Enter reason for rejection here...' />
-                                        </FormControl>
-                                        <Text fontSize='sm' fontWeight='light' letterSpacing='wide'>This action cannot be undone.</Text>
-                                    </ModalBody>
-                                    <ModalFooter>
-                                        <Box display='flex'>
-                                            <Button mr={3} backgroundColor='red' color='white'>Reject</Button>
-                                            <Button backgroundColor='blue.400' color='white' onClick={onCloseReject}>Close</Button>
-                                        </Box>
-                                    </ModalFooter>
-                                </ModalContent>
+                                <form onSubmit={handleSubmit(handleReject)}>
+                                    <ModalOverlay
+                                        bg='blackAlpha.200'
+                                        backdropFilter='blur(3px) hue-rotate(90deg)'
+                                    />
+                                    <ModalContent>
+                                        <ModalHeader>Rejection Confirmation</ModalHeader>
+                                        <ModalCloseButton _focus={{
+                                            boxShadow: 'none',
+                                            outline: 'none',
+                                        }} />
+                                        <Divider mb={2} borderWidth='1px' borderColor="blackAlpha.300"/>
+                                        <ModalBody>
+                                            <Text fontSize='md' letterSpacing='wide' fontWeight='bold' mb={2}>
+                                                Confirm Rejection for {clinic.name}?
+                                            </Text>
+                                            <Text letterSpacing='wide'>
+                                                Rejecting {clinic.name} will decline its registration in the system.
+                                            </Text>
+                                                <FormControl my={2} isInvalid={errors.reason}>
+                                                    <FormLabel>
+                                                        Reason for Rejection <Text as="span" color="red.500" fontWeight="bold">*</Text>
+                                                    </FormLabel>
+                                                    <Textarea
+                                                        placeholder='Enter reason for rejection here...'
+                                                        name='reason'
+                                                        {
+                                                            ...register('reason', {
+                                                                required: 'This field is required.',
+                                                            })
+                                                        }
+                                                    />
+                                                    <FormErrorMessage>
+                                                        {errors.reason && errors.reason.message}
+                                                    </FormErrorMessage>
+                                                </FormControl>
+                                                <Text fontSize='sm' fontWeight='light' letterSpacing='wide'>This action cannot be undone.</Text>
+                                        </ModalBody>
+                                        <ModalFooter>
+                                            <Box display='flex'>
+                                                <Button mr={3} backgroundColor='red' color='white' type='submit'>Reject</Button>
+                                                <Button backgroundColor='blue.400' color='white' onClick={onCloseReject}>Close</Button>
+                                            </Box>
+                                        </ModalFooter>
+                                    </ModalContent>
+                                </form>
                             </Modal>
 
                         </Flex>
                     </Flex>
                 </Box>
-            </Flex> 
-        </Link>  
+            </Flex>
+        </Link>
     );
 }
 

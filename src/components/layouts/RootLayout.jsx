@@ -1,8 +1,11 @@
 import {Navigate, Outlet, useLocation, useNavigation} from "react-router-dom";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useAuth} from "../AuthCtx.jsx";
 import GlobalSpinner from "../GlobalSpinner.jsx";
-import {Box} from "@chakra-ui/react";
+import {Box, Grid} from "@chakra-ui/react";
+import AdminNavbar from "../navbars/AdminNavbar.jsx";
+import PatientNavbar from "../navbars/PatientNavbar.jsx";
+import ClinicNavbar from "../navbars/ClinicNavbar.jsx";
 
 const RootLayout = () => {
 	const {user, loading} = useAuth();
@@ -13,6 +16,7 @@ const RootLayout = () => {
 	console.log(location.pathname);
 	
 	useEffect(() => {
+		console.log("RootLayout");
 		console.log(user, loading);
 	}, [user, loading]);
 	
@@ -32,7 +36,20 @@ const RootLayout = () => {
 					:
 						user ?
 							<Box w="100%" h="100%" bg="#f4f4f4" overflow="auto" minH="100vh">
-								<Outlet/>
+								<Grid templateRows="auto 1fr" w="100%" h="100%" bg="#f4f4f4" overflow="hidden">
+									{
+										user.role === "Patient" ?
+											<PatientNavbar/> :
+											user.role === "ClinicAdmin" ?
+												<ClinicNavbar/> :
+												user.role === "Admin" ?
+													<AdminNavbar/> :
+													<></>
+									}
+									<Box w="100%" h="100%" bg="#f4f4f4" overflow="auto" p={5}>
+										<Outlet/>
+									</Box>
+								</Grid>
 							</Box> :
 							(
 								<Navigate to="/login" />

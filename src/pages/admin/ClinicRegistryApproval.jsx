@@ -1,30 +1,30 @@
-import {
-    Box,
-    Center,
-    Text,
-} from '@chakra-ui/react'
-import {useState, useEffect} from "react";
+import {Box, Center, Text,} from '@chakra-ui/react'
+import {useEffect, useState} from "react";
 import {db} from "../../../api/firebase.js";
-import {onValue, query, ref} from "firebase/database";
-import { ClinicRegistryApprovalCard } from './ClinicRegistryApprovalCard.jsx';
+import {equalTo, onValue, orderByChild, query, ref} from "firebase/database";
+import {ClinicRegistryApprovalCard} from './ClinicRegistryApprovalCard.jsx';
+import {useForm} from "react-hook-form";
 
 function ClinicRegistryApproval() {
     const [clinics, setClinics] = useState([]);
+    const form = useForm();
 
     useEffect(() => {
-        onValue(query(ref(db, 'clinic_requests')), (snapshot) => {
-            const clinics = [];
-            snapshot.forEach((childSnapshot) => {
-                clinics.push({
-                    id: childSnapshot.key,
-                    ...childSnapshot.val(),
+        onValue(query(ref(db, 'clinic_requests'), orderByChild('rejected'), equalTo(null)), (snapshot) => {
+            const clinic_requests = [];
+            snapshot.forEach((reqSnapshot) => {
+                clinic_requests.push({
+                    id: reqSnapshot.key,
+                    ...reqSnapshot.val(),
                 });
             });
-            console.log(clinics);
-            console.log(clinics[0].id)
-            setClinics(clinics);
+            setClinics(clinic_requests);
         });
     }, []);
+    
+    useEffect(() => {
+        console.log(clinics);
+    }, [clinics]);
 
     return (
         <Center h="auto" bg="#f4f4f4">
@@ -37,7 +37,7 @@ function ClinicRegistryApproval() {
                     <Text fontSize='xl' fontWeight='bold' letterSpacing='wide'>Clinic Registry Approval</Text>
                 </Box>
                 {clinics.map((clinic) => (
-                    <ClinicRegistryApprovalCard clinicId={clinic.id} />               
+                    <ClinicRegistryApprovalCard clinic={clinic} form={form}/>
                 ))}
             </Box>
         </Center>
