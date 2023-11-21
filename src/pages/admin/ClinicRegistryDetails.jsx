@@ -1,31 +1,25 @@
 import {
-	Avatar,
 	Box,
-	Button,
 	Center,
 	Flex,
-	FormControl,
-	Input,
-	InputGroup,
-	InputLeftElement,
-	InputRightElement,
 	Text,
 	Link,
 	HStack,
-	Textarea
+	Textarea,
+	Divider,
+	IconButton,
 } from '@chakra-ui/react'
 import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
-import {NavLink, useParams} from 'react-router-dom';
+import {NavLink, useParams, useNavigate} from 'react-router-dom';
 import {useEffect, useState} from "react";
-import {AiFillStar, AiOutlineSend} from "react-icons/ai";
-import {FaUserCircle} from "react-icons/fa";
+import {AiOutlineArrowLeft} from "react-icons/ai";
 import {BiLinkExternal} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
 
 function Map({ placeId, onDistanceChange }) {
 	const mapStyle = {
-	  height: '350px',
+	  height: '500px',
 	  width: '100%',
 	};
 	const libs = ['places'];
@@ -172,7 +166,9 @@ function Map({ placeId, onDistanceChange }) {
 
 function ClinicRegistryDetails() {
 	const [data, setData] = useState({});
+	const [distance, setDistance] = useState(null);	
 	const {id} = useParams();
+	const navigate = useNavigate();
     
     useEffect(() => {
         onValue(query(ref(db, `clinic_requests/${id}`)), (snapshot) => {
@@ -181,13 +177,13 @@ function ClinicRegistryDetails() {
         });
     }, []);
 
-	const [distance, setDistance] = useState(null);
-
 	const handleDistance = (distance) => {
 	  	setDistance(distance); // Set the distance state
 	};
-    
-    console.log(data)
+
+	const handleBack = () => {
+		navigate('/admin/approve-clinics');
+	};
 	
 	return (
 		<Center w="100%" h="auto" bg="#f4f4f4">
@@ -205,6 +201,14 @@ function ClinicRegistryDetails() {
 				<Flex>
 					<Box my={7} mx={5} w="full">
 						<Flex alignItems="center">
+							<Box>
+								<IconButton
+									icon={<AiOutlineArrowLeft />}
+									aria-label="Back"
+									onClick={handleBack}
+									bg="transparent"
+								/>
+							</Box>
 							<Box
 								w="28"
 								bgImage={data.image ? data.image : 'https://source.unsplash.com/random'}
@@ -212,7 +216,7 @@ function ClinicRegistryDetails() {
 								bgPosition="center"
 								rounded={'lg'}
 								h="16"
-								mr={5}
+								mx={5}
 							>
 							</Box>
 							<Box>
@@ -226,7 +230,7 @@ function ClinicRegistryDetails() {
 									fontSize="sm"
 									textTransform="uppercase"
 								>
-									{ data.specialty ? data.specialty : 'General Clinic' }
+									{ data.specialist_clinic ? data.specialist_clinic : 'General Clinic' }
 								</Box>
 							</Box>
 						</Flex>
@@ -403,6 +407,53 @@ function ClinicRegistryDetails() {
 							</Box>
 							
 						</Flex>
+					</Box>
+				</Flex>
+
+				<Divider my={4} borderColor="blackAlpha.300" borderWidth="1px" rounded="lg" />
+				
+				<Text mx={5} mb={4} fontSize="xl" fontWeight="semibold" letterSpacing="wide">
+					Clinic Admin
+				</Text>
+
+				<Flex>
+					<Box mx={5} mb={4} w="full">
+						<Box>
+							<Text mb={2} fontSize="sm" fontWeight="medium" color="gray.500">
+								Name
+							</Text>
+							<Text
+								fontSize="md"
+								fontWeight="semiBold"
+								border="1px solid #E2E8F0"
+								borderRadius="md"
+								p={2}
+								w="full"
+								pointerEvents="none"
+								tabIndex="-1"
+							>
+								{data.admin_name ? data.admin_name : 'No admin name available'}
+							</Text>
+						</Box>
+					</Box>
+					<Box mx={5} mb={4} w="full">
+						<Box>
+							<Text mb={2} fontSize="sm" fontWeight="medium" color="gray.500">
+								Email
+							</Text>
+							<Text
+								fontSize="md"
+								fontWeight="semiBold"
+								border="1px solid #E2E8F0"
+								borderRadius="md"
+								p={2}
+								w="full"
+								pointerEvents="none"
+								tabIndex="-1"
+							>
+								{data.email ? data.email : 'No admin email available'}
+							</Text>
+						</Box>
 					</Box>
 				</Flex>
 			</Box>
