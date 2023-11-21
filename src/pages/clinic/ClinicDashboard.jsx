@@ -24,7 +24,7 @@ import {onValue, query, ref, orderByChild, equalTo} from "firebase/database";
 import {db} from "../../../api/firebase.js";
 import {useAuth} from "../../components/AuthCtx.jsx";
 import {NavLink} from "react-router-dom";
-import { FaUser, FaStethoscope, FaStar } from "react-icons/fa";
+import { FaUser, FaStethoscope, FaStar, FaStarHalf } from "react-icons/fa";
 import { BiSearchAlt2 } from "react-icons/bi";
 import { GiMedicines } from "react-icons/gi";
 import { DataTable } from 'primereact/datatable';
@@ -34,57 +34,23 @@ import { BarChart } from '../../components/charts/BarChart';
 import { DoughnutChart } from '../../components/charts/DoughnutChart';
 import {AppointmentTimelineChart} from "../../components/charts/AppointmentTimelineChart.jsx"
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
+import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
 
 function ClinicDashboard() {
     const {user} = useAuth();
-    const clinicId = Object.keys(user.clinic)[0];
+    const clinicId = user.clinic;
     const [clinic, setClinic] = useState('');
     const [doctors, setDoctors] = useState([]);
     const [doctorsCount, setDoctorsCount] = useState(0);
+    const [ratings, setRatings] = useState([]);
 
 	const [appointments, setAppointments] = useState([]);
 
-    useEffect(() => {    
-        onValue(ref(db, `clinics/${clinicId}`), (snapshot) => {
-            const clinicData = snapshot.val();
-            if (clinicData) {
-                const clinic = {
-                    id: snapshot.key,
-                    ...clinicData,
-                };
-                console.log(clinic);
-                setClinic(clinic);
-            } else {
-                // Handle the case where the clinic with the specified ID is not found
-                console.error(`Clinic with ID ${clinicId} not found.`);
-            }
-        });
-
-        onValue(
-            query(
-                ref(db, "users"),
-                orderByChild("role"),
-                equalTo("Doctor")
-            ),
-            (snapshot) => {
-                const doctors = [];
-                snapshot.forEach((childSnapshot) => {
-                    const user = childSnapshot.val();
-                    if (user.clinic === (clinicId)) { // Filter doctors by clinic ID
-                        console.log(user);
-                        doctors.push({
-                            id: childSnapshot.key,
-                            ...user,
-                        });
-                    }
-                });
-                setDoctors(doctors);
-                setDoctorsCount(doctors.length);
-            }
-        );
-
-        setAppointments(generateDummyAppointments(20));
-    }, []);
+    const libs = ['places'];
+    const { isLoaded, loadError } = useLoadScript({
+		googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
+		libraries: libs,
+	});
 
     // Function to generate dummy data
     const generateDummyAppointments = (count) => {
@@ -105,20 +71,6 @@ function ClinicDashboard() {
         }
         return dummyAppointments;
     };
-
-    const nameBodyTemplate = (rowData) => {
-        return (
-            <Flex alignItems='center'>
-                <Avatar
-                    size="sm"
-                    src={rowData.image}
-                    alt={rowData.name}
-                    mr={3}
-                />
-                <Text fontWeight='semibold'>{rowData.name}</Text>
-            </Flex>
-        );
-    }
 
     const [doctorFilters, setDoctorFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -160,6 +112,85 @@ function ClinicDashboard() {
         setPatientFilters(_filters);
         setGlobalPatientFilterValue(value);
     };
+
+    useEffect(() => {
+        // Fetch clinic details from Realtime Database
+        onValue(ref(db, `clinics/${clinicId}`), (snapshot) => {
+            const clinicData = snapshot.val();
+            if (clinicData) {
+                const clinic = {
+                    id: snapshot.key,
+                    ...clinicData,
+                };
+                console.log(clinic);
+                setClinic(clinic);
+
+                // Fetch ratings using Places API
+                const service = new window.google.maps.places.PlacesService(document.createElement('div'));
+                service.getDetails(
+                {
+                    placeId: clinic.placeId,
+                    fields: ['name', 'formatted_address', 'rating'],
+                },
+                (result, status) => {
+                    if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+                        setRatings(result.rating || []);
+                        console.log(result.rating || []);
+                    } else {
+                        console.error(`Error fetching place details: Status - ${status}`);
+                    }
+                }
+                );
+            } else {
+                // Handle the case where the clinic with the specified ID is not found
+                console.error(`Clinic with ID ${clinicId} not found.`);
+            }
+        });
+    
+        // Fetch doctors from Realtime Database
+        onValue(
+            query(
+                ref(db, 'users'),
+                orderByChild('role'),
+                equalTo('Doctor')
+            ),
+            (snapshot) => {
+                const doctors = [];
+                snapshot.forEach((childSnapshot) => {
+                    const user = childSnapshot.val();
+                    if (user.clinic === clinicId) {
+                        console.log(user);
+                        doctors.push({
+                            id: childSnapshot.key,
+                            ...user,
+                        });
+                    }
+                });
+                setDoctors(doctors);
+                setDoctorsCount(doctors.length);
+            }
+        );
+    
+        // Set dummy appointments
+        setAppointments(generateDummyAppointments(20));
+    }, [clinicId]); // Make sure to include clinicId as a dependency
+
+    if (loadError) return 'Error loading maps';
+    if (!isLoaded) return 'Loading maps';
+
+    const nameBodyTemplate = (rowData) => {
+        return (
+            <Flex alignItems='center'>
+                <Avatar
+                    size="sm"
+                    src={rowData.image}
+                    alt={rowData.name}
+                    mr={3}
+                />
+                <Text fontWeight='semibold'>{rowData.name}</Text>
+            </Flex>
+        );
+    }
 
     const GenderDoughnutChart = () => {
         const chartData = {
@@ -260,13 +291,18 @@ function ClinicDashboard() {
                                                 Array(5)
                                                     .fill('')
                                                     .map((_, i) => (
-                                                        <FaStar
-                                                            key={i}
-                                                            color={i < 4 ? 'gold' : 'gray'}
-                                                        />
+                                                        i < Math.floor(ratings) ? (
+                                                          <FaStar key={i} color='gold' />
+                                                        ) : (
+                                                          i === Math.floor(ratings) && ratings % 1 !== 0 ? (
+                                                            <FaStarHalf key={i} color='gold' />
+                                                          ) : (
+                                                            <FaStar key={i} color='gray' />
+                                                          )
+                                                        )
                                                     ))
                                             }
-                                            <Text fontWeight='medium' ml={3}>4.0</Text>
+                                            <Text fontWeight='medium' ml={3}>{ ratings }</Text>
                                         </Box>
                                     </Flex>
                                 </Box>
@@ -445,14 +481,19 @@ function ClinicDashboard() {
                                                     Array(5)
                                                         .fill('')
                                                         .map((_, i) => (
-                                                            <FaStar
-                                                                key={i}
-                                                                color={i < 4 ? 'gold' : 'gray'}
-                                                            />
+                                                            i < Math.floor(ratings) ? (
+                                                            <FaStar key={i} color='gold' />
+                                                            ) : (
+                                                            i === Math.floor(ratings) && ratings % 1 !== 0 ? (
+                                                                <FaStarHalf key={i} color='gold' />
+                                                            ) : (
+                                                                <FaStar key={i} color='gray' />
+                                                            )
+                                                            )
                                                         ))
                                                 }
                                                 <Box as='span' ml='2' color='gray.600' fontSize='sm'>
-                                                    4.0 reviews
+                                                    { ratings } ratings
                                                 </Box>
                                             </Box>
                                         </Box>
@@ -472,7 +513,7 @@ function ClinicDashboard() {
                             <TabPanel>        
                                 <Box 
                                     w='full' 
-                                    maxH={'800px'} 
+                                    maxH='full' 
                                     overflowY={'scroll'}
                                     overflowX={'hidden'}
                                     sx={{ 
@@ -551,7 +592,7 @@ function ClinicDashboard() {
                             <TabPanel>
                                 <Box
                                     w='full' 
-                                    maxH={'800px'} 
+                                    maxH='full'
                                     overflowY={'scroll'}
                                     overflowX={'hidden'}
                                     sx={{ 

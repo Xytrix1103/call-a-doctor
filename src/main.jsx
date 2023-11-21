@@ -9,7 +9,7 @@ import DoctorRequestForm from './pages/patient/DoctorRequestForm.jsx';
 import React from "react";
 import App from "./App.jsx";
 import {ChakraProvider, extendTheme} from "@chakra-ui/react";
-import {AuthProvider} from "./components/AuthCtx.jsx";
+import {AuthProvider, useAuth} from "./components/AuthCtx.jsx";
 import Test from './pages/auth/Test.jsx';
 import ClinicRegistry from "./pages/auth/clinic_registry/ClinicRegistry.jsx";
 import PatientRegistry from './pages/auth/patient_registry/PatientRegistry';
@@ -27,30 +27,42 @@ import ClinicDashboard from './pages/clinic/ClinicDashboard';
 import UserList from './pages/admin/UserList';
 import AdminRegistry from './pages/admin/AdminRegistry';
 
+const DashboardElement = () => {
+	const { user } = useAuth();
+  
+	switch (user?.role) {
+	  case "Patient":
+		return <PatientDashboard />;
+	  case "ClinicAdmin":
+		return <ClinicDashboard />;
+	//   case "Admin":
+	// 	return <AdminHome />;
+	  default:
+		return <Test />;
+	}
+};
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route element={<RootLayout/>}>
-			<Route path="/" element={<Test/>}/>
+			<Route path="/" element={<DashboardElement/>}/>
 			<Route path="login" element={<Login/>}/>
 			<Route path="register" element={<PatientRegistry/>}/>
 			<Route path="forgot" element={<></>}/>
 			<Route path="register-clinic" element={<ClinicRegistry/>}/>
 			<Route element={<PatientLayout/>}>
-				<Route path="home" element={<PatientDashboard/>}/>
 				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="clinics/:id" element={<ClinicDetails/>}/>
 				<Route path="clinics/:id/request" element={<DoctorRequestForm/>}/>
 			</Route>
 			<Route element={<ClinicLayout/>}>
-				<Route path="clinic-dashboard" element={<ClinicDashboard/>}/>
+				<Route path="clinic-detail/:id" element={<></>}/>
 				<Route path="patients" element={<></>}/>
 				<Route path="patients/:id" element={<></>}/>
 				<Route path="doctors" element={<></>}/>
 				<Route path="doctors/add" element={<AddDoctorToList/>}/>
 			</Route>
 			<Route path='/admin' element={<AdminLayout/>}>
-				<Route path="admin-dashboard" element={<></>}/>
 				<Route path="clinics" element={<ApprovedClinicList/>}/>
 				<Route path="approve-clinics" element={<ClinicRegistryApproval/>}/>
 				<Route path="approve-clinics/:id" element={<ClinicRegistryDetails/>}/>
