@@ -34,21 +34,23 @@ export const register_clinic_admin = async (data) => {
 	
 	return await createUserWithEmailAndPassword(auth, email, password).then(async (newUser) => {
 		if (newUser) {
-			await set(ref(db, `users/${newUser.user.uid}`), {
+			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
 				email: newUser.user.email,
 				password: password,
 				role: role,
 				name: name,
 				clinic: clinic
+			}).then(() => {
+				return newUser.user;
+			}).catch((error) => {
+				throw {error: error};
 			});
-			return newUser.user;
 		} else {
-			return {error: "Error creating user"};
+			throw {error: "Error creating user"};
 		}
 	})
 	.catch((error) => {
-		console.log(error);
 		return {error: error};
 	});
 }
