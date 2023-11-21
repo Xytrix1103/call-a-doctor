@@ -435,7 +435,23 @@ function ApprovedClinicDetails() {
 							<Box mt={4} w="full">
 								<Box borderBottom="1px" borderColor="gray.300" mt={4} mb={4} />
 
-								<Box mt={4} maxHeight={300} overflowY="scroll">
+								<Box 
+									mt={4} 
+									maxHeight={300} 
+									overflowY="scroll"
+									sx={{ 
+                                        '&::-webkit-scrollbar': {
+                                            width: '4px',
+                                        },
+                                        '&::-webkit-scrollbar-thumb': {
+                                            backgroundColor: '#c1c9c3',
+                                            borderRadius: '8px',
+                                        },
+                                        '&::-webkit-scrollbar-track': {
+                                            backgroundColor: '#f1f1f1',
+                                        },
+                                    }}      	
+								>
 									{
 										reviews ? reviews.map((review, index) => (
 											<Flex mb={3} w="full" key={index}>
