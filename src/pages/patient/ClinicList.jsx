@@ -17,28 +17,62 @@ import {BiSearchAlt2} from "react-icons/bi";
 import {onValue, query, ref} from "firebase/database";
 import {NavLink} from "react-router-dom";
 import {AiFillStar} from "react-icons/ai";
+import { FaUser, FaStethoscope, FaStar, FaStarHalf } from "react-icons/fa";
+import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
 
 function ClinicList() {
     const [clinics, setClinics] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
+
+    const libs = ['places'];
+    const { isLoaded, loadError } = useLoadScript({
+		googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
+		libraries: libs,
+	});
     
     useEffect(() => {
-        onValue(query(ref(db, "clinics")), (snapshot) => {
+        // Fetch clinic details from Realtime Database
+        const clinicsRef = ref(db, 'clinics');
+    
+        onValue(clinicsRef, (snapshot) => {
             const clinics = [];
             snapshot.forEach((childSnapshot) => {
-                clinics.push({
-                    id: childSnapshot.key,
-                    ...childSnapshot.val(),
-                });
+                const clinic = {
+                id: childSnapshot.key,
+                ...childSnapshot.val(),
+                };
+                clinics.push(clinic);
             });
-            console.log(clinics);
-            setClinics(clinics);
+        
+            // Extract all placeIds from clinics
+            const placeIds = clinics.map((clinic) => clinic.placeId);
+        
+            // Fetch ratings for all clinics using Places API
+            const service = new window.google.maps.places.PlacesService(document.createElement('div'));
+            placeIds.forEach((placeId, index) => {
+                service.getDetails(
+                {
+                    placeId: placeId,
+                    fields: ['name', 'formatted_address', 'rating'],
+                },
+                (result, status) => {
+                    if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+                    // Update the clinics array with ratings
+                    clinics[index].rating = result.rating || null;
+                    setClinics([...clinics]); // Trigger a re-render
+                    } else {
+                    console.error(`Error fetching place details: Status - ${status}`);
+                    }
+                }
+                );
+            });
         });
     }, []);
 
     const filteredClinics = clinics.filter((clinic) =>
         clinic.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+    
     
     return (
         <Box w="full" h="full" p={2} direction="column" mb={4}>
@@ -87,7 +121,7 @@ function ClinicList() {
                                     <Box px={4} py={3} w="full" h="full">
                                         <Box display='flex' alignItems='baseline' mb={1}>
                                             <Badge borderRadius='full' px='2' colorScheme='blue'>
-                                                Immunology
+                                                {clinic.specialty ? clinic.specialty : 'General'}
                                             </Badge>
                                             <Box
                                                 color='gray.500'
@@ -101,11 +135,11 @@ function ClinicList() {
                                             </Box>
                                         </Box>
                                         
-                                        <Text fontSize="lg" fontWeight="bold" isTruncated w="full">
+                                        <Text fontSize="lg" fontWeight="bold" isTruncated w="full" color='black'>
                                             {clinic.name}
                                         </Text>
                                         
-                                        <Text fontSize="md" fontWeight="md" isTruncated w="full">
+                                        <Text fontSize="md" fontWeight="md" isTruncated w="full" color='black'>
                                             {clinic.address}
                                         </Text>
                                         
@@ -114,14 +148,19 @@ function ClinicList() {
                                                 Array(5)
                                                     .fill('')
                                                     .map((_, i) => (
-                                                        <AiFillStar
-                                                            key={i}
-                                                            color={i < 4 ? 'gold' : 'gray'}
-                                                        />
+                                                        i < Math.floor(clinic.rating) ? (
+                                                        <FaStar key={i} color='gold' />
+                                                        ) : (
+                                                        i === Math.floor(clinic.rating) && clinic.rating % 1 !== 0 ? (
+                                                            <FaStarHalf key={i} color='gold' />
+                                                        ) : (
+                                                            <FaStar key={i} color='gray' />
+                                                        )
+                                                        )
                                                     ))
                                             }
                                             <Box as='span' ml='2' color='gray.600' fontSize='sm'>
-                                                4.0 reviews
+                                                {clinic.rating} ratings
                                             </Box>
                                         </Box>
                                     </Box>
