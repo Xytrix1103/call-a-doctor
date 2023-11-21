@@ -17,6 +17,7 @@ import {
 import {GoogleMap, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
 import {NavLink, useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
+import {FaUserCircle, FaStar, FaStarHalf} from "react-icons/fa";
 import {AiFillStar} from "react-icons/ai";
 import {BiLinkExternal} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
@@ -69,7 +70,7 @@ function Map({ placeId, onDistanceChange }) {
 							},
 							(result, status) => {
 								if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-									const { name, formatted_address } = result;
+									const { name, formatted_address, rating, reviews } = result;
 						
 									setPlace(result);
 									console.log(result);
@@ -107,7 +108,7 @@ function Map({ placeId, onDistanceChange }) {
 													setDirections(result);
 													const distance = result.routes[0].legs[0].distance.value;
 													const distanceInKilometers = distance / 1000; 
-													onDistanceChange(distanceInKilometers); 
+													onDistanceChange(distanceInKilometers, rating, reviews); 
 													setDistance(distance);
 													console.log(distance);
 												  } else {
@@ -183,9 +184,13 @@ function ClinicDetails() {
     }, []);
 
 	const [distance, setDistance] = useState(null);
+	const [ratings, setRatings] = useState(0);
+	const [reviews, setReviews] = useState([]);
 
-	const handleDistance = (distance) => {
-	  	setDistance(distance); // Set the distance state
+	const handleDistance = (distance, ratings, reviews) => {
+	  	setDistance(distance); 
+		setRatings(ratings); 
+		setReviews(reviews); 
 	};
     
     console.log(data)
@@ -250,15 +255,19 @@ function ClinicDetails() {
 									Array(5)
 										.fill('')
 										.map((_, i) => (
-											<AiFillStar
-												size={20}
-												key={i}
-												color={i < 4 ? 'gold' : 'gray'}
-											/>
+										i < Math.floor(ratings) ? (
+											<FaStar key={i} color='gold' />
+										) : (
+											i === Math.floor(ratings) && ratings % 1 !== 0 ? (
+											<FaStarHalf key={i} color='gold' />
+											) : (
+											<FaStar key={i} color='gray' />
+											)
+										)
 										))
 								}
 								<Box as='span' ml='2' color='gray.600' fontSize='sm'>
-									4.0 reviews
+									{ ratings } ratings
 								</Box>
 							</Box>							
 						</Flex>
@@ -417,145 +426,52 @@ function ClinicDetails() {
 						</Flex>
 						<Box mt={4}>
 							<Box mt={4} w="full">
-								<Box
-									borderBottom="1px"
-									borderColor="gray.300"
-									mt={4}
-									mb={4}
-								/>
+								<Box borderBottom="1px" borderColor="gray.300" mt={4} mb={4} />
 
-								<Box 
-									mt={4} 
-									maxHeight={300}
-									overflowY='scroll'
-								>
-									<Flex mb={3} w="full">
-										<Avatar size="sm" name="Ryan Florence" src="https://bit.ly/ryan-florence" mr={3} />
-										<Box w="full">
-											<Flex alignItems="center">
+								<Box mt={4} maxHeight={300} overflowY="scroll">
+									{
+										reviews ? reviews.map((review, index) => (
+											<Flex mb={3} w="full" key={index}>
+												<Avatar size="sm" name={review.author_name} src={review.profile_photo_url} mr={3} />
 												<Box w="full">
-													<Text fontSize="sm" fontWeight="semibold" letterSpacing="wide">
-														Meow meow
-													</Text>
-												</Box>
-												<Box w="full">
-													<Flex justifyContent="end" alignItems="center">
-														<Box display="flex" alignItems="center">
-															{
-																Array(5)
+													<Flex alignItems="center">
+														<Box w="full">
+														<Text fontSize="sm" fontWeight="semibold" letterSpacing="wide">
+															{review.author_name}
+														</Text>
+														</Box>
+														<Box w="full">
+														<Flex justifyContent="end" alignItems="center">
+															<Box display="flex" alignItems="center">
+															{Array(5)
 																.fill('')
 																.map((_, i) => (
-																	<AiFillStar
-																		size={20}
-																		key={i}
-																		color={i < 2 ? 'gold' : 'gray'}
-																	/>
-																))
-															}
+																<AiFillStar
+																	size={20}
+																	key={i}
+																	color={i < review.rating ? 'gold' : 'gray'}
+																/>
+																))}
 															<Box as="span" mx="2" color="gray.600" fontSize="sm">
-																2.0
+																{review.rating}
 															</Box>
+															</Box>
+														</Flex>
 														</Box>
 													</Flex>
+													<Box>
+														<Text fontSize="sm" letterSpacing="wide">
+														{review.text}
+														</Text>
+													</Box>
 												</Box>
-											</Flex>
-											<Box>
-												<Text fontSize="sm" letterSpacing="wide">
-													Meow meow meow! meow meow.. mow mow mow
-													Meow meow meow! meow meow.. mow mow mow
-													Meow meow meow! meow meow.. mow mow mow
-												</Text>
-											</Box>
-										</Box>
-									</Flex>
-
-									<Flex mb={3} w="full">
-										<Avatar size="sm" name="Ryan Florence" src="https://bit.ly/ryan-florence" mr={3} />
-										<Box w="full">
-											<Flex alignItems="center">
-												<Box w="full">
-													<Text fontSize="sm" fontWeight="semibold" letterSpacing="wide">
-														Halp me I am under da water
-													</Text>
-												</Box>
-												<Box w="full">
-													<Flex justifyContent="end" alignItems="center">
-														<Box display="flex" alignItems="center">
-															{
-																Array(5)
-																.fill('')
-																.map((_, i) => (
-																	<AiFillStar
-																		size={20}
-																		key={i}
-																		color={i < 5 ? 'gold' : 'gray'}
-																	/>
-																))
-															}
-															<Box as="span" mx="2" color="gray.600" fontSize="sm">
-																5.0
-															</Box>
-														</Box>
-													</Flex>
-												</Box>
-											</Flex>
-											<Box>
-												<Text fontSize="sm" letterSpacing="wide">
-													Wow!!??!?!?!?! 5-star SHEEEEEEESHERR
-												</Text>
-											</Box>
-										</Box>
-									</Flex>
-
-									<Flex mb={3} w="full">
-										<Avatar size="sm" name="Ryan Florence" src="https://bit.ly/ryan-florence" mr={3} />
-										<Box w="full">
-											<Flex alignItems="center">
-												<Box w="full">
-													<Text fontSize="sm" fontWeight="semibold" letterSpacing="wide">
-														Mike Oxlong
-													</Text>
-												</Box>
-												<Box w="full">
-													<Flex justifyContent="end" alignItems="center">
-														<Box display="flex" alignItems="center">
-															{
-																Array(5)
-																.fill('')
-																.map((_, i) => (
-																	<AiFillStar
-																		size={20}
-																		key={i}
-																		color={i < 4 ? 'gold' : 'gray'}
-																	/>
-																))
-															}
-															<Box as="span" mx="2" color="gray.600" fontSize="sm">
-																4.0
-															</Box>
-														</Box>
-													</Flex>
-												</Box>
-											</Flex>
-											<Box>
-												<Text fontSize="sm" letterSpacing="wide">
-													Super Idol的笑容
-													都没你的甜
-													八月正午的阳光
-													都没你耀眼
-													热爱105°C的你
-													滴滴清纯的蒸馏水
-													Super Idol的笑容
-													都没你的甜
-													八月正午的阳光
-													都没你耀眼
-													热爱105°C的你
-													滴滴清纯的蒸馏水
-												</Text>
-											</Box>
-										</Box>
-									</Flex>
-
+										  	</Flex>
+										)) : (
+											<Text fontSize="sm" letterSpacing="wide">
+												No reviews available
+											</Text>
+										)
+									}
 								</Box>
 							</Box>
 						</Box>
