@@ -332,11 +332,13 @@ function DoctorRequestForm() {
             setValue("patient_name", user.name);
             setValue("date_of_birth", user.dob);
             setValue("address", user.address);
+            setValue("contact", user.phone);
             setHome(true);
         } else {
             setValue("patient_name", "");
             setValue("date_of_birth", "");
             setValue("address", "");
+            setValue("contact", "");
             if (newHome) {
                 console.log("Setting new home");
                 setValue("address", newHome.formatted_address);
@@ -443,6 +445,37 @@ function DoctorRequestForm() {
                                     />
                                     <FormErrorMessage>
                                         {errors.patient_name && errors.patient_name.message}
+                                    </FormErrorMessage>
+                                </FormControl>
+                            </Box>
+                            <Box mt={6}>
+                                <FormControl isInvalid={errors.contact}>
+                                    <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+                                        Contact Number
+                                    </FormLabel>
+                                    <Input
+                                        variant="filled"
+                                        type="text"
+                                        id="name"
+                                        {
+                                            ...register("contact", {
+                                                required: "Contact cannot be empty",
+                                            })
+                                        }
+                                        placeholder="0123456789"
+                                        defaultValue=""
+                                        isDisabled={usePersonalDetails}
+                                        rounded="xl"
+                                        borderWidth="1px"
+                                        borderColor="gray.300"
+                                        color="gray.900"
+                                        size="md"
+                                        focusBorderColor="blue.500"
+                                        w="full"
+                                        p={2.5}
+                                    />
+                                    <FormErrorMessage>
+                                        {errors.contact && errors.contact.message}
                                     </FormErrorMessage>
                                 </FormControl>
                             </Box>
