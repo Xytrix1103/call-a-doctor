@@ -2,8 +2,10 @@ import {Avatar, Button, Flex, Link, Menu, MenuButton, MenuDivider, MenuItem, Men
 import {NavLink} from "react-router-dom";
 import {BiChevronDown} from "react-icons/bi";
 import {logout} from "../../../api/auth.js";
+import {useAuth} from "../../components/AuthCtx.jsx";
 
 const ClinicNavbar = () => {
+	const {user} = useAuth();
 	const handleLogout = () => {
 		logout();
 	};
@@ -31,12 +33,18 @@ const ClinicNavbar = () => {
 			</Flex>
 			
 			<Flex alignItems="center">
-				<Link as={NavLink} color="teal.500" to="/" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
-					Home
-				</Link>
-				<Link as={NavLink} color="teal.500" to="/clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
-					Clinic List
-				</Link>
+				{user.clinic !== null && (
+					<Link as={NavLink} color="teal.500" to="/" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
+						Home
+					</Link>
+				)
+				}
+				{user.clinic !== null && (
+					<Link as={NavLink} color="teal.500" to="/clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
+						Clinic List
+					</Link>
+				)
+				}
 				<Menu marginRight={6}>
 					<MenuButton as={Link} color="teal.500" display="flex" alignItems="center">
 						<Flex alignItems="center">
@@ -56,7 +64,7 @@ const ClinicNavbar = () => {
 					</MenuButton>
 					
 					<MenuList>
-						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: 'none' }}>
+						{/* <MenuItem as={NavLink} to="/" _focus={{ boxShadow: 'none' }}>
 							Dashboard
 						</MenuItem>
 						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
@@ -65,7 +73,7 @@ const ClinicNavbar = () => {
 						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
 							Earnings
 						</MenuItem>
-						<MenuDivider />
+						<MenuDivider /> */}
 						<MenuItem as={NavLink} onClick={handleLogout} _focus={{ boxShadow: "none" }}>
 							Sign out
 						</MenuItem>

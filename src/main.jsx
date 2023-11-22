@@ -26,19 +26,25 @@ import PatientDashboard from './pages/patient/PatientDashboard';
 import ClinicDashboard from './pages/clinic/ClinicDashboard';
 import UserList from './pages/admin/UserList';
 import AdminRegistry from './pages/admin/AdminRegistry';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import VerificationPending from './pages/clinic/VerificationPending';
 
 const DashboardElement = () => {
 	const { user } = useAuth();
   
-	switch (user?.role) {
-	  case "Patient":
-		return <PatientDashboard />;
-	  case "ClinicAdmin":
-		return <ClinicDashboard />;
-	//   case "Admin":
-	// 	return <AdminHome />;
-	  default:
-		return <Test />;
+	switch (user.role) {
+		case "Patient":
+			return <PatientDashboard />;
+		case "ClinicAdmin":
+			if (user.clinic === null) {
+				return <VerificationPending />;
+			} else {
+				return <ClinicDashboard />;
+			}
+		case "Admin":
+			return <AdminDashboard />;
+		default:
+			return <Test />;
 	}
 };
 
