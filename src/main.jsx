@@ -23,6 +23,8 @@ import ClinicRegistryApproval from "./pages/admin/ClinicRegistryApproval.jsx";
 import ClinicRegistryDetails from './pages/admin/ClinicRegistryDetails';
 import ApprovedClinicDetails from './pages/admin/ApprovedClinicDetails';
 import ApprovedClinicList from './pages/admin/ApprovedClinicList';
+import UserList from './pages/admin/UserList';
+import AdminRegistry from './pages/admin/AdminRegistry';
 
 
 const router = createBrowserRouter(
@@ -50,6 +52,8 @@ const router = createBrowserRouter(
 				<Route path="approve-clinics" element={<ClinicRegistryApproval/>}/>
 				<Route path="approve-clinics/:id" element={<ClinicRegistryDetails/>}/>
 				<Route path="clinics/:id" element={<ApprovedClinicDetails/>}/>
+				<Route path="users" element={<UserList/>}/>
+				<Route path="add-new-admin" element={<AdminRegistry/>}/>
 				<Route path="clinics/:id/doctors" element={<></>}/>
 				<Route path="clinics/:id/patients" element={<></>}/>
 				<Route path="doctors" element={<></>}/>

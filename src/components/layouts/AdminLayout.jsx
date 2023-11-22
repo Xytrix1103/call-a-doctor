@@ -1,5 +1,3 @@
-import {Box, Grid} from "@chakra-ui/react";
-import AdminNavbar from "../navbars/AdminNavbar.jsx";
 import {Navigate, Outlet, useLocation, useNavigation} from "react-router-dom";
 import React, {useEffect} from "react";
 import {useAuth} from "../AuthCtx.jsx";
@@ -12,6 +10,7 @@ const AdminLayout = () => {
 	console.log(location.pathname);
 	
 	useEffect(() => {
+		console.log("AdminLayout");
 		console.log(user, loading);
 	}, [user, loading]);
 	
@@ -20,15 +19,10 @@ const AdminLayout = () => {
 			{
 				user.role !== "Admin" ?
 					(
-						<Navigate to="/" />
+						<Navigate to="/admin" />
 					) :
 					(
-						<Grid templateRows="auto 1fr" w="100%" h="100%" bg="#f4f4f4" overflow="hidden">
-							<AdminNavbar/>
-							<Box w="100%" h="100%" bg="#f4f4f4" overflow="auto" p={5}>
-								<Outlet/>
-							</Box>
-						</Grid>
+						<Outlet/>
 					)
 			}
 		</>
