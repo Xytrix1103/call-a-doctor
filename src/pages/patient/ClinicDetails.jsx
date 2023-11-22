@@ -212,12 +212,12 @@ function ClinicDetails() {
 					<Box w="full">
 						<Flex alignItems="center">
 							<Box
-								w="28"
+								w="60"
 								bgImage={data.image}
 								bgSize="cover"
 								bgPosition="center"
 								rounded={'lg'}
-								h="16"
+								h="36"
 								mr={5}
 							>
 							</Box>
@@ -226,73 +226,56 @@ function ClinicDetails() {
 									{data.name}
 								</Text>
 								<Box
+									color='gray.500'
+									fontWeight='semibold'
+									letterSpacing='wide'
+									fontSize='sm'
+									textTransform='uppercase'
+									mt={2}
+								>
+									{distance ? distance : "0"} km away from your location
+								</Box>
+								<Box
 									color="gray.500"
 									fontWeight="semibold"
 									letterSpacing="wide"
 									fontSize="sm"
 									textTransform="uppercase"
+									mt={2}
 								>
 									{ data.specialty ? data.specialty : 'General Clinic' }
 								</Box>
+								<Flex mt={2} justifyContent="space-between" alignItems='center'>
+									<Box display='flex' alignItems='center'>
+										{
+											Array(5)
+												.fill('')
+												.map((_, i) => (
+												i < Math.floor(ratings) ? (
+													<FaStar key={i} color='gold' />
+												) : (
+													i === Math.floor(ratings) && ratings % 1 !== 0 ? (
+													<FaStarHalf key={i} color='gold' />
+													) : (
+													<FaStar key={i} color='gray' />
+													)
+												)
+												))
+										}
+										<Box as='span' ml='2' color='gray.600' fontSize='sm'>
+											{ ratings } ratings
+										</Box>
+									</Box>										
+								</Flex>								
 							</Box>
 						</Flex>
 					</Box>
 
-					<Box w="full">
-						<Flex alignItems="center" justifyContent="end">
-							<Box
-								color='gray.500'
-								fontWeight='semibold'
-								letterSpacing='wide'
-								fontSize='sm'
-								textTransform='uppercase'
-								mr={8}
-							>
-								{distance ? distance : "0"} km away from your location
-							</Box>
-							<Box display='flex' alignItems='center'>
-								{
-									Array(5)
-										.fill('')
-										.map((_, i) => (
-										i < Math.floor(ratings) ? (
-											<FaStar key={i} color='gold' />
-										) : (
-											i === Math.floor(ratings) && ratings % 1 !== 0 ? (
-											<FaStarHalf key={i} color='gold' />
-											) : (
-											<FaStar key={i} color='gray' />
-											)
-										)
-										))
-								}
-								<Box as='span' ml='2' color='gray.600' fontSize='sm'>
-									{ ratings } ratings
-								</Box>
-							</Box>							
-						</Flex>
-					</Box>
 				</Flex>
 				
 				<Flex>
 					<Box mb={4} w="full">
-						<Box>
-							<Text mb={2} fontSize="sm" fontWeight="medium" color="gray.500">
-								Clinic Name
-							</Text>
-							<Text
-								fontSize="md"
-								fontWeight="semiBold"
-								border="1px solid #E2E8F0"
-								borderRadius="md"
-								p={2}
-								w="full"
-								pointerEvents="none"
-								tabIndex="-1"
-							>
-								{data.name}
-							</Text>
-						</Box>
+
 						<Flex alignItems="center" justifyContent="space-between">
 							<Box flex="1">
 								<Text fontSize="sm" fontWeight="medium" color="gray.500" mt={8} mb={2}>
