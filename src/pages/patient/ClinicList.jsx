@@ -23,6 +23,7 @@ import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRend
 function ClinicList() {
     const [clinics, setClinics] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [destinationCoordinates, setDestinationCoordinates] = useState(null);
 
     const libs = ['places'];
     const { isLoaded, loadError } = useLoadScript({
@@ -53,16 +54,56 @@ function ClinicList() {
                 service.getDetails(
                 {
                     placeId: placeId,
-                    fields: ['name', 'formatted_address', 'rating'],
+                    fields: ['name', 'formatted_address', 'rating', 'geometry'],
                 },
                 (result, status) => {
                     if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-                    // Update the clinics array with ratings
-                    clinics[index].rating = result.rating || null;
-                    setClinics([...clinics]); // Trigger a re-render
+                        setDestinationCoordinates({
+                            lat: result.geometry.location.lat(),
+                            lng: result.geometry.location.lng(),
+                        });
+
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition((position) => {
+                                const currentLocation = new window.google.maps.LatLng(
+                                    position.coords.latitude,
+                                    position.coords.longitude
+                                  );
+                                  const placeLocation = new window.google.maps.LatLng(
+                                    result.geometry.location.lat(),
+                                    result.geometry.location.lng()
+                                  );
+                                  const directionsService = new window.google.maps.DirectionsService();
+                                  directionsService.route(
+                                    {
+                                        origin: currentLocation,
+                                        destination: placeLocation,
+                                        travelMode: window.google.maps.TravelMode.DRIVING,
+                                    },
+                                    (result, status) => {
+                                        if (status === window.google.maps.DirectionsStatus.OK) {
+                                            const distance = result.routes[0].legs[0].distance.value;
+                                            const distanceInKilometers = distance / 1000; 
+                                            // Update the clinics array with ratings
+                                            clinics[index].distance = distanceInKilometers || null;
+                                            setClinics([...clinics]); // Trigger a re-render
+                                            console.log(distance);
+                                        } else {
+                                            console.error(`Error retrieving directions: Status - ${status}`);
+                                        }
+                                    }
+                                );
+                            });
+                        } else {
+                            console.error('Geolocation is not supported by this browser!');
+                        }
+                        // Update the clinics array with ratings
+                        clinics[index].rating = result.rating || null;
+                        setClinics([...clinics]); // Trigger a re-render
                     } else {
-                    console.error(`Error fetching place details: Status - ${status}`);
+                        console.error(`Error fetching place details: Status - ${status}`);
                     }
+                    console.log(clinics);
                 }
                 );
             });
@@ -106,7 +147,9 @@ function ClinicList() {
                     columns={[1, 1, 2, 3, 4]}
                     gap={10}
                 >
-                    {filteredClinics.map((clinic) => (
+                    {filteredClinics
+                        .sort((a, b) => a.distance - b.distance)
+                        .map((clinic) => (
                         <Flex bg="white" h="full" shadow="lg" borderRadius="lg" transition="transform 0.2s" _hover={{ transform: 'scale(1.05)', shadow: 'xl' }}>
                             <Link as={NavLink} to={`/clinics/${clinic.id}`} key={clinic.id} style={{ textDecoration: 'none' }} w="full" h="full">
                                 <VStack w="full" h="full">
@@ -114,14 +157,14 @@ function ClinicList() {
                                         w="full"
                                         h="32"
                                         fit="cover"
-                                        src={clinic.image}
-                                        alt={clinic.name}
+                                        src={ clinic.image }
+                                        alt={ clinic.name }
                                         borderTopRadius="lg"
                                     />
                                     <Box px={4} py={3} w="full" h="full">
                                         <Box display='flex' alignItems='baseline' mb={1}>
                                             <Badge borderRadius='full' px='2' colorScheme='blue'>
-                                                {clinic.specialty ? clinic.specialty : 'General'}
+                                                { clinic.specialty ? clinic.specialty : 'General' }
                                             </Badge>
                                             <Box
                                                 color='gray.500'
@@ -131,7 +174,7 @@ function ClinicList() {
                                                 textTransform='uppercase'
                                                 ml='2'
                                             >
-                                                3.75 km away
+                                                { clinic.distance } km away
                                             </Box>
                                         </Box>
                                         
