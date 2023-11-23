@@ -19,7 +19,7 @@ import {
     TabPanel,
     Divider,
 } from '@chakra-ui/react';
-import {useRef, useState, useEffect} from "react";
+import {useRef, useState, useEffect, memo} from "react";
 import {onValue, query, ref, orderByChild, equalTo} from "firebase/database";
 import {db} from "../../../api/firebase.js";
 import {useAuth} from "../../components/AuthCtx.jsx";
@@ -35,6 +35,62 @@ import { DoughnutChart } from '../../components/charts/DoughnutChart';
 import {AppointmentTimelineChart} from "../../components/charts/AppointmentTimelineChart.jsx"
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
 import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
+
+const GenderDoughnutChart = memo(() => {
+    const chartData = {
+        labels: ['A', 'B', 'C'],
+        datasets: [
+            {
+                data: [300, 50, 100],
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+            },
+        ],
+    };
+
+    const chartOptions = {
+        cutout: '60%',
+    };
+
+    return <DoughnutChart data={chartData} options={chartOptions} />;
+});
+
+const PatientActivityBarChart = memo(() => {
+    const chartData = {
+        labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9'],
+        datasets: [
+            {
+                barPercentage: 0.5,
+                barThickness: 24,
+                maxBarThickness: 48,
+                minBarLength: 2,
+                label: 'Sales',
+                data: [540, 325, 702, 620, 212, 980, 1200, 400, 800],
+                backgroundColor: [
+                    'rgb(255, 159, 64)',
+                    'rgb(75, 192, 192)',
+                    'rgb(54, 162, 235)',
+                    'rgb(153, 102, 255)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 159, 64)',
+                    'rgb(255, 99, 132)',
+                    'rgb(255, 159, 64)',
+                    'rgb(75, 192, 192)',
+                ],
+            },
+        ],
+    };
+
+    const chartOptions = {
+        scales: {
+            y: {
+                beginAtZero: true,
+            },
+        },
+    };
+
+    return <BarChart data={chartData} options={chartOptions} />;
+});
+
 
 function ClinicDashboard() {
     const {user} = useAuth();
@@ -192,62 +248,6 @@ function ClinicDashboard() {
         );
     }
 
-    const GenderDoughnutChart = () => {
-        const chartData = {
-            labels: ['A', 'B', 'C'],
-            datasets: [
-                {
-                    data: [300, 50, 100],
-                },
-            ],
-        };
-    
-        const chartOptions = {
-            cutout: '60%',
-        };
-    
-        const chartColors = ['#ff6384', '#36a2eb', '#ffce56'];
-    
-        return <DoughnutChart data={chartData} options={chartOptions} colors={chartColors} />;
-    };
-
-    const PatientActivityBarChart = () => {
-        const chartData = {
-            labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9'],
-            datasets: [
-                {
-                    barPercentage: 0.5,
-                    barThickness: 24,
-                    maxBarThickness: 48,
-                    minBarLength: 2,
-                    label: 'Sales',
-                    data: [540, 325, 702, 620, 212, 980, 1200, 400, 800],
-                    backgroundColor: [
-                        'rgb(255, 159, 64)',
-                        'rgb(75, 192, 192)',
-                        'rgb(54, 162, 235)',
-                        'rgb(153, 102, 255)',
-                        'rgb(54, 162, 235)',
-                        'rgb(255, 159, 64)',
-                        'rgb(255, 99, 132)',
-                        'rgb(255, 159, 64)',
-                        'rgb(75, 192, 192)',
-                    ],
-                },
-            ],
-        };
-    
-        const chartOptions = {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                },
-            },
-        };
-    
-        return <BarChart data={chartData} options={chartOptions} />;
-    };
-	
     return (
         <Flex w='full' h='auto' p={4} gap={8} bg="#f4f4f4">
             <Flex
