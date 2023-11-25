@@ -9,6 +9,7 @@ export const register = async (data) => {
 		if (newUser) {
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
+				created_on: new Date(),
 				email: newUser.user.email,
 				password: password,
 				role: role,
@@ -41,6 +42,7 @@ export const register_clinic_admin = async (data) => {
 		if (newUser) {
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
+				created_on: new Date(),
 				email: newUser.user.email,
 				password: password,
 				role: role,
@@ -67,6 +69,7 @@ export const register_doctor = async (data) => {
 		if (newUser) {
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
+				created_on: new Date(),
 				email: newUser.user.email,
 				password: password,
 				role: role,
@@ -74,6 +77,33 @@ export const register_doctor = async (data) => {
 				gender: gender,
 				dob: date_of_birth,
 				phone: phone
+			}).then(() => {
+				return newUser.user;
+			}).catch((error) => {
+				throw {error: error};
+			});
+		} else {
+			throw {error: "Error creating user"};
+		}
+	})
+	.catch((error) => {
+		return {error: error};
+	});
+}
+
+export const register_admin = async (data) => {
+	const {email, password, name, phone, role="Admin"} = data;
+	
+	return await createUserWithEmailAndPassword(secondaryAuth, email, password).then(async (newUser) => {
+		if (newUser) {
+			return await set(ref(db, `users/${newUser.user.uid}`), {
+				uid: newUser.user.uid,
+				created_on: new Date(),
+				email: newUser.user.email,
+				password: password,
+				phone: phone,
+				role: role,
+				name: name
 			}).then(() => {
 				return newUser.user;
 			}).catch((error) => {
