@@ -85,7 +85,9 @@ const VerificationPending = () => {
 		
 		onValue(query(ref(db, `clinic_requests`), orderByChild('admin'), equalTo(user.uid)), (snapshot) => {
 			const data = snapshot.val();
-			setClinic(data);
+			const clinicId = Object.keys(data)[0];
+			const singleClinic = data[clinicId];
+			setClinic(singleClinic);
 		});
 	}, []);
 
@@ -119,17 +121,16 @@ const VerificationPending = () => {
 								fontWeight='semibold'
 								letterSpacing='wide'
 								position="absolute"
-								bottom="200px" 
+								bottom="150px" 
 							>
 								Reason for rejection
 							</Text>
 							<Text
 								fontSize="lg"
-								fontWeight='semibold'
+								fontWeight='medium'
 								letterSpacing='wide'
 								position="absolute"
-								bottom="300px"
-								color='red'
+								bottom="100px"
 							>
 								{clinic.rejected}
 							</Text>
