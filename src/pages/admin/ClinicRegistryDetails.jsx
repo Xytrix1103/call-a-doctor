@@ -7,7 +7,7 @@ import {BiLinkExternal} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
 
-function Map({ place_id, onDistanceChange }) {
+function Map({ placeId, onDistanceChange }) {
 	const mapStyle = {
 	  height: '500px',
 	  width: '100%',
@@ -45,11 +45,11 @@ function Map({ place_id, onDistanceChange }) {
 			<GoogleMap
 				onLoad={(map) => {
 					setMapRef(map);
-					if (place_id && window.google && window.google.maps) {
+					if (placeId && window.google && window.google.maps) {
 						const service = new window.google.maps.places.PlacesService(map);
 						service.getDetails(
 							{
-								place_id: place_id,
+								place_id: placeId,
 							},
 							(result, status) => {
 								if (status === window.google.maps.places.PlacesServiceStatus.OK) {
@@ -393,7 +393,7 @@ function ClinicRegistryDetails() {
 								rounded={'lg'}
 								h="350px"
 							>
-								<Map place_id={data.place_id} onDistanceChange={handleDistance}/>
+								<Map placeId={data.placeId} onDistanceChange={handleDistance}/>
 							</Box>
 							
 						</Flex>
