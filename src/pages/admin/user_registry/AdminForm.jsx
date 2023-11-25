@@ -15,6 +15,7 @@ import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 import {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import {register_admin} from "../../../../api/auth.js";
+import {useNavigate} from "react-router-dom";
 
 export const AdminForm = ({user}) => {
     console.log("AdminForm");
@@ -30,6 +31,7 @@ export const AdminForm = ({user}) => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState(null);
     const toast = useToast();
+    const navigate = useNavigate();
 
     const onSubmit = async (data) => {
         console.log("Submitting admin form");
@@ -59,6 +61,7 @@ export const AdminForm = ({user}) => {
                     duration: 5000,
                     isClosable: true,
                 });
+                navigate('/admin/users');
             }
         }).catch((err) => {
             console.log(err);
