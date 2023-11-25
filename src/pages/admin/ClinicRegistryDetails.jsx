@@ -1,23 +1,13 @@
-import {
-	Box,
-	Center,
-	Flex,
-	Text,
-	Link,
-	HStack,
-	Textarea,
-	Divider,
-	IconButton,
-} from '@chakra-ui/react'
-import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
-import {NavLink, useParams, useNavigate} from 'react-router-dom';
+import {Box, Center, Divider, Flex, HStack, IconButton, Link, Text, Textarea,} from '@chakra-ui/react'
+import {DirectionsRenderer, GoogleMap, InfoWindow, Marker, useLoadScript} from '@react-google-maps/api';
+import {useNavigate, useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
 import {AiOutlineArrowLeft} from "react-icons/ai";
 import {BiLinkExternal} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
 
-function Map({ placeId, onDistanceChange }) {
+function Map({ place_id, onDistanceChange }) {
 	const mapStyle = {
 	  height: '500px',
 	  width: '100%',
@@ -55,11 +45,11 @@ function Map({ placeId, onDistanceChange }) {
 			<GoogleMap
 				onLoad={(map) => {
 					setMapRef(map);
-					if (placeId && window.google && window.google.maps) {
+					if (place_id && window.google && window.google.maps) {
 						const service = new window.google.maps.places.PlacesService(map);
 						service.getDetails(
 							{
-								placeId: placeId,
+								place_id: place_id,
 							},
 							(result, status) => {
 								if (status === window.google.maps.places.PlacesServiceStatus.OK) {
@@ -403,7 +393,7 @@ function ClinicRegistryDetails() {
 								rounded={'lg'}
 								h="350px"
 							>
-								<Map placeId={data.placeId} onDistanceChange={handleDistance}/>
+								<Map place_id={data.place_id} onDistanceChange={handleDistance}/>
 							</Box>
 							
 						</Flex>
