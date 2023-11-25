@@ -162,6 +162,11 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 									rounded="xl"
 									borderWidth="1px"
 									borderColor="gray.300"
+									{
+										...register("start_time", {
+											required: "Start time cannot be empty",
+										})
+									}
 									color="gray.900"
 									size="md"
 									value={selectedStartTime}
@@ -186,6 +191,11 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 									rounded="xl"
 									borderWidth="1px"
 									borderColor="gray.300"
+									{
+										...register("end_time", {
+											required: "End time cannot be empty",
+										})
+									}
 									color="gray.900"
 									size="md"
 									value={selectedEndTime}
@@ -214,6 +224,11 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 									rounded="xl"
 									borderWidth="1px"
 									borderColor="gray.300"
+									{
+										...register("start_day", {
+											required: "Start day cannot be empty",
+										})
+									}
 									color="gray.900"
 									size="md"
 									value={selectedStartDay}
@@ -238,6 +253,11 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 									rounded="xl"
 									borderWidth="1px"
 									borderColor="gray.300"
+									{
+										...register("end_day", {
+											required: "End day cannot be empty",
+										})
+									}
 									color="gray.900"
 									size="md"
 									value={selectedEndDay}
