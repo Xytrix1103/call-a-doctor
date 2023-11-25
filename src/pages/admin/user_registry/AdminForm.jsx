@@ -5,7 +5,6 @@ import {
     FormErrorMessage,
     FormLabel,
     IconButton,
-    Image,
     Input,
     InputGroup,
     InputRightElement,
@@ -15,6 +14,7 @@ import {
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 import {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
+import {register_admin} from "../../../../api/auth.js";
 
 export const AdminForm = ({user}) => {
     console.log("AdminForm");
@@ -40,6 +40,36 @@ export const AdminForm = ({user}) => {
             alert("Passwords do not match!");
             return;
         }
+        
+        register_admin(data).then((res) => {
+            console.log(res);
+            if (res.error) {
+                toast({
+                    title: "Error!",
+                    description: res.error,
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            } else {
+                toast({
+                    title: "Success!",
+                    description: "Admin has been registered!",
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            }
+        }).catch((err) => {
+            console.log(err);
+            toast({
+                title: "Error!",
+                description: "An error has occurred!",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
+        });
     }
 
     useEffect(() => {
@@ -130,7 +160,7 @@ export const AdminForm = ({user}) => {
                         w="full"
                         p={2.5}
                         {
-                            ...register("phone_number", {
+                            ...register("phone", {
                                 required: "Phone Number is required",
                                 pattern: {
                                     value: /^(\+?\d{1,3}[- ]?)?\d{10}$/,
