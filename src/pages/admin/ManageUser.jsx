@@ -1,14 +1,5 @@
-import {
-    Box,
-    Center,
-    Flex,
-    FormControl,
-    FormLabel,
-    IconButton,
-    Select,
-    Text,
-} from '@chakra-ui/react';
-import {useState, useEffect} from "react";
+import {Box, Center, Flex, FormControl, FormLabel, IconButton, Select, Text,} from '@chakra-ui/react';
+import {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {AiOutlineArrowLeft} from "react-icons/ai";
 import {db} from "../../../api/firebase.js";
@@ -42,6 +33,10 @@ function ManageUser() {
             });
         }
     }, []);
+    
+    useEffect(() => {
+        console.log(selectedRole);
+    }, [selectedRole]);
 
     const handleRoleChange = (role) => {
         setSelectedRole(role);
@@ -114,8 +109,8 @@ function ManageUser() {
                                 color="gray.900"
                                 size="md"
                                 focusBorderColor="blue.500"
-                                value={id ? selectedRole : ''}
-                                isDisabled={id ? true : false}
+                                value={id ? selectedRole : user.role}
+                                isDisabled={!!id}
                             >
                                 {roles.map((role) => (
                                     <option key={role} value={role}>
