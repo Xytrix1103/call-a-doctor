@@ -6,44 +6,50 @@ import {
     FormControl,
     FormErrorMessage,
     FormLabel,
+    HStack,
     Input,
+    InputGroup,
+    InputLeftElement,
+    Link,
     Select,
     Switch,
     Text,
-    Link,
-    HStack,
-    InputGroup,
-    InputLeftElement,
     Textarea,
+    useToast,
 } from '@chakra-ui/react'
-import {set, useForm} from "react-hook-form";
-import {useEffect, useState, useRef} from "react";
+import {useForm} from "react-hook-form";
+import {memo, useEffect, useRef, useState} from "react";
 import {useAuth} from "../../components/AuthCtx.jsx";
-import {GoogleMap, Marker, useLoadScript, InfoWindow, DirectionsRenderer, Autocomplete} from '@react-google-maps/api';
-import {NavLink, useParams} from 'react-router-dom';
+import {Autocomplete, DirectionsRenderer, GoogleMap, InfoWindow, Marker, useLoadScript} from '@react-google-maps/api';
+import {useParams} from 'react-router-dom';
 import {BiLinkExternal, BiSearchAlt2} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
+import {request_doctor} from "../../../api/patient.js";
 
-function Map({ placeId, onDistanceChange, onNewHome, useHome, user }) {
+const Map = (props) => {
+    const { place_id, setUserHomePlace, usePersonalDetails, user } = props;
     const mapStyle = {
         height: '350px',
         width: '100%',
     };
-    const libs = ['places'];
-    const [mapRef, setMapRef] = useState(null);
+    
+    const [libs, _] = useState(["places"]);
     const [center, setCenter] = useState({
         lat: 5.4164,
         lng: 100.3327,
     });
-    const [clinicLocation, setClinicLocation] = useState(null);
-    const [home, setHome] = useState(null);
-    const [name, setName] = useState('');
-    const [formattedAddress, setFormattedAddress] = useState('');
-    const [destinationCoordinates, setDestinationCoordinates] = useState(null);
-    const [distance, setDistance] = useState(null);
+    
+    const [clinic, setClinic] = useState(null);
     const [directions, setDirections] = useState(null);
     const inputRef = useRef();
+    const [homePlace, setHomePlace] = useState(null);
+    const [map, setMap] = useState(null);
+    const [services, setServices] = useState({
+        directions: null,
+        places: null,
+        autocomplete: null,
+    });
   
     const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
@@ -51,58 +57,37 @@ function Map({ placeId, onDistanceChange, onNewHome, useHome, user }) {
     });
   
     const handlePlaceSelect = () => {
-        return new Promise((resolve) => {
-            if (inputRef.current && inputRef.current.getPlace) {
-                const place = inputRef.current.getPlace();
-
-                setHome(place);
-                console.log(place);
-                resolve(place);
-            } else {
-                resolve();
+        if (inputRef.current && inputRef.current.getPlace) {
+            if (inputRef.current.getPlace().place_id) {
+                setHomePlace(inputRef.current.getPlace());
             }
-        });
+        } else {
+            console.log("No place selected");
+        }
     };
   
     const getMapsLink = () => {
-        if (clinicLocation) {
-            const { name } = clinicLocation;
+        if (clinic) {
+            const { name } = clinic;
             return `https://www.google.com/maps/search/?api=1&query=${name}`;
         }
     };
   
-    const handleMapLoad = (map) => {
-        setMapRef(map);
-        console.log("Map loaded")
-        console.log("Place ID: ", placeId)
-        fetchPlaceDetails(placeId, map);
+    const handleMapLoad = (m) => {
+        console.log("Map loaded");
+        setMap(m);
     };
   
-    const fetchPlaceDetails = (placeId, map) => {
+    const fetchPlaceDetails = (place_id) => {
         console.log("Fetching place details");
-        console.log(placeId)
-        const service = new window.google.maps.places.PlacesService(map);
-        service.getDetails(
+        console.log(place_id)
+        services?.places?.getDetails(
             {
-                placeId: placeId,
+                placeId: place_id,
             },
             (result, status) => {
                 if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-                    const { name, formatted_address, rating, reviews } = result;
-        
-                    setClinicLocation(result);
-                    setName(name);
-                    setFormattedAddress(formatted_address);
-                    setDestinationCoordinates({
-                        lat: result.geometry.location.lat(),
-                        lng: result.geometry.location.lng(),
-                    });
-        
-                    setCenter({
-                        lat: result.geometry.location.lat(),
-                        lng: result.geometry.location.lng(),
-                    });
-        
+                    setClinic(result);
                 } else {
                     console.error(`Error retrieving place details: Status - ${status}`);
                 }
@@ -110,29 +95,29 @@ function Map({ placeId, onDistanceChange, onNewHome, useHome, user }) {
         );
     };
 
-    const fetchHomeDetails = (placeId, map) => {
+    const fetchHomeDetails = (place_id) => {
         console.log("Fetching home details");
-        console.log(placeId);
-    
-        return new Promise((resolve, reject) => {
-            const service = new window.google.maps.places.PlacesService(map);
-            service.getDetails(
-                {
-                    placeId: placeId,
-                },
-                (result, status) => {
-                    if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-                        const { name, formatted_address, rating, reviews } = result;
-                        setHome(result);
-                        console.log(result);
-                        resolve(result); // Resolve the promise with the result
-                    } else {
-                        console.error(`Error retrieving place details: Status - ${status}`);
-                        reject(`Error retrieving place details: Status - ${status}`);
+        console.log(place_id);
+        
+        services?.places?.getDetails(
+            {
+                placeId: place_id,
+            },
+            (result, status) => {
+                if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+                    if(usePersonalDetails) {
+                        result = {
+                            ...result,
+                            formatted_address: user.address,
+                        }
                     }
+                    setHomePlace(result);
+                    console.log(result);
+                } else {
+                    console.error(`Error retrieving place details: Status - ${status}`);
                 }
-            );
-        });
+            }
+        );
     };
   
     const fetchDirections = (clinic, home) => {
@@ -147,8 +132,8 @@ function Map({ placeId, onDistanceChange, onNewHome, useHome, user }) {
             clinic.geometry.location.lat(),
             clinic.geometry.location.lng()
         );
-        const directionsService = new window.google.maps.DirectionsService();
-        directionsService.route(
+        
+        services?.directions?.route(
             {
                 origin: homeLocation,
                 destination: clinicLocation,
@@ -157,55 +142,79 @@ function Map({ placeId, onDistanceChange, onNewHome, useHome, user }) {
             (result, status) => {
                 if (status === window.google.maps.DirectionsStatus.OK) {
                     setDirections(result);
-                    const distance = result.routes[0].legs[0].distance.value;
-                    const distanceInKilometers = distance / 1000;
-                    onDistanceChange(distanceInKilometers);
-                    setDistance(distance);
-                    console.log(distance);
                 } else {
                     console.error(`Error retrieving directions: Status - ${status}`);
                 }
             }
-        );
+        ).then(r => console.log(r));
     };
-  
-    useEffect(() => {
-        console.log("use home? ", useHome)
-        if (useHome && user.address && inputRef.current) {
-            onNewHome(null);
-
-            const autocomplete = new window.google.maps.places.AutocompleteService();
-            console.log("user address: ", user.address);
-            // If useHome is true and user.address is available, set the value of the Autocomplete
-            inputRef.current.value = user.address;
     
-            // Trigger the Places Autocomplete API manually
-            autocomplete.getPlacePredictions(
-                { input: user.address },
-                (predictions, status) => {
-                    if (status === window.google.maps.places.PlacesServiceStatus.OK && predictions && predictions.length > 0) {
-                        const placeId = predictions[0].place_id;
-                        console.log("using user home: ", placeId);
-                        // Call fetchHomeDetails and wait for it to complete
-                        fetchHomeDetails(placeId, mapRef).then((homeDetails) => {
-                            // Check if homeDetails is truthy before calling fetchDirections
-                            if (homeDetails) {
-                                fetchDirections(clinicLocation, homeDetails);
-                            }
-                        }).catch((error) => {
-                            console.error(error);
-                        });
-                    }
-                }
-            );
+    useEffect(() => {
+        console.log("home place: ", homePlace);
+        
+        if (clinic && homePlace) {
+            console.log("Fetching directions", clinic, homePlace);
+            fetchDirections(clinic, homePlace);
         } else {
-            setHome(null);
+            setDirections(null);
         }
-    }, [useHome, user.address]);
+        
+        setUserHomePlace(homePlace);
+    }, [homePlace]);
+    
+    useEffect(() => {
+        if(map) {
+            setServices({
+                directions: new window.google.maps.DirectionsService(),
+                places: new window.google.maps.places.PlacesService(map),
+                autocomplete: new window.google.maps.places.AutocompleteService(),
+            });
+        }
+    }, [map]);
+    
+    useEffect(() => {
+        if(services?.places) {
+            fetchPlaceDetails(place_id, map);
+        }
+    }, [services]);
+    
+    useEffect(() => {
+        if (isLoaded && map && clinic) {
+            if (!usePersonalDetails) {
+                setHomePlace(null);
+                if(clinic) {
+                    setCenter({
+                        lat: clinic.geometry.location.lat(),
+                        lng: clinic.geometry.location.lng(),
+                    });
+                }
+            } else {
+                if(user.place_id) {
+                    console.log("Fetching home details");
+                    fetchHomeDetails(user.place_id, map);
+                } else {
+                    console.log("Fetching home detail predictions");
+                    
+                    services?.autocomplete?.getPlacePredictions(
+                        { input: user.address },
+                        (predictions, status) => {
+                            console.log(predictions);
+                            if (status === window.google.maps.places.PlacesServiceStatus.OK && predictions && predictions.length > 0) {
+                                const place_id = predictions[0].place_id;
+                                console.log("using user home: ", place_id);
+                                fetchHomeDetails(place_id, map);
+                            } else {
+                                console.error(`Error retrieving place details: Status - ${status}`);
+                            }
+                        }
+                    ).then(r => console.log(r));
+                }
+            }
+        }
+    }, [usePersonalDetails, user, isLoaded, map, clinic]);
   
     if (loadError) return "Error loading maps";
     if (!isLoaded) return "Loading maps";
-    console.log("Clinic Location: ", clinicLocation);
   
     return (
         <Box>
@@ -220,19 +229,7 @@ function Map({ placeId, onDistanceChange, onNewHome, useHome, user }) {
                         autocomplete.setFields(["geometry", "formatted_address", "place_id", "name", "formatted_phone_number"]);
                     }}
                     onPlaceChanged={() => {
-                        // Check if useHome is true or false
-                        if (!useHome) {
-                            // If useHome is true, handle place selection and setHome
-                            handlePlaceSelect().then((selectedPlace) => {
-                                if (selectedPlace) {
-                                    fetchDirections(clinicLocation, selectedPlace);
-                                    onNewHome(selectedPlace);
-                                    console.log("New home: ", selectedPlace);
-                                }
-                            });
-                        } else {
-                            console.log("useHome is true. Do something...");
-                        }
+                        handlePlaceSelect();
                     }}
                 >
                     <InputGroup size="md">
@@ -243,9 +240,9 @@ function Map({ placeId, onDistanceChange, onNewHome, useHome, user }) {
                     <Input
                         type='text'
                         placeholder="Search for location..."
-                        ref={inputRef}
                         focusBorderColor='blue.500'
-                        disabled={useHome}
+                        disabled={usePersonalDetails}
+                        display={usePersonalDetails ? "none" : "block"}
                     />
                     </InputGroup>
                 </Autocomplete>
@@ -259,72 +256,441 @@ function Map({ placeId, onDistanceChange, onNewHome, useHome, user }) {
                     mapTypeControl: false,
                 }}
             >
-            {clinicLocation && (
-                <Marker position={{ lat: clinicLocation.geometry.location.lat(), lng: clinicLocation.geometry.location.lng() }} />
-            )}
-            {clinicLocation && (
-                <InfoWindow position={{ lat: clinicLocation.geometry.location.lat() + 0.0015, lng: clinicLocation.geometry.location.lng() }}>
-                    <Box p={1} maxW="sm">
-                        <Text fontSize="sm" fontWeight="medium">
-                            {name}
-                        </Text>
-                        <Text fontSize="xs" fontWeight="medium" color="gray.500" mt={1} mb={2}>
-                            {formattedAddress}
-                        </Text>
-                        <Link href={getMapsLink()} isExternal target="_blank" rel="noreferrer" _hover={{ textDecoration: "none" }} textDecoration="none" onClick={(e) => e.stopPropagation()}>
-                            <HStack spacing={1} fontSize="xs" fontWeight="medium" color="blue.500">
-                                <Text outline="none">View on Google Maps</Text>
-                                <BiLinkExternal />
-                            </HStack>
-                        </Link>
-                    </Box>
-                </InfoWindow>
-            )}
-                {directions && <DirectionsRenderer directions={directions} />}
+                <>
+                    {clinic && (
+                        <>
+                            <Marker position={{ lat: clinic.geometry.location.lat(), lng: clinic.geometry.location.lng() }} />
+                            <InfoWindow position={{ lat: clinic.geometry.location.lat() + 0.0015, lng: clinic.geometry.location.lng() }}>
+                                <Box p={1} maxW="sm">
+                                    <Text fontSize="sm" fontWeight="medium">
+                                        {clinic.name}
+                                    </Text>
+                                    <Text fontSize="xs" fontWeight="medium" color="gray.500" mt={1} mb={2}>
+                                        {clinic.formatted_address}
+                                    </Text>
+                                    <Link href={getMapsLink()} isExternal target="_blank" rel="noreferrer" _hover={{ textDecoration: "none" }} textDecoration="none" onClick={(e) => e.stopPropagation()}>
+                                        <HStack spacing={1} fontSize="xs" fontWeight="medium" color="blue.500">
+                                            <Text outline="none">View on Google Maps</Text>
+                                            <BiLinkExternal />
+                                        </HStack>
+                                    </Link>
+                                </Box>
+                            </InfoWindow>
+                        </>
+                    )}
+                    {directions && <DirectionsRenderer directions={directions} />}
+                </>
             </GoogleMap>
         </Box>
     );
 }
 
-function DoctorRequestForm() {
+const MemoMap = memo(Map);
+
+const FormSection = (props) => {
+    const {form, usePersonalDetails, setUsePersonalDetails, onSubmit, user, clinic, setUserHomePlace} = props;
+    
     const {
-		handleSubmit,
+        handleSubmit,
         setValue,
-		register,
-		formState: {
-			errors, isSubmitting
-		}
-	} = useForm();
-    const [usePersonalDetails, setUsePersonalDetails] = useState(false);
+        register,
+        watch,
+        resetField,
+        formState: {
+            errors
+        }
+    } = form;
+    
+    return (
+        <form action="/" method="post">
+            <Flex
+                alignItems="center"
+                justifyContent="space-between"
+                mb={4}
+            >
+                <Box mx={5} w="full">
+                    <Flex alignItems="center">
+                        <Box
+                            w="56"
+                            bgImage={clinic.image}
+                            bgSize="cover"
+                            bgPosition="center"
+                            rounded={'lg'}
+                            h="32"
+                            mr={5}
+                        >
+                        </Box>
+                        <Box>
+                            <Text fontSize="2xl" fontWeight="bold" letterSpacing='wide'>
+                                Doctor Request Form
+                            </Text>
+                            <Text fontSize="xl" fontWeight="semibold" letterSpacing="wide" mt={2}>
+                                {clinic.name}
+                            </Text>
+                            <Box
+                                color="gray.500"
+                                fontWeight="semibold"
+                                letterSpacing="wide"
+                                fontSize="sm"
+                                textTransform="uppercase"
+                                mt={2}
+                            >
+                                { clinic.specialty ? clinic.specialty : 'General Clinic' }
+                            </Box>
+                        </Box>
+                    </Flex>
+                </Box>
+                <Flex direction='column' gap={2} justifyContent={'end'} alignItems={'center'} w="30%">
+                    <Flex>
+                        <Text letterSpacing='wide' >
+                            Use personal details?
+                        </Text>
+                        <Box mx={5}>
+                            <Switch
+                                id='use-personal-details-switch'
+                                onChange={() => setUsePersonalDetails(!usePersonalDetails)}
+                                isChecked={usePersonalDetails}
+                            />
+                        </Box>
+                    </Flex>
+                </Flex>
+            </Flex>
+            <Flex>
+                
+                <Box mx={5} w="full">
+                    <Box>
+                        <FormControl isInvalid={errors.patient_name}>
+                            <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+                                Patient Name <Text as="span" color="red.500">*</Text>
+                            </FormLabel>
+                            <Input
+                                variant="filled"
+                                type="text"
+                                id="patient_name"
+                                {
+                                    ...register("patient_name", {
+                                        required: "Patient name cannot be empty",
+                                    })
+                                }
+                                placeholder="John Doe"
+                                isDisabled={usePersonalDetails}
+                                rounded="xl"
+                                borderWidth="1px"
+                                borderColor="gray.300"
+                                color="gray.900"
+                                size="md"
+                                focusBorderColor="blue.500"
+                                w="full"
+                                p={2.5}
+                            />
+                            <FormErrorMessage>
+                                {errors.patient_name && errors.patient_name.message}
+                            </FormErrorMessage>
+                        </FormControl>
+                    </Box>
+                    <Box mt={6}>
+                        <FormControl isInvalid={errors.contact}>
+                            <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+                                Contact Number <Text as="span" color="red.500">*</Text>
+                            </FormLabel>
+                            <Input
+                                variant="filled"
+                                type="text"
+                                id="name"
+                                {
+                                    ...register("contact", {
+                                        required: "Contact cannot be empty",
+                                    })
+                                }
+                                placeholder="0123456789"
+                                isDisabled={usePersonalDetails}
+                                rounded="xl"
+                                borderWidth="1px"
+                                borderColor="gray.300"
+                                color="gray.900"
+                                size="md"
+                                focusBorderColor="blue.500"
+                                w="full"
+                                p={2.5}
+                            />
+                            <FormErrorMessage>
+                                {errors.contact && errors.contact.message}
+                            </FormErrorMessage>
+                        </FormControl>
+                    </Box>
+                    <Flex alignItems="center" justifyContent="space-between" mt={6}>
+                        <Box flex="1" mr={4}>
+                            <FormControl isInvalid={errors.date_of_birth}>
+                                <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+                                    Date of Birth <Text as="span" color="red.500">*</Text>
+                                </FormLabel>
+                                <Input
+                                    variant="filled"
+                                    type="date"
+                                    id="date_of_birth"
+                                    {
+                                        ...register("date_of_birth", {
+                                            required: "Date of birth cannot be empty",
+                                        })
+                                    }
+                                    isDisabled={usePersonalDetails}
+                                    rounded="xl"
+                                    borderWidth="1px"
+                                    borderColor="gray.300"
+                                    color="gray.900"
+                                    size="md"
+                                    focusBorderColor="blue.500"
+                                    w="full"
+                                    p={2.5}
+                                />
+                                <FormErrorMessage>
+                                    {errors.date_of_birth && errors.date_of_birth.message}
+                                </FormErrorMessage>
+                            </FormControl>
+                        </Box>
+                        <Box flex="1">
+                            <FormControl>
+                                <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+                                    Gender
+                                </FormLabel>
+                                <Select
+                                    variant="filled"
+                                    name="gender"
+                                    id="gender"
+                                    rounded="xl"
+                                    borderWidth="1px"
+                                    borderColor="gray.300"
+                                    color="gray.900"
+                                    size="md"
+                                    isDisabled={usePersonalDetails}
+                                    focusBorderColor="blue.500"
+                                    w="full"
+                                    {
+                                        ...register("gender")
+                                    }
+                                >
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </Select>
+                            </FormControl>
+                        </Box>
+                    </Flex>
+                    <Box mt={6}>
+                        <FormControl isInvalid={errors.address}>
+                            <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+                                Address
+                            </FormLabel>
+                            <Textarea
+                                variant="filled"
+                                type="text"
+                                id="address"
+                                {
+                                    ...register("address", {
+                                        required: "Patient address cannot be empty",
+                                    })
+                                }
+                                placeholder="123 Main St, New York, NY 10030"
+                                isDisabled={usePersonalDetails}
+                                rounded="xl"
+                                borderWidth="1px"
+                                borderColor="gray.300"
+                                color="gray.900"
+                                size="md"
+                                focusBorderColor="blue.500"
+                                w="full"
+                                p={2.5}
+                            />
+                            <FormErrorMessage>
+                                {errors.address && errors.address.message}
+                            </FormErrorMessage>
+                        </FormControl>
+                    </Box>
+                    <Box mt={6}>
+                        <FormControl isInvalid={errors.appointment_time}>
+                            <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+                                Appointment Time
+                            </FormLabel>
+                            <Select
+                                variant="filled"
+                                name="appointment_time"
+                                id="appointment_time"
+                                rounded="xl"
+                                borderWidth="1px"
+                                borderColor="gray.300"
+                                color="gray.900"
+                                size="md"
+                                focusBorderColor="blue.500"
+                                {
+                                    ...register("appointment_time")
+                                }
+                            >
+                                <option value="8AM-10AM">8 AM to 10 AM</option>
+                                <option value="10AM-12PM">10 AM to 12 PM</option>
+                                <option value="12PM-2PM">12 PM to 2 PM</option>
+                                <option value="2PM-4PM">2 PM to 4 PM</option>
+                                <option value="4PM-6PM">4 PM to 6 PM</option>
+                                <option value="6PM-8PM">6 PM to 8 PM</option>
+                            </Select>
+                            <FormErrorMessage>
+                                {errors.appointment_time && errors.appointment_time.message}
+                            </FormErrorMessage>
+                        </FormControl>
+                    </Box>
+                    <Box mt={6}>
+                        <FormControl isInvalid={errors.illness_description}>
+                            <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+                                Illness Description <Text as="span" color="red.500">*</Text>
+                            </FormLabel>
+                            <Textarea
+                                variant="filled"
+                                type="text"
+                                id="illness_description"
+                                {
+                                    ...register("illness_description", {
+                                        required: "Patient illness description cannot be empty",
+                                    })
+                                }
+                                placeholder="Enter a description for your illness here..."
+                                rounded="xl"
+                                borderWidth="1px"
+                                borderColor="gray.300"
+                                color="gray.900"
+                                size="md"
+                                focusBorderColor="blue.500"
+                                w="full"
+                                p={2.5}
+                            />
+                            <FormErrorMessage>
+                                {errors.illness_description && errors.illness_description.message}
+                            </FormErrorMessage>
+                        </FormControl>
+                    </Box>
+                </Box>
+                <Box mx={5} w="full">
+                    <Box w="full">
+                        <Box
+                            w="full"
+                            rounded={'lg'}
+                            h="430px"
+                        >
+                            <MemoMap place_id={clinic.place_id} setUserHomePlace={setUserHomePlace} usePersonalDetails={usePersonalDetails} user={user} />
+                        </Box>
+                    </Box>
+                    <Button
+                        onClick={handleSubmit(onSubmit)}
+                        colorScheme="blue"
+                        rounded="xl"
+                        px={4}
+                        py={2}
+                        mt={5}
+                        w="full"
+                    >
+                        Submit Request
+                    </Button>
+                </Box>
+            </Flex>
+        </form>
+    );
+}
+
+const MemoFormSection = memo(FormSection);
+
+const DoctorRequestForm = () => {
+    const form = useForm();
+    const {
+        handleSubmit,
+        setValue,
+        resetField,
+    } = form;
+    
+    const toast = useToast();
+    
+    const [usePersonalDetails, setUsePersonalDetails] = useState(true);
     const {user, loading} = useAuth();
-    const [data, setData] = useState({});
-	const {id} = useParams();
-    const [useHome, setHome] = useState(false);
-    const [distance, setDistance] = useState(null);
-    const [newHome, setNewHome] = useState(null);
-
-	const handleDistance = (distance) => {
-	  	setDistance(distance); 
-	};
-
-    const handleNewHome = (home) => {
-        setNewHome(home);
-    };
+    const [clinic, setClinic] = useState({});
+    const [userHomePlace, setUserHomePlace] = useState(null);
+    
+    const {id} = useParams();
     
     useEffect(() => {
         onValue(query(ref(db, `clinics/${id}`)), (snapshot) => {
 	        const data = snapshot.val();
-	        setData(data);
+            setClinic(data);
+            console.log(data);
         });
     }, []);
 
-	const onSubmit = async (e) => {
-		e.preventDefault();
-		const data = new FormData(e.target);
-		
-		if (res) {
-			console.log("Requesting a doctor");
-		}
+	const onSubmit = async (data) => {
+        if(!userHomePlace) {
+            toast({
+                title: "Unable to submit request.",
+                description: "Please select your location in the map.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+                position: "top"
+            });
+            return;
+        }
+        
+        data = form.getValues();
+        console.log(data);
+        
+        let req = {
+            clinic: id,
+            uid: user.uid,
+            illness_description: data.illness_description,
+            appointment_time: data.appointment_time,
+        };
+        
+        if(!usePersonalDetails) {
+            req = {
+                ...req,
+                patient: {
+                    name: data.patient_name,
+                    dob: data.date_of_birth,
+                    address: data.address,
+                    contact: data.contact,
+                    gender: data.gender,
+                    place_id: userHomePlace.place_id,
+                }
+            }
+        }
+        
+        console.log(req);
+        
+        await request_doctor(req).then(r => {
+            if (r.success) {
+                toast({
+                    title: "Request submitted.",
+                    description: "Please wait for the clinic to accept your request.",
+                    status: "success",
+                    duration: 3000,
+                    isClosable: true,
+                    position: "top"
+                });
+            } else {
+                toast({
+                    title: "Unable to submit request.",
+                    description: "Please try again later.",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                    position: "top"
+                });
+            }
+        })
+        .catch(e => {
+            console.log(e);
+            toast({
+                title: "Unable to submit request.",
+                description: "Please try again later.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+                position: "top"
+            });
+        });
 	}
     
     useEffect(() => {
@@ -333,19 +699,14 @@ function DoctorRequestForm() {
             setValue("date_of_birth", user.dob);
             setValue("address", user.address);
             setValue("contact", user.phone);
-            setHome(true);
         } else {
-            setValue("patient_name", "");
-            setValue("date_of_birth", "");
-            setValue("address", "");
-            setValue("contact", "");
-            if (newHome) {
-                console.log("Setting new home");
-                setValue("address", newHome.formatted_address);
-            }
-            setHome(false);
+            resetField("patient_name");
+            resetField("date_of_birth");
+            resetField("address");
+            resetField("contact");
         }
-    }, [usePersonalDetails, newHome]);
+    }, [usePersonalDetails]);
+    
 	
     return (
         <Center w="100%" h="auto" bg="#f4f4f4">
@@ -359,292 +720,7 @@ function DoctorRequestForm() {
 				gap={6}
                 gridTemplateColumns="1fr 1fr"
             >
-                <form action="/" method="post" onSubmit={handleSubmit(onSubmit)}>
-                    <Flex
-                        alignItems="center"
-                        justifyContent="space-between"
-                        mb={4}
-                    >
-                        <Box mx={5} w="full">
-                            <Flex alignItems="center">
-                                <Box
-                                    w="56"
-                                    bgImage={data.image}
-                                    bgSize="cover"
-                                    bgPosition="center"
-                                    rounded={'lg'}
-                                    h="32"
-                                    mr={5}
-                                >
-                                </Box>
-                                <Box>
-                                    <Text fontSize="2xl" fontWeight="bold" letterSpacing='wide'>
-                                        Doctor Request Form
-                                    </Text>                                    
-                                    <Text fontSize="xl" fontWeight="semibold" letterSpacing="wide" mt={2}>
-                                        {data.name}
-                                    </Text>
-                                    <Box
-                                        color="gray.500"
-                                        fontWeight="semibold"
-                                        letterSpacing="wide"
-                                        fontSize="sm"
-                                        textTransform="uppercase"
-                                        mt={2}
-                                    >
-                                        { data.specialty ? data.specialty : 'General Clinic' }
-                                    </Box>							
-                                </Box>
-                            </Flex>
-                        </Box>
-                        <Flex direction='column' gap={2} justifyContent={'end'} alignItems={'center'} w="30%">
-                            <Flex
-                            >
-                                <Text letterSpacing='wide' >
-                                    Use personal details?
-                                </Text>
-                                <Box mx={5}> 
-                                    <Switch 
-                                        id='use-personal-details-switch'
-                                        onChange={() => setUsePersonalDetails(!usePersonalDetails)}
-                                        isChecked={usePersonalDetails}
-                                    />
-                                </Box>                            
-                            </Flex>
-                        </Flex>
-
-                    </Flex>
-            
-                    <Flex>
-                        <Box mx={5} w="full">
-                            <Box>
-                                <FormControl isInvalid={errors.patient_name}>
-                                    <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                        Patient Name
-                                    </FormLabel>
-                                    <Input
-                                        variant="filled"
-                                        type="text"
-                                        id="name"
-                                        {
-                                            ...register("patient_name", {
-                                                required: "Patient name cannot be empty",
-                                            })
-                                        }
-                                        placeholder="John Doe"
-                                        defaultValue=""
-                                        isDisabled={usePersonalDetails}
-                                        rounded="xl"
-                                        borderWidth="1px"
-                                        borderColor="gray.300"
-                                        color="gray.900"
-                                        size="md"
-                                        focusBorderColor="blue.500"
-                                        w="full"
-                                        p={2.5}
-                                    />
-                                    <FormErrorMessage>
-                                        {errors.patient_name && errors.patient_name.message}
-                                    </FormErrorMessage>
-                                </FormControl>
-                            </Box>
-                            <Box mt={6}>
-                                <FormControl isInvalid={errors.contact}>
-                                    <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                        Contact Number
-                                    </FormLabel>
-                                    <Input
-                                        variant="filled"
-                                        type="text"
-                                        id="name"
-                                        {
-                                            ...register("contact", {
-                                                required: "Contact cannot be empty",
-                                            })
-                                        }
-                                        placeholder="0123456789"
-                                        defaultValue=""
-                                        isDisabled={usePersonalDetails}
-                                        rounded="xl"
-                                        borderWidth="1px"
-                                        borderColor="gray.300"
-                                        color="gray.900"
-                                        size="md"
-                                        focusBorderColor="blue.500"
-                                        w="full"
-                                        p={2.5}
-                                    />
-                                    <FormErrorMessage>
-                                        {errors.contact && errors.contact.message}
-                                    </FormErrorMessage>
-                                </FormControl>
-                            </Box>
-                            <Flex alignItems="center" justifyContent="space-between" mt={6}>
-                                <Box flex="1" mr={4}>
-                                    <FormControl isInvalid={errors.date_of_birth}>
-                                        <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                            Date of Birth
-                                        </FormLabel>
-                                        <Input
-                                            variant="filled"
-                                            type="date"
-                                            id="date_of_birth"
-                                            {
-                                                ...register("date_of_birth", {
-                                                    required: "Date of birth cannot be empty",
-                                                })
-                                            }
-                                            isDisabled={usePersonalDetails}
-                                            rounded="xl"
-                                            borderWidth="1px"
-                                            borderColor="gray.300"
-                                            color="gray.900"
-                                            size="md"
-                                            focusBorderColor="blue.500"
-                                            w="full"
-                                            p={2.5}
-                                        />
-                                        <FormErrorMessage>
-                                            {errors.date_of_birth && errors.date_of_birth.message}
-                                        </FormErrorMessage>
-                                    </FormControl>
-                                </Box>
-                                <Box flex="1">
-                                    <FormControl>
-                                        <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                            Gender
-                                        </FormLabel>
-                                        <Select
-                                            variant="filled"
-                                            name="gender"
-                                            id="gender"
-                                            rounded="xl"
-                                            borderWidth="1px"
-                                            borderColor="gray.300"
-                                            color="gray.900"
-                                            size="md"
-                                            isDisabled={usePersonalDetails}
-                                            focusBorderColor="blue.500"
-                                        >
-                                            <option value="male">Male</option>
-                                            <option value="female">Female</option>
-                                        </Select>
-                                    </FormControl>
-                                </Box>
-                            </Flex>
-                            <Box mt={6}>
-                                <FormControl isInvalid={errors.address}>
-                                    <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                        Address
-                                    </FormLabel>
-                                    <Textarea
-                                        variant="filled"
-                                        type="text"
-                                        id="address"
-                                        {
-                                            ...register("address", {
-                                                required: "Patient address cannot be empty",
-                                            })
-                                        }
-                                        placeholder="123 Main St, New York, NY 10030"
-                                        isDisabled={usePersonalDetails}
-                                        rounded="xl"
-                                        borderWidth="1px"
-                                        borderColor="gray.300"
-                                        color="gray.900"
-                                        size="md"
-                                        focusBorderColor="blue.500"
-                                        w="full"
-                                        p={2.5}
-                                    />
-                                    <FormErrorMessage>
-                                        {errors.address && errors.address.message}
-                                    </FormErrorMessage>
-                                </FormControl>
-                            </Box>
-                            <Box mt={6}>
-                                <FormControl isInvalid={errors.appointment_time}>
-                                    <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                        Appointment Time
-                                    </FormLabel>
-                                    <Select
-                                        variant="filled"
-                                        name="appointment_time"
-                                        id="appointment_time"
-                                        rounded="xl"
-                                        borderWidth="1px"
-                                        borderColor="gray.300"
-                                        color="gray.900"
-                                        size="md"
-                                        focusBorderColor="blue.500"
-                                    >
-                                        <option value="8AM-10AM">8 AM to 10 AM</option>
-                                        <option value="10AM-12PM">10 AM to 12 PM</option>
-                                        <option value="12PM-2PM">12 PM to 2 PM</option>
-                                        <option value="2PM-4PM">2 PM to 4 PM</option>
-                                        <option value="4PM-6PM">4 PM to 6 PM</option>
-                                        <option value="6PM-8PM">6 PM to 8 PM</option>
-                                    </Select>
-                                    <FormErrorMessage>
-                                        {errors.appointment_time && errors.appointment_time.message}
-                                    </FormErrorMessage>
-                                </FormControl>
-                            </Box>
-                            <Box mt={6}>
-                                <FormControl isInvalid={errors.illness_description}>
-                                    <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                        Illness Description
-                                    </FormLabel>
-                                    <Textarea
-                                        variant="filled"
-                                        type="text"
-                                        id="illness_description"
-                                        {
-                                            ...register("illness_description", {
-                                                required: "Patient illness description cannot be empty",
-                                            })
-                                        }
-                                        placeholder="Enter a description for your illness here..."
-                                        rounded="xl"
-                                        borderWidth="1px"
-                                        borderColor="gray.300"
-                                        color="gray.900"
-                                        size="md"
-                                        focusBorderColor="blue.500"
-                                        w="full"
-                                        p={2.5}
-                                    />
-                                    <FormErrorMessage>
-                                        {errors.illness_description && errors.illness_description.message}
-                                    </FormErrorMessage>
-                                </FormControl>
-                            </Box>
-                        </Box>
-                        <Box mx={5} w="full">
-                            <Flex direction="column" alignItems="center">
-                                <Box
-                                    w="full"
-                                    rounded={'lg'}
-                                    h="430px"
-                                >
-                                    <Map placeId={data.placeId} onDistanceChange={handleDistance} onNewHome={handleNewHome} useHome={useHome} user={user}/>
-                                </Box>
-                                
-                            </Flex>
-                            <Button
-                                type="submit"
-                                colorScheme="blue"
-                                rounded="xl"
-                                px={4}
-                                py={2}
-                                mt={5}
-                                w="full"
-                            >
-                                Submit Request
-                            </Button>
-                        </Box>
-                    </Flex>
-                </form>
+            <MemoFormSection form={form} usePersonalDetails={usePersonalDetails} setUsePersonalDetails={setUsePersonalDetails} onSubmit={onSubmit} user={user} clinic={clinic} setUserHomePlace={setUserHomePlace} />
             </Box>
         </Center>
     );
