@@ -3,8 +3,8 @@ import './index.css'
 import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from "react-router-dom";
 import RootLayout from "./components/layouts/RootLayout.jsx";
 import Login from "./pages/auth/Login.jsx";
-import Register from "./pages/auth/Register.jsx";
 import AddDoctorToList from './pages/clinic/AddDoctorToList.jsx';
+import PendingPatientRequests from './pages/clinic/PendingPatientRequests.jsx';
 import DoctorRequestForm from './pages/patient/DoctorRequestForm.jsx';
 import React from "react";
 import App from "./App.jsx";
@@ -62,7 +62,7 @@ const router = createBrowserRouter(
 				<Route path="clinics/:id/request" element={<DoctorRequestForm/>}/>
 			</Route>
 			<Route element={<ClinicLayout/>}>
-				<Route path="clinic-detail/:id" element={<></>}/>
+				<Route path="requests" element={<PendingPatientRequests/>}/>
 				<Route path="patients" element={<></>}/>
 				<Route path="patients/:id" element={<></>}/>
 				<Route path="doctors" element={<></>}/>
@@ -70,13 +70,13 @@ const router = createBrowserRouter(
 			</Route>
 			<Route path='/admin' element={<AdminLayout/>}>
 				<Route path="clinics" element={<ApprovedClinicList/>}/>
-				<Route path="approve-clinics" element={<ClinicRegistryApproval/>}/>
-				<Route path="approve-clinics/:id" element={<ClinicRegistryDetails/>}/>
 				<Route path="clinics/:id" element={<ApprovedClinicDetails/>}/>
-				<Route path="users" element={<UserList/>}/>
-				<Route path="add-new-admin" element={<AdminRegistry/>}/>
 				<Route path="clinics/:id/doctors" element={<></>}/>
 				<Route path="clinics/:id/patients" element={<></>}/>
+				<Route path="approve-clinics" element={<ClinicRegistryApproval/>}/>
+				<Route path="approve-clinics/:id" element={<ClinicRegistryDetails/>}/>
+				<Route path="users" element={<UserList/>}/>
+				<Route path="users/add" element={<AdminRegistry/>}/>
 				<Route path="doctors" element={<></>}/>
 				<Route path="doctors/:id" element={<></>}/>
 				<Route path="doctors/:id/schedule" element={<></>}/>
