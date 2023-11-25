@@ -23,27 +23,32 @@ import {useAuth} from "../../components/AuthCtx.jsx";
 import {useEffect, useState} from "react";
 import {equalTo, onValue, orderByChild, query, ref} from "firebase/database";
 import {db} from "../../../api/firebase.js";
-import Lottie from 'lottie-web';
-import animationData from 'https://lottie.host/214951eb-e4a0-4bfd-8c83-87253cbc856d/gp9OL0aRBN.json';
+import Lottie from 'lottie-react';
 
 const LoadingAnimation = () => {
-	const defaultOptions = {
-		loop: true,
-		autoplay: true,
-		animationData: animationData,
-		rendererSettings: {
-			preserveAspectRatio: 'xMidYMid slice',
-		},
-	};
+	const [animationData, setAnimationData] = useState(null);
+
+	useEffect(() => {
+        fetch('https://lottie.host/01b692d0-0b70-4293-9eb9-3d1d6a8b648f/G7oFls431Z.json')
+        .then((response) => response.json())
+        .then((data) => {
+            setAnimationData(data);
+        })
+        .catch((error) => {
+            console.error('Failed to fetch animation data:', error);
+        });
+    }, []);
 
 	return (
-		<Flex alignItems="center" justifyContent="center" height="200px" width="200px">
-			<Lottie options={defaultOptions} height={200} width={200} />
-		</Flex>
+		<Lottie
+			animationData={animationData}
+			loop={true}
+			autoplay={true}
+			size={400}
+		/>
 	);
 };
   
-
 const VerificationPending = () => {
 	const {user, loading} = useAuth();
 	const [clinic, setClinic] = useState(null);
@@ -115,3 +120,48 @@ const VerificationPending = () => {
 }
 
 export default VerificationPending;
+
+// import Lottie from 'lottie-react';
+// import {Box, Center, Spinner} from "@chakra-ui/react";
+// import { useEffect, useState } from 'react';
+
+// const LoadingAnimation = () => {
+//     const [animationData, setAnimationData] = useState(null);
+
+//     useEffect(() => {
+//         fetch('https://lottie.host/75c4859e-03e8-4aa7-9abf-804c91611aea/o5Ehm7ofRo.json')
+//         .then((response) => response.json())
+//         .then((data) => {
+//             setAnimationData(data);
+//         })
+//         .catch((error) => {
+//             console.error('Failed to fetch animation data:', error);
+//         });
+//     }, []);
+
+    
+//     if (!animationData) {
+//         return (
+//             <Box w="full" h="100vh" bg="white" pos="fixed" top="0" left="0" zIndex="1000" display="flex" justifyContent="center" alignItems="center">
+//                 <Center w="full" h="full">
+//                     <Spinner size="xl" color="brand.900"/>
+//                 </Center>
+//             </Box>
+//         )
+//     } else {
+//         return (
+//             <Box w="full" h="100vh" bg="white" pos="fixed" top="0" left="0" zIndex="1000" display="flex" justifyContent="center" alignItems="center">
+//                 <Center w="full" h="full">
+//                     <Lottie
+//                         animationData={animationData}
+//                         loop={true}
+//                         autoplay={true}
+//                     />
+//                 </Center>
+//             </Box>
+//         )        
+//     }
+
+// }
+
+// export default LoadingAnimation;
