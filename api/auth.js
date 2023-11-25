@@ -1,5 +1,5 @@
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
-import {auth, db} from "./firebase.js";
+import {auth, db, secondaryAuth} from "./firebase.js";
 import {ref, set} from "firebase/database";
 
 export const register = async (data) => {
