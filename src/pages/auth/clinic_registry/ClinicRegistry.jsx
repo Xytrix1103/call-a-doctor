@@ -53,7 +53,7 @@ function ClinicRegistry() {
 		data = {
 			...data,
 			image: image,
-			placeId: place.placeId,
+			place_id: place.place_id,
 		}
 		await register_clinic_request(data);
 		console.log(data);

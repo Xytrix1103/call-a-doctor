@@ -1,30 +1,29 @@
 import {
+	Accordion,
+	AccordionButton,
+	AccordionIcon,
+	AccordionItem,
+	AccordionPanel,
 	Avatar,
 	Box,
-	Button,
 	Center,
 	Flex,
-	Text,
-	Link,
 	HStack,
+	Link,
+	Text,
 	Textarea,
-	Accordion,
-	AccordionItem,
-	AccordionButton,
-	AccordionPanel,
-	AccordionIcon,
 } from '@chakra-ui/react'
-import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
-import {NavLink, useParams} from 'react-router-dom';
+import {DirectionsRenderer, GoogleMap, InfoWindow, Marker, useLoadScript} from '@react-google-maps/api';
+import {useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
-import {AiFillStar, AiOutlineSend} from "react-icons/ai";
-import {FaUserCircle, FaStar, FaStarHalf} from "react-icons/fa";
+import {AiFillStar} from "react-icons/ai";
+import {FaStar, FaStarHalf} from "react-icons/fa";
 import {BiLinkExternal} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
 import {ClinicDoctorList} from "../patient/ClinicDoctorList.jsx";
 
-function Map({ placeId, onDistanceChange }) {
+function Map({ place_id, onDistanceChange }) {
 	const mapStyle = {
 	  height: '350px',
 	  width: '100%',
@@ -62,11 +61,11 @@ function Map({ placeId, onDistanceChange }) {
 			<GoogleMap
 				onLoad={(map) => {
 					setMapRef(map);
-					if (placeId && window.google && window.google.maps) {
+					if (place_id && window.google && window.google.maps) {
 						const service = new window.google.maps.places.PlacesService(map);
 						service.getDetails(
 							{
-								placeId: placeId,
+								place_id: place_id,
 							},
 							(result, status) => {
 								if (status === window.google.maps.places.PlacesServiceStatus.OK) {
@@ -427,7 +426,7 @@ function ApprovedClinicDetails() {
 								rounded={'lg'}
 								h="350px"
 							>
-								<Map placeId={data.placeId} onDistanceChange={handleDistance}/>
+								<Map place_id={data.place_id} onDistanceChange={handleDistance}/>
 							</Box>
 							
 						</Flex>
