@@ -15,7 +15,7 @@ export const register_clinic_request = async (data) => {
 		specialist_clinic,
 		phone,
 		address,
-		placeId,
+		place_id,
 		image,
 		admin_name,
 		email,
@@ -80,7 +80,7 @@ export const register_clinic_request = async (data) => {
 				contact: phone,
 				address: address,
 				specialist_clinic: specialist_clinic,
-				placeId: placeId,
+				place_id: place_id,
 				admin: uid
 			})
 				.then(async () => {
@@ -128,7 +128,7 @@ export const register_clinic = async (data) => {
 		specialist_clinic,
 		contact,
 		address,
-		placeId,
+		place_id,
 		image,
 		admin
 	} = data;
@@ -150,7 +150,7 @@ export const register_clinic = async (data) => {
 			address: address,
 			image: image,
 			specialist_clinic: specialist_clinic !== "" ? specialist_clinic : null,
-			placeId: placeId,
+			place_id: place_id,
 			admins: {
 				[admin]: true
 			}

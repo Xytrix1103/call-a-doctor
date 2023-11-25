@@ -56,7 +56,7 @@ function PatientRegistry() {
 	const onSubmit = async (data) => {
 		data = {
 			...data,
-			placeId: place.placeId,
+			place_id: place.place_id,
 		}
         const password = data["password"];
         const confirm_password = data["confirm_password"];

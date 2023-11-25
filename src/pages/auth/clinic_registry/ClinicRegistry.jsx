@@ -53,7 +53,7 @@ function ClinicRegistry() {
 		data = {
 			...data,
 			image: image,
-			placeId: place.placeId,
+			place_id: place.place_id,
 		}
 		await register_clinic_request(data);
 		console.log(data);
@@ -80,7 +80,7 @@ function ClinicRegistry() {
 				break;
 			case 1:
 				console.log("Step 2");
-				trigger(["clinic_name", "address", "phone", "start_time", "end_time", "start_day", "end_day", "business_reg_num", "specialist_clinic"]).then(r => {
+				trigger(["clinic_name", "address", "phone", "business_reg_num", "specialist_clinic"]).then(r => {
 					if (r && image) {
 						setActiveStep(activeStep + 1);
 					} else {

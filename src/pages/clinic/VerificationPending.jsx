@@ -36,7 +36,7 @@ const VerificationPending = () => {
 							<p>{clinic.email}</p>
 							<p>{clinic.admin}</p>
 							<p>{clinic.image}</p>
-							<p>{clinic.placeId}</p>
+							<p>{clinic.place_id}</p>
 							{
 								clinic.rejected ?
 									(
