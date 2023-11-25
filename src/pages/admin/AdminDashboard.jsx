@@ -38,13 +38,80 @@ import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRend
 import { AdminMap } from './AdminMap.jsx';
 
 const GenderDoughnutChart = memo(() => {
-    console.log('GenderDoughnutChart');
+    const [maleCount, setMaleCount] = useState(0);
+    const [femaleCount, setFemaleCount] = useState(0);
+    useEffect(() => {
+        onValue(query(ref(db, "users")), (snapshot) => {
+            let malePatientCount = 0;
+            let femalePatientCount = 0;
+            snapshot.forEach((childSnapshot) => {
+                if (childSnapshot.val().role === 'Patient') {
+                    if (childSnapshot.val().gender === 'Male') {
+                        malePatientCount++;
+                    } else if (childSnapshot.val().gender === 'Female') {
+                        femalePatientCount++;
+                    }
+                }
+            });
+            setMaleCount(malePatientCount);
+            setFemaleCount(femalePatientCount);
+        });
+    }, []);
+
     const chartData = {
-        labels: ['A', 'B', 'C'],
+        labels: ['Male', 'Female'],
         datasets: [
             {
-                data: [300, 50, 100],
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+                data: [maleCount, femaleCount],
+                backgroundColor: ['#14ccff', '#ff63d8'],
+            },
+        ],
+    };
+
+    const chartOptions = {
+        cutout: '60%',
+    };
+
+    return <DoughnutChart data={chartData} options={chartOptions} />;
+});
+
+const AgeDoughnutChart = memo(() => {
+    const [ageRange, setAgeRange] = useState({
+        '0-19': 0,
+        '20-64': 0,
+        '65 and above': 0,
+    });
+    useEffect(() => {
+        onValue(query(ref(db, "users")), (snapshot) => {
+            let ageRange = {
+                '0-19': 0,
+                '20-64': 0,
+                '65 and above': 0,
+            };
+            snapshot.forEach((childSnapshot) => {
+                if (childSnapshot.val().role === 'Patient') {
+                    const dob = new Date(childSnapshot.val().dob);
+                    const age = Math.floor((new Date() - dob) / 3.15576e+10);
+                    console.log(dob, age)
+                    if (age >= 0 && age <= 19) {
+                        ageRange['0-19']++;
+                    } else if (age >= 20 && age <= 64) {
+                        ageRange['20-64']++;
+                    } else if (age >= 65) {
+                        ageRange['65 and above']++;
+                    }
+                }
+            });
+            setAgeRange(ageRange);
+        });
+    }, []);
+
+    const chartData = {
+        labels: ['0-19', '20-64', '65 & above'],
+        datasets: [
+            {
+                data: [ageRange['0-19'], ageRange['20-64'], ageRange['65 and above']],
+                backgroundColor: ['#14ccff', '#3245d1', '#7e14ff'],
             },
         ],
     };
@@ -66,16 +133,16 @@ const PatientActivityBarChart = memo(() => {
                 barThickness: 24,
                 maxBarThickness: 48,
                 minBarLength: 2,
-                label: 'Sales',
+                label: 'Patient Appointments Weekly',
                 data: [12, 19, 3, 5, 2, 3, 10],
                 backgroundColor: [
-                    '#ff6384',
-                    '#ff6384',
-                    '#ff6384',
-                    '#ff6384',
-                    '#ff6384',
-                    '#ff6384',
-                    '#ff6384',
+                    '#14ccff',
+                    '#3245d1',
+                    '#7e14ff',
+                    '#14ccff',
+                    '#3245d1',
+                    '#7e14ff',
+                    '#14ccff',
                 ],
             },
         ],
@@ -94,7 +161,6 @@ const PatientActivityBarChart = memo(() => {
 
 function AdminDashboard() {
     const [clinics, setClinics] = useState([]);
-    const [isDataLoaded, setIsDataLoaded] = useState(false);
     const [clinicCount, setClinicCount] = useState(0);
     const [patientCount, setPatientCount] = useState(0);
     const [doctorCount, setDoctorCount] = useState(0);
@@ -114,7 +180,6 @@ function AdminDashboard() {
             console.log(clinics);
             setClinics(clinics);
             setClinicCount(numOfClinic);
-            setIsDataLoaded(true);
         });
 
         onValue(query(ref(db, "users")), (snapshot) => {
@@ -170,7 +235,7 @@ function AdminDashboard() {
                                 <Text fontSize='md' fontWeight='semibold' letterSpacing='wide' mt={3} mx={3} textAlign='center'>
                                     Latest Patient Activity
                                 </Text>
-                                {isDataLoaded && <PatientActivityBarChart />}
+                                <PatientActivityBarChart />
                             </Flex>
 						</Box>
                         <Flex w='40%' gap={5}>
@@ -232,7 +297,7 @@ function AdminDashboard() {
                                 <Text fontSize='md' fontWeight='semibold' letterSpacing='wide' mt={3} mx={3} textAlign='center'>
                                     Distribution of Patients
                                 </Text>
-                                {isDataLoaded && <GenderDoughnutChart />}
+                                <GenderDoughnutChart />
                             </Flex>
                         </Box>
                         <Box w='33%' bg='white' rounded='lg' boxShadow='md'>
@@ -240,7 +305,7 @@ function AdminDashboard() {
                                 <Text fontSize='md' fontWeight='semibold' letterSpacing='wide' mt={3} mx={3} textAlign='center'>
                                     Patient Gender Distribution
                                 </Text>
-                                {isDataLoaded && <GenderDoughnutChart />}
+                                <GenderDoughnutChart />
                             </Flex>
                         </Box>
                         <Box w='33%' bg='white' rounded='lg' boxShadow='md'>
@@ -248,7 +313,7 @@ function AdminDashboard() {
                                 <Text fontSize='md' fontWeight='semibold' letterSpacing='wide' mt={3} mx={3} textAlign='center'>
                                     Patient Age Distribution
                                 </Text>
-                                {isDataLoaded && <GenderDoughnutChart />}
+                                <AgeDoughnutChart />
                             </Flex>
                         </Box>                        
                     </Flex>
