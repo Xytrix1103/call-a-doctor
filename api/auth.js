@@ -35,10 +35,11 @@ export const register = async (data) => {
 	});
 }
 
-export const register_clinic_admin = async (data) => {
+export const register_clinic_admin = async (data, asAdmin=false) => {
 	const {email, password, name, role="ClinicAdmin", clinic=null} = data;
+	const authObj = asAdmin ? secondaryAuth : auth;
 	
-	return await createUserWithEmailAndPassword(auth, email, password).then(async (newUser) => {
+	return await createUserWithEmailAndPassword(authObj, email, password).then(async (newUser) => {
 		if (newUser) {
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
