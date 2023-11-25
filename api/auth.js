@@ -3,22 +3,27 @@ import {auth, db, secondaryAuth} from "./firebase.js";
 import {ref, set} from "firebase/database";
 
 export const register = async (data) => {
-	const {email, password, name, date_of_birth="", phone = "", address = "", role="Patient", clinic=null} = data;
+	const {email, password, name, gender="", date_of_birth="", phone = "", address = "", role="Patient"} = data;
 	
 	return await createUserWithEmailAndPassword(auth, email, password).then(async (newUser) => {
 		if (newUser) {
-			await set(ref(db, `users/${newUser.user.uid}`), {
+			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
 				email: newUser.user.email,
 				password: password,
 				role: role,
 				name: name,
+				gender: gender,
 				dob: date_of_birth,
 				phone: phone,
-				address: address,
-				clinic: clinic
+				address: address
+			})
+			.then(() => {
+				return newUser.user;
+			})
+			.catch((error) => {
+				throw {error: error};
 			});
-			return newUser.user;
 		} else {
 			return {error: "Error creating user"};
 		}
@@ -56,35 +61,31 @@ export const register_clinic_admin = async (data) => {
 }
 
 export const register_doctor = async (data) => {
-	const {email, password, name, date_of_birth, qualification, introduction, phone = "", address = "", role="Doctor", clinic=null, gender="Male"} = data;
+	const {email, password, name, gender="", date_of_birth="", phone = "", role="Doctor"} = data;
 	
-	try {
-		const newUser = await createUserWithEmailAndPassword(secondaryAuth, email, password);
-		
+	return await createUserWithEmailAndPassword(auth, email, password).then(async (newUser) => {
 		if (newUser) {
-			await set(ref(db, `users/${newUser.user.uid}`), {
+			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
 				email: newUser.user.email,
 				password: password,
 				role: role,
 				name: name,
-				dob: date_of_birth,
-				qualification: qualification,
-				introduction: introduction,
 				gender: gender,
-				phone: phone,
-				address: address,
-				clinic: clinic
+				dob: date_of_birth,
+				phone: phone
+			}).then(() => {
+				return newUser.user;
+			}).catch((error) => {
+				throw {error: error};
 			});
-			
-			await set(ref(db, `clinics/${clinic}/doctors/${newUser.user.uid}`), true);
-			
-			return newUser.user;
+		} else {
+			throw {error: "Error creating user"};
 		}
-	} catch (error) {
-		console.log(error);
-	}
-	return false;
+	})
+	.catch((error) => {
+		return {error: error};
+	});
 }
 
 export const login = async (cred) => {
