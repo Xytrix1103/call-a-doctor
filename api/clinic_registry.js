@@ -72,6 +72,7 @@ export const register_clinic_request = async (data) => {
 			}
 			
 			return await set(newClinicReqRef, {
+				datetime: new Date(),
 				name: clinic_name,
 				start_time: start_time,
 				end_time: end_time,
@@ -120,6 +121,7 @@ export const register_clinic_request = async (data) => {
 export const register_clinic = async (data) => {
 	const {
 		id,
+		datetime,
 		name,
 		start_time,
 		end_time,
@@ -141,6 +143,9 @@ export const register_clinic = async (data) => {
 	}
 	
 	return await set(newClinicRef, {
+			request_datetime: datetime,
+			approved_datetime: new Date(),
+			approved_by: auth.currentUser.uid,
 			name: name,
 			start_time: start_time,
 			end_time: end_time,
@@ -178,6 +183,12 @@ export const reject_clinic_request = async (data) => {
 	const clinicRequestRef = ref(db, `clinic_requests/${id}`);
 	
 	return await set(ref(db, `clinic_requests/${id}/rejected`), reason)
+		.then(() => {
+			return set(ref(db, `clinic_requests/${id}/rejected_by`), auth.currentUser.uid);
+		})
+		.then(() => {
+			return set(ref(db, `clinic_requests/${id}/rejected_datetime`), new Date());
+		})
 		.then(() => {
 			console.log("Clinic request rejected");
 			return {success: true};

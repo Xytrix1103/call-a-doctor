@@ -9,6 +9,7 @@ export const register = async (data) => {
 		if (newUser) {
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
+				datetime: new Date(),
 				email: newUser.user.email,
 				password: password,
 				role: role,
@@ -41,6 +42,7 @@ export const register_clinic_admin = async (data) => {
 		if (newUser) {
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
+				datetime: new Date(),
 				email: newUser.user.email,
 				password: password,
 				role: role,
@@ -67,6 +69,7 @@ export const register_doctor = async (data) => {
 		if (newUser) {
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
+				datetime: new Date(),
 				email: newUser.user.email,
 				password: password,
 				role: role,
