@@ -41,14 +41,13 @@ export const AdminMap = () => {
         onValue(query(ref(db, "clinics")), (snapshot) => {
             const clinics = [];
             const promises = [];
-    
             snapshot.forEach((childSnapshot) => {
-                if (childSnapshot.val().placeId && window.google && window.google.maps) {
+                if (childSnapshot.val().place_id && window.google && window.google.maps) {
                     const service = new window.google.maps.places.PlacesService(mapRef);
                     const promise = new Promise((resolve) => {
                         service.getDetails(
                             {
-                                placeId: childSnapshot.val().placeId,
+                                placeId: childSnapshot.val().place_id,
                             },
                             (result, status) => {
                                 if (status === window.google.maps.places.PlacesServiceStatus.OK) {

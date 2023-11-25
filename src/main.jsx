@@ -36,7 +36,7 @@ const DashboardElement = () => {
 		case "Patient":
 			return <PatientDashboard />;
 		case "ClinicAdmin":
-			if (user.clinic === null) {
+			if (!user.clinic) {
 				return <VerificationPending />;
 			} else {
 				return <ClinicDashboard />;

@@ -95,6 +95,7 @@ const PatientActivityBarChart = memo(() => {
 function ClinicDashboard() {
     const {user} = useAuth();
     const clinicId = user.clinic;
+    console.log(clinicId);
     const [clinic, setClinic] = useState('');
     const [doctors, setDoctors] = useState([]);
     const [doctorsCount, setDoctorsCount] = useState(0);

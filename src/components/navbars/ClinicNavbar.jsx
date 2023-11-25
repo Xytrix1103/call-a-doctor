@@ -33,13 +33,13 @@ const ClinicNavbar = () => {
 			</Flex>
 			
 			<Flex alignItems="center">
-				{user.clinic !== null && (
+				{user.clinic && (
 					<Link as={NavLink} color="teal.500" to="/" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
 						Home
 					</Link>
 				)
 				}
-				{user.clinic !== null && (
+				{user.clinic && (
 					<Link as={NavLink} color="teal.500" to="/clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
 						Clinic List
 					</Link>
