@@ -6,7 +6,7 @@ export const register = async (data, asAdmin=false) => {
 	const {email, password, name, gender="", date_of_birth="", phone = "", address = "", role="Patient"} = data;
 	const authObj = asAdmin ? secondaryAuth : auth;
 	
-	return await createUserWithEmailAndPassword(auth, email, password).then(async (newUser) => {
+	return await createUserWithEmailAndPassword(authObj, email, password).then(async (newUser) => {
 		if (newUser) {
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
@@ -64,10 +64,12 @@ export const register_clinic_admin = async (data, asAdmin=false) => {
 	});
 }
 
-export const register_doctor = async (data) => {
+export const register_doctor = async (data, asAdmin = false) => {
 	const {email, password, name, gender="", date_of_birth="", phone = "", role="Doctor"} = data;
 	
-	return await createUserWithEmailAndPassword(auth, email, password).then(async (newUser) => {
+	const authObj = asAdmin ? secondaryAuth : auth;
+	
+	return await createUserWithEmailAndPassword(authObj, email, password).then(async (newUser) => {
 		if (newUser) {
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
@@ -133,32 +135,6 @@ export const login = async (cred) => {
 export const logout = async () => {
 	signOut(auth).then(() => {
 		console.log("logged out");
-	}).catch((error) => {
-		console.log(error);
-	});
-}
-
-export const resetPassword = async (email) => {
-	auth.sendPasswordResetEmail(email).then(() => {
-		console.log("email sent");
-	}).catch((error) => {
-		console.log(error);
-	});
-}
-
-export const updateEmail = async (email) => {
-	auth.currentUser.updateEmail(email).then(() => {
-		console.log("email updated");
-		return true;
-	}).catch((error) => {
-		console.log(error);
-		return false;
-	});
-}
-
-export const updatePassword = async (password) => {
-	auth.currentUser.updatePassword(password).then(() => {
-		console.log("password updated");
 	}).catch((error) => {
 		console.log(error);
 	});
