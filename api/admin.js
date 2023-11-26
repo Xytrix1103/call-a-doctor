@@ -7,7 +7,7 @@ export const update_admin = async (uid, data) => {
 	let new_data = {};
 	
 	for (let key in data) {
-		if (key !== "email" && key !== "password" && key !== "image") {
+		if (key !== "email" && key !== "password" && key !== "image" && key !== "confirm_password") {
 			new_data[key] = data[key];
 		}
 	}
@@ -24,7 +24,7 @@ export const update_doctor = async (uid, data) => {
 	let new_data = {};
 	
 	for (let key in data) {
-		if (key !== "image") {
+		if (key !== "email" && key !== "password" && key !== "image" && key !== "confirm_password") {
 			new_data[key] = data[key];
 		}
 	}
@@ -56,6 +56,22 @@ export const update_doctor = async (uid, data) => {
 			console.log(error);
 			return {error: error};
 		});
+}
+
+export const update_patient = async (uid, data) => {
+	let new_data = {};
+	
+	for (let key in data) {
+		if (key !== "email" && key !== "password" && key !== "image" && key !== "confirm_password") {
+			new_data[key] = data[key];
+		}
+	}
+	
+	return await update(ref(db, `users/${uid}`), data).then(() => {
+		return {success: true};
+	}).catch((error) => {
+		return {error: error};
+	});
 }
 
 export const update_email = async (data, new_email) => {

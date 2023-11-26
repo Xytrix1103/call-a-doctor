@@ -115,10 +115,11 @@ function ManageUser() {
                                 size="md"
                                 focusBorderColor="blue.500"
                                 defaultValue={user?.role}
+                                value={(user?.role === "ClinicAdmin" ? "Clinic Admin" : user?.role)}
                                 isDisabled={!!id}
                             >
                                 {roles.map((role) => (
-                                    <option key={role} value={role} selected={role === (user?.role === "ClinicAdmin" ? "Clinic Admin" : user?.role)}>
+                                    <option key={role} value={role}>
                                         {role}
                                     </option>
                                 ))}

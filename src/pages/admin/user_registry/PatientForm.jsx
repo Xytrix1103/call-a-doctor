@@ -1,37 +1,39 @@
 import {
-    Box,
-    Button,
-    Flex,
-    FormControl,
-    FormErrorMessage,
-    FormHelperText,
-    FormLabel,
-    IconButton,
-    Input,
-    InputGroup,
-    InputRightElement,
-    InputLeftElement,
-    Link,
-    Text,
-    useToast,
-    Grid,
-    Select,
-    Textarea,
-    HStack,
+	Box,
+	Button,
+	Flex,
+	FormControl,
+	FormErrorMessage,
+	FormHelperText,
+	FormLabel,
+	Grid,
+	HStack,
+	IconButton,
+	Input,
+	InputGroup,
+	InputLeftElement,
+	InputRightElement,
+	Link,
+	Select,
+	Text,
+	Textarea,
+	useToast,
 } from '@chakra-ui/react';
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
-import {useState, useRef, useEffect} from "react";
+import {memo, useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import {BiLinkExternal, BiSearchAlt2} from "react-icons/bi";
 import {Autocomplete, GoogleMap, InfoWindow, LoadScript, Marker} from "@react-google-maps/api";
+import {update_patient} from "../../../../api/admin.js";
+import {useNavigate} from "react-router-dom";
+import {register as registerUser} from "../../../../api/auth.js";
 
-const Map = ({user}) => {
+const Map = ({user, place, setPlace}) => {
 	const mapStyle = {
 		height: '270px',
 		width: '100%',
 	};
-	const libs = ["places"];
-    const [place, setPlace] = useState(null);
+	const [libs, setLibs] = useState(["places"]);
 	const [mapRef, setMapRef] = useState(null);
 	const [center, setCenter] = useState({
 		lat: 5.4164,
@@ -46,18 +48,15 @@ const Map = ({user}) => {
 	const handlePlaceSelect = () => {
 		if (inputRef.current && inputRef.current.getPlace) {
 			const place = inputRef.current.getPlace();
-			const place_id = place.place_id;
-			const { geometry, formatted_address, name, formatted_phone_number } = place;
+			const { geometry, formatted_address, place_id } = place;
 			console.log(place);
 			const { location } = geometry;
 			mapRef.panTo({ lat: location.lat(), lng: location.lng() });
 			setPlace({
 				lat: location.lat(),
 				lng: location.lng(),
-				name: name,
 				address: formatted_address,
 				place_id: place_id,
-				contact: formatted_phone_number
 			});
 		}
 	};
@@ -70,7 +69,7 @@ const Map = ({user}) => {
 	}
 
     useEffect(() => {
-        if (mapRef && user.address) {
+        if (mapRef && user?.address) {
             const autocompleteService = new window.google.maps.places.AutocompleteService();
             const placesService = new window.google.maps.places.PlacesService(mapRef);
     
@@ -82,48 +81,46 @@ const Map = ({user}) => {
             console.log("Fetching place details for user's address");
     
             autocompleteService.getPlacePredictions(
-                { input: user.address },
-                (predictions, status) => {
-                    console.log("Predictions: ", predictions);
-                    if (status === window.google.maps.places.PlacesServiceStatus.OK && predictions && predictions.length > 0) {
-                        const place_id = predictions[0].place_id;
-                        console.log("Fetching details for place_id: ", place_id);
-    
-                        placesService.getDetails(
-                            { placeId: place_id },
-                            (result, status) => {
-                                if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-                                    console.log("Place details: ", result);
-                                    const { geometry, formatted_address, name, formatted_phone_number } = result;
-                                    const { location } = geometry;
-                                    console.log("Location: ", location);
-    
-                                    setMapRef((prevMap) => {
-                                        console.log("Setting map center");
-                                        prevMap.panTo({ lat: location.lat(), lng: location.lng() });
-                                        return prevMap;
-                                    });
-    
-                                    setPlace({
-                                        lat: location.lat(),
-                                        lng: location.lng(),
-                                        name: name,
-                                        address: formatted_address,
-                                        place_id: place_id,
-                                        contact: formatted_phone_number,
-                                    });
-                                } else {
-                                    console.error(`Error retrieving place details: Status - ${status}`);
-                                }
-                            }
-                        );
-                    } else {
-                        console.error(`Error retrieving place predictions: Status - ${status}`);
-                    }
-                }
-            );
+	            {input: user.address},
+	            (predictions, status) => {
+		            console.log("Predictions: ", predictions);
+		            if (status === window.google.maps.places.PlacesServiceStatus.OK && predictions && predictions.length > 0) {
+			            const place_id = predictions[0].place_id;
+			            console.log("Fetching details for place_id: ", place_id);
+			            
+			            placesService.getDetails(
+				            {placeId: place_id},
+				            (result, status) => {
+					            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+						            console.log("Place details: ", result);
+						            const {geometry, formatted_address} = result;
+						            const {location} = geometry;
+						            console.log("Location: ", location);
+						            
+						            setMapRef((prevMap) => {
+							            console.log("Setting map center");
+							            prevMap.panTo({lat: location.lat(), lng: location.lng()});
+							            return prevMap;
+						            });
+						            
+						            setPlace({
+							            lat: location.lat(),
+							            lng: location.lng(),
+							            address: formatted_address,
+							            place_id: place_id,
+						            });
+					            } else {
+						            console.error(`Error retrieving place details: Status - ${status}`);
+					            }
+				            }
+			            );
+		            } else {
+			            console.error(`Error retrieving place predictions: Status - ${status}`);
+		            }
+	            }
+            ).then(r => console.log(r));
         }
-    }, [mapRef, user.address]);
+    }, [mapRef, user]);
 	
 	useEffect(() => {
 		if(navigator.geolocation) {
@@ -144,14 +141,14 @@ const Map = ({user}) => {
 			libraries={libs}
 		>
 			<Box
-				mb={3}
+ 				mb={3}
 				mt={2}
 				w="full"
 			>
 				<Autocomplete
 					onLoad={(autocomplete) => {
 						inputRef.current = autocomplete;
-						autocomplete.setFields(["geometry", "formatted_address", "place_id", "name", "formatted_phone_number"]);
+						autocomplete.setFields(["geometry", "formatted_address", "place_id"]);
 					}}
 					onPlaceChanged={handlePlaceSelect}
 				>
@@ -178,34 +175,36 @@ const Map = ({user}) => {
 				mapContainerStyle={mapStyle}
 			>
 				{place && (
-					<Marker
-						position={{ lat: place.lat, lng: place.lng }}
-					/>
-				)}
-				{place && (
-					<InfoWindow
-						position={{ lat: place.lat + 0.0015, lng: place.lng }}
-					>
-						<Box p={1} maxW="sm">
-							<Text fontSize="sm" fontWeight="medium">
-								{place.name}
-							</Text>
-							<Text fontSize="xs" fontWeight="medium" color="gray.500" mt={1} mb={2}>
-								{place.address}
-							</Text>
-							<Link href={getMapsLink()} isExternal target="_blank" rel="noreferrer" _hover={{textDecoration: "none"}} textDecoration="none" onClick={(e) => e.stopPropagation()}>
-								<HStack spacing={1} fontSize="xs" fontWeight="medium" color="blue.500">
-									<Text outline="none">View on Google Maps</Text>
-									<BiLinkExternal/>
-								</HStack>
-							</Link>
-						</Box>
-					</InfoWindow>
+					<>
+						<Marker
+							position={{ lat: place.lat, lng: place.lng }}
+						/>
+						<InfoWindow
+							position={{ lat: place.lat + 0.0015, lng: place.lng }}
+						>
+							<Box p={1} maxW="sm">
+								<Text fontSize="sm" fontWeight="medium">
+									{place.name}
+								</Text>
+								<Text fontSize="xs" fontWeight="medium" color="gray.500" mt={1} mb={2}>
+									{place.address}
+								</Text>
+								<Link href={getMapsLink()} isExternal target="_blank" rel="noreferrer" _hover={{textDecoration: "none"}} textDecoration="none" onClick={(e) => e.stopPropagation()}>
+									<HStack spacing={1} fontSize="xs" fontWeight="medium" color="blue.500">
+										<Text outline="none">View on Google Maps</Text>
+										<BiLinkExternal/>
+									</HStack>
+								</Link>
+							</Box>
+						</InfoWindow>
+					</>
 				)}
 			</GoogleMap>
 		</LoadScript>
 	);
 }
+
+const MemoizedMap = memo(Map);
 
 export const PatientForm = ({user}) => {
     console.log("PatientForm");
@@ -213,35 +212,148 @@ export const PatientForm = ({user}) => {
         setValue,
 		handleSubmit,
 		register,
+	    trigger,
 		formState: {
 			errors
 		}
 	} = useForm();
+	const [place, setPlace] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [error, setError] = useState(null);
     const toast = useToast();
+	const navigate = useNavigate();
 
     const onSubmit = async (data) => {
-        console.log('Submitting patient form');
-        const password = data["password"];
-        const confirm_password = data["confirm_password"];
-        
-        if (password !== confirm_password) {
-            alert("Passwords do not match!");
-            return;
-        }
+        console.log('Submitting patient form', data);
+		
+		if (!place) {
+			toast({
+				title: "Failed to add patient.",
+				description: "Please select a location",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+				position: "top"
+			});
+			return;
+		}
+	    
+	    if (!user) {
+		    await trigger();
+		    const password = data["password"];
+		    const confirm_password = data["confirm_password"];
+		    
+		    if (password !== confirm_password) {
+			    alert("Passwords do not match!");
+			    return;
+		    }
+			
+			data = {
+				...data,
+				place_id: place.place_id,
+				role: "Patient",
+			}
+			
+			console.log(data);
+		    
+		    registerUser(data, true).then((res) => {
+			    console.log(res);
+			    if (res.error) {
+				    toast({
+					    title: "Error!",
+					    description: res.error,
+					    status: "error",
+					    duration: 5000,
+					    isClosable: true,
+				    });
+			    } else {
+				    toast({
+					    title: "Success!",
+					    description: "Clinic admin has been registered!",
+					    status: "success",
+					    duration: 5000,
+					    isClosable: true,
+				    });
+				    navigate('/admin/users');
+			    }
+		    }).catch((err) => {
+			    console.log(err);
+			    toast({
+				    title: "Error!",
+				    description: "An error has occurred!",
+				    status: "error",
+				    duration: 5000,
+				    isClosable: true,
+			    });
+		    });
+	    } else {
+		    await trigger(['name', 'phone', 'address', 'dob']);
+		    let update = {};
+		    
+		    //loop thru form values
+		    for (const [key, value] of Object.entries(data)) {
+			    if (value !== user[key] && key !== 'confirm_password' && key !== 'password' && key !== 'email') {
+				    update[key] = value;
+			    }
+		    }
+		    
+		    if (Object.keys(update).length > 0) {
+			    update_patient(user.uid, update).then((res) => {
+				    console.log(res);
+				    if (res.error) {
+					    toast({
+						    title: "Error!",
+						    description: res.error,
+						    status: "error",
+						    duration: 5000,
+						    isClosable: true,
+					    });
+				    } else {
+					    toast({
+						    title: "Success!",
+						    description: "User has been updated!",
+						    status: "success",
+						    duration: 5000,
+						    isClosable: true,
+					    });
+					    navigate('/admin/users');
+				    }
+			    }).catch((err) => {
+				    console.log(err);
+				    toast({
+					    title: "Error!",
+					    description: "An error has occurred!",
+					    status: "error",
+					    duration: 5000,
+					    isClosable: true,
+				    });
+			    });
+		    }
+	    }
     }
 
     useEffect(() => {
         if (user) {
-            setValue('name', user.name);
-            setValue('email', user.email);
-            setValue('phone', user.phone);
-            setValue('address', user.address);
-            setValue('date_of_birth', user.dob);
+            setValue('name', user?.name);
+            setValue('email', user?.email);
+            setValue('phone', user?.phone);
+            setValue('address', user?.address);
+            setValue('dob', user?.dob);
+        } else {
+			setValue('name', null);
+			setValue('email', null);
+			setValue('phone', null);
+			setValue('address', null);
+			setValue('dob', null);
+	       
         }
-    }, [user]);
+	}, [user]);
+	
+	useEffect(() => {
+		if(place) {
+			setValue('address', place.address);
+		}
+	}, [place]);
 
     return (
         <form action="/api/register" method="post" onSubmit={handleSubmit(onSubmit)}>
@@ -291,6 +403,7 @@ export const PatientForm = ({user}) => {
                                         required: "Email cannot be empty",
                                     })
                                 }
+	                            disabled={!!user}
                                 placeholder="john.doe@gmail.com"
                                 rounded="xl"
                                 borderWidth="1px"
@@ -309,7 +422,7 @@ export const PatientForm = ({user}) => {
 
                     <Flex alignItems="center" justifyContent="space-between" mt={6}>
                         <Box flex="1" mr={4}>
-                            <FormControl isInvalid={errors.date_of_birth}>
+                            <FormControl isInvalid={errors.dob}>
                                 <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900" >
                                     Date of Birth <Text as="span" color="red.500" fontWeight="bold">*</Text>
                                 </FormLabel>
@@ -317,10 +430,10 @@ export const PatientForm = ({user}) => {
                                     <Input
                                         variant="filled"
                                         type="date"
-                                        name="date_of_birth"
-                                        id="date_of_birth"
+                                        name="dob"
+                                        id="dob"
                                         {
-                                            ...register("date_of_birth", {
+                                            ...register("dob", {
                                                 required: "Date of birth cannot be empty",
                                             })
                                         }
@@ -328,13 +441,12 @@ export const PatientForm = ({user}) => {
                                         borderWidth="1px"
                                         borderColor="gray.300"
                                         color="gray.900"
-                                        isRequired
                                         size="md"
                                         focusBorderColor="blue.500"
                                     />
                                 </InputGroup>
                                 <FormErrorMessage>
-                                    {errors.date_of_birth && errors.date_of_birth.message}
+                                    {errors.dob && errors.dob.message}
                                 </FormErrorMessage>
                             </FormControl>
                         </Box>
@@ -354,9 +466,10 @@ export const PatientForm = ({user}) => {
                                     color="gray.900"
                                     size="md"
                                     focusBorderColor="blue.500"
+                                    defaultValue="Male"
                                 >
-                                    <option value="Male" selected={user.gender === "Male"}>Male</option>
-                                    <option value="Female" selected={user.gender === "Female"}>Female</option>
+                                    <option value="Male" selected={user?.gender === "Male"}>Male</option>
+                                    <option value="Female" selected={user?.gender === "Female"}>Female</option>
                                 </Select>
                             </FormControl>
                         </Box>
@@ -429,143 +542,149 @@ export const PatientForm = ({user}) => {
                 </Box>
                 <Box w="full" h="full">
                     <Box mb={2}>
-                        <Map user={user}/>
+                        <MemoizedMap user={user} place={place} setPlace={setPlace}/>
                     </Box>
-                    <Box mb={2} mt={6}>
-                        <FormControl id="password" isInvalid={errors.password}>
-                            <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
-                                Password
-                            </FormLabel>
-                            <InputGroup>
-                                <Input
-                                    type={showPassword ? 'text' : 'password'}
-                                    variant="filled"
-                                    name="password"
-                                    id="password"
-                                    placeholder="•••••••••"
-                                    rounded="xl"
-                                    borderWidth="1px"
-                                    borderColor="gray.300"
-                                    color="gray.900"
-                                    size="md"
-                                    focusBorderColor="blue.500"
-                                    w="full"
-                                    p={2.5}
-                                    {
-                                        ...register("password", {
-                                            required: "Password cannot be empty",
-                                            pattern: {
-                                                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%#*?&])[A-Za-z\d@$!%#*?&]{8,}$/,
-                                                message: "Invalid password format",
-                                            },
-                                        })
-                                    }
-                                />
-                                <InputRightElement>
-                                    <IconButton aria-label="Show password" size="lg" variant="ghost"
-                                                icon={showPassword ? <IoMdEyeOff/> : <IoMdEye/>}
-                                                _focus={{
-                                                    bg: "transparent",
-                                                    borderColor: "transparent",
-                                                    outline: "none"
-                                                }}
-                                                _hover={{
-                                                    bg: "transparent",
-                                                    borderColor: "transparent",
-                                                    outline: "none"
-                                                }}
-                                                _active={{
-                                                    bg: "transparent",
-                                                    borderColor: "transparent",
-                                                    outline: "none"
-                                                }}
-                                                tabIndex="-1"
-                                                onClick={() => setShowPassword(!showPassword)}/>
-                                </InputRightElement>
-                            </InputGroup>
-                            {
-                                errors.password ?
-                                    <FormErrorMessage>
-                                        {errors.password && errors.password.message}
-                                    </FormErrorMessage> :
-                                    <FormHelperText fontSize="xs">
-                                        Minimum eight characters, at least one uppercase letter, one lowercase letter,
-                                        one number and one special character
-                                    </FormHelperText>
-                            }
-                        </FormControl>
-                    </Box>
-                    <Box mb={2} mt={6}>
-                        <FormControl id="confirm_password" isInvalid={errors.confirm_password}>
-                            <FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
-                                Confirm Password
-                            </FormLabel>
-                            <InputGroup>
-                                <Input
-                                    type={showConfirmPassword ? 'text' : 'password'}
-                                    name="confirm_password"
-                                    id="confirm_password"
-                                    variant="filled"
-                                    placeholder="•••••••••"
-                                    rounded="xl"
-                                    borderWidth="1px"
-                                    borderColor="gray.300"
-                                    color="gray.900"
-                                    size="md"
-                                    focusBorderColor="blue.500"
-                                    w="full"
-                                    p={2.5}
-                                    {
-                                        ...register("confirm_password", {
-                                            required: "Confirm password cannot be empty",
-                                            pattern: {
-                                                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-                                                message: "Invalid password format",
-                                            },
-                                        })
-                                    }
-                                />
-                                <InputRightElement>
-                                    <IconButton aria-label="Show password" size="lg" variant="ghost"
-                                                icon={showConfirmPassword ? <IoMdEyeOff/> : <IoMdEye/>}
-                                                _focus={{
-                                                    bg: "transparent",
-                                                    borderColor: "transparent",
-                                                    outline: "none"
-                                                }}
-                                                _hover={{
-                                                    bg: "transparent",
-                                                    borderColor: "transparent",
-                                                    outline: "none"
-                                                }}
-                                                _active={{
-                                                    bg: "transparent",
-                                                    borderColor: "transparent",
-                                                    outline: "none"
-                                                }}
-                                                tabIndex="-1"
-                                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}/>
-                                </InputRightElement>
-                            </InputGroup>
-                            <FormErrorMessage>
-                                {errors.confirm_password && errors.confirm_password.message}
-                            </FormErrorMessage>
-                        </FormControl>
-                        <Box>
-                            <Button
-                                type="submit"
-                                colorScheme="blue"
-                                rounded="xl"
-                                px={4}
-                                py={2}
-                                mt={8}
-                                mb={4}
-                                w="full"
-                            >
-                                Add Patient
-                            </Button>                                
-                        </Box>
-                    </Box>
+	                {
+						!user && (
+							<>
+								<Box mb={2} mt={6}>
+									<FormControl id="password" isInvalid={errors.password}>
+										<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
+											Password
+										</FormLabel>
+										<InputGroup>
+											<Input
+												type={showPassword ? 'text' : 'password'}
+												variant="filled"
+												name="password"
+												id="password"
+												placeholder="•••••••••"
+												rounded="xl"
+												borderWidth="1px"
+												borderColor="gray.300"
+												color="gray.900"
+												size="md"
+												focusBorderColor="blue.500"
+												w="full"
+												p={2.5}
+												{
+													...register("password", {
+														required: "Password cannot be empty",
+														pattern: {
+															value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%#*?&])[A-Za-z\d@$!%#*?&]{8,}$/,
+															message: "Invalid password format",
+														},
+													})
+												}
+											/>
+											<InputRightElement>
+												<IconButton aria-label="Show password" size="lg" variant="ghost"
+												            icon={showPassword ? <IoMdEyeOff/> : <IoMdEye/>}
+												            _focus={{
+													            bg: "transparent",
+													            borderColor: "transparent",
+													            outline: "none"
+												            }}
+												            _hover={{
+													            bg: "transparent",
+													            borderColor: "transparent",
+													            outline: "none"
+												            }}
+												            _active={{
+													            bg: "transparent",
+													            borderColor: "transparent",
+													            outline: "none"
+												            }}
+												            tabIndex="-1"
+												            onClick={() => setShowPassword(!showPassword)}/>
+											</InputRightElement>
+										</InputGroup>
+										{
+											errors.password ?
+												<FormErrorMessage>
+													{errors.password && errors.password.message}
+												</FormErrorMessage> :
+												<FormHelperText fontSize="xs">
+													Minimum eight characters, at least one uppercase letter, one lowercase letter,
+													one number and one special character
+												</FormHelperText>
+										}
+									</FormControl>
+								</Box>
+								<Box mb={2} mt={6}>
+									<FormControl id="confirm_password" isInvalid={errors.confirm_password}>
+										<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
+											Confirm Password
+										</FormLabel>
+										<InputGroup>
+											<Input
+												type={showConfirmPassword ? 'text' : 'password'}
+												name="confirm_password"
+												id="confirm_password"
+												variant="filled"
+												placeholder="•••••••••"
+												rounded="xl"
+												borderWidth="1px"
+												borderColor="gray.300"
+												color="gray.900"
+												size="md"
+												focusBorderColor="blue.500"
+												w="full"
+												p={2.5}
+												{
+													...register("confirm_password", {
+														required: "Confirm password cannot be empty",
+														pattern: {
+															value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+															message: "Invalid password format",
+														},
+													})
+												}
+											/>
+											<InputRightElement>
+												<IconButton aria-label="Show password" size="lg" variant="ghost"
+												            icon={showConfirmPassword ? <IoMdEyeOff/> : <IoMdEye/>}
+												            _focus={{
+													            bg: "transparent",
+													            borderColor: "transparent",
+													            outline: "none"
+												            }}
+												            _hover={{
+													            bg: "transparent",
+													            borderColor: "transparent",
+													            outline: "none"
+												            }}
+												            _active={{
+													            bg: "transparent",
+													            borderColor: "transparent",
+													            outline: "none"
+												            }}
+												            tabIndex="-1"
+												            onClick={() => setShowConfirmPassword(!showConfirmPassword)}/>
+											</InputRightElement>
+										</InputGroup>
+										<FormErrorMessage>
+											{errors.confirm_password && errors.confirm_password.message}
+										</FormErrorMessage>
+									</FormControl>
+								</Box>
+							</>
+                        )
+	                }
+					<Box>
+						<Button
+							type="submit"
+							colorScheme="blue"
+							rounded="xl"
+							px={4}
+							py={2}
+							mt={8}
+							mb={4}
+							w="full"
+						>
+							Add Patient
+						</Button>
+					</Box>
                 </Box>
             </Grid>
         </form>
