@@ -230,6 +230,29 @@ function ClinicDashboard() {
                 setDoctorsCount(doctors.length);
             }
         );
+
+        onValue(
+            query(
+                ref(db, 'requests'),
+                orderByChild('clinic'),
+                equalTo(clinicId)
+            ),
+            (snapshot) => {
+                const doctors = [];
+                snapshot.forEach((childSnapshot) => {
+                    const user = childSnapshot.val();
+                    if (user.clinic === clinicId) {
+                        console.log(user);
+                        doctors.push({
+                            id: childSnapshot.key,
+                            ...user,
+                        });
+                    }
+                });
+                setDoctors(doctors);
+                setDoctorsCount(doctors.length);
+            }
+        );
     
         // Set dummy appointments
         setAppointments(generateDummyAppointments(20));
