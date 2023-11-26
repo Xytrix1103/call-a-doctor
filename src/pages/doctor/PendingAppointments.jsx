@@ -40,7 +40,7 @@ function PendingAppointments() {
 		onValue(query(ref(db, 'requests'), orderByChild('doctor'), equalTo(user.uid)), (snapshot) => {
 			const requests = [];
 			snapshot.forEach((reqSnapshot) => {
-				const { date, appointment_time, dob, ...rest } = reqSnapshot.val();
+				const { date, appointment_time, ...rest } = reqSnapshot.val();
 	
 				const formattedDate = new Date(date).toLocaleDateString('en-GB', {
 					day: 'numeric',
@@ -52,15 +52,9 @@ function PendingAppointments() {
 				const formattedAppointmentTime = `${startTime.trim()} to ${endTime.trim()}`;
 	
 				// Convert dob to age
-				const today = new Date();
-				const birthDate = new Date(dob);
-				let age = today.getFullYear() - birthDate.getFullYear();
-				const monthDiff = today.getMonth() - birthDate.getMonth();
-				
-				if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-					age--;
-				}
-	
+				console.log(reqSnapshot.val().patient.dob);
+				const age = Math.floor((new Date() - new Date(reqSnapshot.val().patient.dob).getTime()) / 3.15576e+10);
+				console.log(age);
 				requests.push({
 					id: reqSnapshot.key,
 					date: formattedDate,
