@@ -1,8 +1,17 @@
 import {
     Button,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    useDisclosure,
     Flex,
     FormControl,
     FormErrorMessage,
+    FormHelperText,
     FormLabel,
     IconButton,
     Input,
@@ -136,6 +145,38 @@ export const AdminForm = ({user}) => {
         }
     }, [user]);
 
+    const {
+        isOpen: isPasswordModalOpen,
+        onOpen: onOpenPasswordModal,
+        onClose: onClosePasswordModal,
+    } = useDisclosure();
+
+    const {
+        isOpen: isEmailModalOpen,
+        onOpen: onOpenEmailModal,
+        onClose: onCloseEmailModal,
+    } = useDisclosure();
+
+    const handleOpenPasswordModal = () => {
+        onOpenPasswordModal();
+    };
+
+    const handleOpenEmailModal = () => {
+        onOpenEmailModal();
+    };
+
+    const handleEmailSubmit = (data) => {
+        console.log(data);
+        console.log("Submitting email modal")
+
+    };
+
+    const handlePasswordSubmit = (data) => {
+        console.log(data);
+        console.log("Submitting password modal");
+
+    };
+
     return (
         <form action="/api/register" method="post" onSubmit={handleSubmit(onSubmit)}>
             <Flex w='full' h='full' direction='column' justifyContent='center' alignItems='center' px={5}>
@@ -229,6 +270,189 @@ export const AdminForm = ({user}) => {
                         {errors.email && errors.email.message}
                     </FormErrorMessage>
                 </FormControl>
+
+                {
+                    user && (
+                        <>
+                            <Flex mt={6} w='full' justifyContent='space-between' alignItems='center' gap={10}>
+                                <Button 
+                                    w='full' 
+                                    onClick={(e) => {
+                                        handleOpenEmailModal();
+                                    }}
+                                    _hover={{ transform: 'scale(1.02)' }}
+                                    _focus={{ boxShadow: 'none', outline: 'none' }}    
+                                >
+                                    Edit Email
+                                </Button>
+                                <Modal isOpen={isEmailModalOpen} onClose={onCloseEmailModal} size='xl' isCentered>
+                                    <form onSubmit={handleSubmit(handleEmailSubmit)}> 
+                                        <ModalOverlay 
+                                            bg='blackAlpha.300'
+                                            backdropFilter='blur(3px) hue-rotate(90deg)'
+                                        />
+                                        <ModalContent>
+                                            <ModalHeader>Edit Email</ModalHeader>
+                                            <ModalCloseButton />
+                                            <ModalBody>
+                                                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="email" isInvalid={errors.email}>
+                                                    <FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
+                                                        Email <Text as="span" color="red.500" fontWeight="bold">*</Text>
+                                                    </FormLabel>
+                                                    <Input
+                                                        variant="filled"
+                                                        type="email"
+                                                        name="email"
+                                                        id="email"
+                                                        placeholder="john.doe@gmail.com"
+                                                        rounded="xl"
+                                                        borderWidth="1px"
+                                                        borderColor="gray.300"
+                                                        color="gray.900"
+                                                        size="md"
+                                                        focusBorderColor="blue.500"
+                                                        w="full"
+                                                        p={2.5}
+                                                        {
+                                                            ...register("email", {
+                                                                required: "Email is required",
+                                                            })
+                                                        }
+                                                    />
+                                                    <FormErrorMessage>
+                                                        {errors.email && errors.email.message}
+                                                    </FormErrorMessage>
+                                                </FormControl>
+                                            </ModalBody>
+                                            <ModalFooter>
+                                                <Button colorScheme="blue" type='button' onClick={handleEmailSubmit}>
+                                                    Save Changes
+                                                </Button>
+                                            </ModalFooter>
+                                        </ModalContent>                        
+                                    </form>
+                                </Modal>  
+
+                                <Button 
+                                    w='full' 
+                                    onClick={(e) => {
+                                        handleOpenPasswordModal();
+                                    }}
+                                    _hover={{ transform: 'scale(1.02)' }}
+                                    _focus={{ boxShadow: 'none', outline: 'none' }}    
+                                >
+                                    Edit Password
+                                </Button>
+                                <Modal isOpen={isPasswordModalOpen} onClose={onClosePasswordModal} size='xl' isCentered>
+                                    <form onSubmit={handleSubmit(handlePasswordSubmit)}>
+                                        <ModalOverlay 
+                                            bg='blackAlpha.300'
+                                            backdropFilter='blur(3px) hue-rotate(90deg)'
+                                        />
+                                        <ModalContent>
+                                            <ModalHeader>Password Modal</ModalHeader>
+                                            <ModalCloseButton />
+                                            <ModalBody>
+                                                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="password" isInvalid={errors.password}>
+                                                    <FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
+                                                        Password
+                                                    </FormLabel>
+                                                    <InputGroup>
+                                                        <Input
+                                                            type={showPassword ? 'text' : 'password'}
+                                                            variant="filled"
+                                                            name="password"
+                                                            placeholder="•••••••••"
+                                                            rounded="xl"
+                                                            borderWidth="1px"
+                                                            borderColor="gray.300"
+                                                            color="gray.900"
+                                                            size="md"
+                                                            focusBorderColor="blue.500"
+                                                            {
+                                                                ...register("password", {
+                                                                    required: "Password is required",
+                                                                    pattern: {
+                                                                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                                                                        message: "Invalid password format",
+                                                                    },            
+                                                                })
+                                                            }
+                                                        />
+                                                        <InputRightElement>
+                                                        <IconButton
+                                                            aria-label="Show password"
+                                                            size="lg"
+                                                            variant="ghost"
+                                                            icon={showPassword ? <IoMdEyeOff /> : <IoMdEye />}
+                                                            onClick={() => setShowPassword(!showPassword)}
+                                                            tabIndex="-1"
+                                                        />
+                                                        </InputRightElement>
+                                                    </InputGroup>
+                                                    <FormHelperText fontSize="xs">
+                                                        Minimum eight characters, at least one uppercase letter, one lowercase letter,
+                                                        one number and one special character
+                                                    </FormHelperText>
+                                                    <FormErrorMessage>
+                                                        {errors.password && errors.password.message}
+                                                    </FormErrorMessage>
+                                                </FormControl>
+                                                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="confirm_password" isInvalid={errors.confirm_password}>
+                                                    <FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
+                                                        Confirm Password
+                                                    </FormLabel>
+                                                    <InputGroup>
+                                                        <Input
+                                                            type={showConfirmPassword ? 'text' : 'password'}
+                                                            name="confirm_password"
+                                                            variant="filled"
+                                                            placeholder="•••••••••"
+                                                            rounded="xl"
+                                                            borderWidth="1px"
+                                                            borderColor="gray.300"
+                                                            color="gray.900"
+                                                            size="md"
+                                                            focusBorderColor="blue.500"
+                                                            {
+                                                                ...register("confirm_password", {
+                                                                    required: "Confirm password is required",
+                                                                    pattern: {
+                                                                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                                                                        message: "Invalid password format",
+                                                                    },            
+                                                                })
+                                                            }
+                                                        />
+                                                        <InputRightElement>
+                                                        <IconButton
+                                                            aria-label="Show password"
+                                                            size="lg"
+                                                            variant="ghost"
+                                                            icon={showConfirmPassword ? <IoMdEyeOff /> : <IoMdEye />}
+                                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                            tabIndex="-1"
+                                                        />
+                                                        </InputRightElement>
+                                                    </InputGroup>
+                                                    <FormErrorMessage>
+                                                        {errors.confirm_password && errors.confirm_password.message}
+                                                    </FormErrorMessage>
+                                                </FormControl>
+                                            </ModalBody>
+                                            <ModalFooter>
+                                                <Button colorScheme="blue" type='button' onClick={handlePasswordSubmit}>
+                                                    Save Changes
+                                                </Button>
+                                            </ModalFooter>
+                                        </ModalContent>
+                                    </form>
+                                </Modal>
+                            </Flex>
+                        </>
+                    )
+                }
+
                 {
                     !user && (
                         <>
@@ -333,7 +557,7 @@ export const AdminForm = ({user}) => {
                     w="full"
                     type="submit"
                 >
-                    Add Admin
+                    {user ? "Edit Admin" : "Add Admin"}
                 </Button>                    
             </Flex>
         </form>

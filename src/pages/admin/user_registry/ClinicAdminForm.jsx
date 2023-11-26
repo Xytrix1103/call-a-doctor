@@ -580,7 +580,7 @@ export const ClinicAdminForm = ({user}) => {
                     mb={4}
                     w="full"
                 >
-                    Add Clinic Admin
+                    {user ? "Edit Clinic Admin" : "Add Clinic Admin"}
                 </Button>     
             </Flex>
         </form>
