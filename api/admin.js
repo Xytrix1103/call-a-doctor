@@ -2,6 +2,7 @@ import {db} from "./firebase";
 import {ref, update} from "firebase/database";
 import {secondaryAuth, storage} from "./firebase.js";
 import {getDownloadURL, ref as sRef, uploadBytes} from "firebase/storage";
+import {signInWithEmailAndPassword, updateEmail, updatePassword} from "firebase/auth";
 
 export const update_admin = async (uid, data) => {
 	let new_data = {};
@@ -77,9 +78,9 @@ export const update_patient = async (uid, data) => {
 export const update_email = async (data, new_email) => {
 	const {uid, email, password} = data;
 	
-	return await secondaryAuth.signInWithEmailAndPassword(email, password)
+	return await signInWithEmailAndPassword(secondaryAuth, email, password)
 		.then((userCredential) => {
-			return secondaryAuth.currentUser.updateEmail(new_email).then(() => {
+			return updateEmail(userCredential.user, new_email).then(() => {
 				return update(ref(db, `users/${uid}`), {
 					email: new_email
 				}).then(() => {
@@ -101,9 +102,9 @@ export const update_email = async (data, new_email) => {
 export const update_password = async (data, new_password) => {
 	const {uid, email, password} = data;
 	
-	return await secondaryAuth.signInWithEmailAndPassword(email, password)
+	return await signInWithEmailAndPassword(secondaryAuth, email, password)
 		.then((userCredential) => {
-			return secondaryAuth.currentUser.updatePassword(new_password).then(() => {
+			return updatePassword(userCredential.user, new_password).then(() => {
 				return update(ref(db, `users/${uid}`), {
 					password: new_password
 				}).then(() => {

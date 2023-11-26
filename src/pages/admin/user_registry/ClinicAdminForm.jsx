@@ -1,13 +1,5 @@
 import {
     Button,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-    useDisclosure,
     Flex,
     FormControl,
     FormErrorMessage,
@@ -17,8 +9,16 @@ import {
     Input,
     InputGroup,
     InputRightElement,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
     Select,
     Text,
+    useDisclosure,
     useToast,
 } from '@chakra-ui/react';
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
@@ -28,7 +28,7 @@ import {db} from "../../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
 import {register_clinic_admin} from "../../../../api/auth.js";
 import {useNavigate} from "react-router-dom";
-import {update_admin} from "../../../../api/admin.js";
+import {update_admin, update_email, update_password} from "../../../../api/admin.js";
 
 export const ClinicAdminForm = ({user}) => {
     const {
@@ -36,6 +36,10 @@ export const ClinicAdminForm = ({user}) => {
 		handleSubmit,
 		register,
         trigger,
+        clearErrors,
+        getValues,
+        reset,
+        resetFields,
 		formState: {
 			errors
 		}
@@ -190,16 +194,81 @@ export const ClinicAdminForm = ({user}) => {
         onOpenEmailModal();
     };
 
-    const handleEmailSubmit = (data) => {
-        console.log(data);
+    const handleEmailSubmit = async () => {
+        await trigger(['new_email']);
         console.log("Submitting email modal")
-
+        
+        update_email(user, getValues('new_email')).then((res) => {
+            console.log(res);
+            if (res.error) {
+                toast({
+                    title: "Error!",
+                    description: res.error,
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            } else {
+                toast({
+                    title: "Success!",
+                    description: "Email has been updated!",
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                });
+                onCloseEmailModal();
+            }
+        }).catch((err) => {
+            console.log(err);
+            toast({
+                title: "Error!",
+                description: "An error has occurred!",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
+        });
     };
 
-    const handlePasswordSubmit = (data) => {
-        console.log(data);
+    const handlePasswordSubmit = async () => {
+        await trigger(['new_password', 'new_confirm_password']);
         console.log("Submitting password modal");
-
+        
+        if (getValues('new_password') !== getValues('new_confirm_password')) {
+            alert("Passwords do not match!");
+            return;
+        }
+        
+        update_password(user, getValues('new_password')).then((res) => {
+            console.log(res);
+            if (res.error) {
+                toast({
+                    title: "Error!",
+                    description: res.error,
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            } else {
+                toast({
+                    title: "Success!",
+                    description: "Password has been updated!",
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                });
+                onClosePasswordModal();
+            }
+        }).catch((err) => {
+            console.log(err);
+            toast({
+                title: "Error!",
+                description: "An error has occurred!",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
+        });
     };
 
     return (
@@ -226,7 +295,6 @@ export const ClinicAdminForm = ({user}) => {
                             {
                             ...register("name", {
                                 required: "Name is required",
-
                             })
                         }
                     />
@@ -276,7 +344,7 @@ export const ClinicAdminForm = ({user}) => {
                         borderColor="gray.300"
                         color="gray.900"
                         size="md"
-                        isDisabled={user ? true : false}
+                        isDisabled={!!user}
                         focusBorderColor="blue.500"
                         w="full"
                         p={2.5}
@@ -308,7 +376,7 @@ export const ClinicAdminForm = ({user}) => {
                                     Edit Email
                                 </Button>
                                 <Modal isOpen={isEmailModalOpen} onClose={onCloseEmailModal} size='xl' isCentered>
-                                    <form onSubmit={handleSubmit(handleEmailSubmit)}> 
+                                    <form>
                                         <ModalOverlay 
                                             bg='blackAlpha.300'
                                             backdropFilter='blur(3px) hue-rotate(90deg)'
@@ -317,7 +385,7 @@ export const ClinicAdminForm = ({user}) => {
                                             <ModalHeader>Edit Email</ModalHeader>
                                             <ModalCloseButton />
                                             <ModalBody>
-                                                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="email" isInvalid={errors.email}>
+                                                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="email" isInvalid={errors.new_email}>
                                                     <FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
                                                         Email <Text as="span" color="red.500" fontWeight="bold">*</Text>
                                                     </FormLabel>
@@ -336,13 +404,13 @@ export const ClinicAdminForm = ({user}) => {
                                                         w="full"
                                                         p={2.5}
                                                         {
-                                                            ...register("email", {
+                                                            ...register("new_email", {
                                                                 required: "Email is required",
                                                             })
                                                         }
                                                     />
                                                     <FormErrorMessage>
-                                                        {errors.email && errors.email.message}
+                                                        {errors.new_email && errors.new_email.message}
                                                     </FormErrorMessage>
                                                 </FormControl>
                                             </ModalBody>
@@ -366,7 +434,7 @@ export const ClinicAdminForm = ({user}) => {
                                     Edit Password
                                 </Button>
                                 <Modal isOpen={isPasswordModalOpen} onClose={onClosePasswordModal} size='xl' isCentered>
-                                    <form onSubmit={handleSubmit(handlePasswordSubmit)}>
+                                    <form>
                                         <ModalOverlay 
                                             bg='blackAlpha.300'
                                             backdropFilter='blur(3px) hue-rotate(90deg)'
@@ -375,7 +443,7 @@ export const ClinicAdminForm = ({user}) => {
                                             <ModalHeader>Password Modal</ModalHeader>
                                             <ModalCloseButton />
                                             <ModalBody>
-                                                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="password" isInvalid={errors.password}>
+                                                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="password" isInvalid={errors.new_password}>
                                                     <FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
                                                         Password
                                                     </FormLabel>
@@ -392,7 +460,7 @@ export const ClinicAdminForm = ({user}) => {
                                                             size="md"
                                                             focusBorderColor="blue.500"
                                                             {
-                                                                ...register("password", {
+                                                                ...register("new_password", {
                                                                     required: "Password is required",
                                                                     pattern: {
                                                                         value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
@@ -417,10 +485,10 @@ export const ClinicAdminForm = ({user}) => {
                                                         one number and one special character
                                                     </FormHelperText>
                                                     <FormErrorMessage>
-                                                        {errors.password && errors.password.message}
+                                                        {errors.new_password && errors.new_password.message}
                                                     </FormErrorMessage>
                                                 </FormControl>
-                                                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="confirm_password" isInvalid={errors.confirm_password}>
+                                                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="confirm_password" isInvalid={errors.new_confirm_password}>
                                                     <FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
                                                         Confirm Password
                                                     </FormLabel>
@@ -437,7 +505,7 @@ export const ClinicAdminForm = ({user}) => {
                                                             size="md"
                                                             focusBorderColor="blue.500"
                                                             {
-                                                                ...register("confirm_password", {
+                                                                ...register("new_confirm_password", {
                                                                     required: "Confirm password is required",
                                                                     pattern: {
                                                                         value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
@@ -458,7 +526,7 @@ export const ClinicAdminForm = ({user}) => {
                                                         </InputRightElement>
                                                     </InputGroup>
                                                     <FormErrorMessage>
-                                                        {errors.confirm_password && errors.confirm_password.message}
+                                                        {errors.new_confirm_password && errors.new_confirm_password.message}
                                                     </FormErrorMessage>
                                                 </FormControl>
                                             </ModalBody>
