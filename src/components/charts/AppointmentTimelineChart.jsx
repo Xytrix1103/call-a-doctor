@@ -1,8 +1,9 @@
 import { Box, Flex, Text, Popover, PopoverTrigger, PopoverContent, Divider, Avatar } from '@chakra-ui/react';
+import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
 import { FaEarthAsia } from "react-icons/fa6";
 import { GoDotFill } from "react-icons/go";
 
-const TimelineItem = ({ title, date, description }) => (
+const TimelineItem = ({ key, ...appointment }) => (
     <Flex>
         <Box justifyContent='center' alignItems='center' mb={5}>
             <Box bgColor="blue.500" w="2px" h="50%" my={3} ml={'6px'}/>
@@ -12,31 +13,58 @@ const TimelineItem = ({ title, date, description }) => (
         <Box ml={5} mt={3} p={2} borderWidth="1px" borderRadius="md" w='90%'>
             <Flex alignItems='center' mb={1} gap={2} maxW='350px' >
                 <Text fontSize="xs" color="gray.700">
-                    {date}
+                    {appointment.date}
                 </Text>  
                 <GoDotFill size='7' color='gray'/>
                 <Text fontSize="xs" color="gray.700">
-                    10:00 AM
-                </Text>  
-                <GoDotFill size='7' color='gray'/>
-                <Text fontSize="xs" color="gray.700" maxW='150px' isTruncated>
-                    Klinik Menara
+                    {appointment.appointment_time}
                 </Text>  
             </Flex>
             <Flex>
-                <Avatar src="\src\assets\images\Default_User_Profile.png" size='sm' mt={1}/>
                 <Box>
                     <Flex alignItems='center'>
                         <Box ml={2}>
-                            <Text fontSize="sm" fontWeight="semibold" maxW='90%' isTruncated>
-                                Doctor Name 
-                            </Text>       
-                            <Text fontSize='xs' fontWeight='medium' maxW='90%' isTruncated>
-                                Cardiologist
-                            </Text>        
-                            <Divider my={1} w='90%' />
-                            <Text fontSize='xs' fontWeight='medium' maxW='90%' noOfLines={3}>
-                                Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description
+                            <Flex alignItems='center' gap={3}>
+                                <Avatar src={appointment.doctor.image} size='sm'/>
+                                <Text fontSize="sm" fontWeight="semibold" maxW='90%' isTruncated>
+                                    {appointment.doctor.name}
+                                </Text>                                       
+                            </Flex>
+                            <Divider my={1} w='95%' />
+                            <Flex maxW='95%' alignItems='center' justifyContent='space-between' mb={2}>
+                                <Flex alignItems='center' gap={2}>
+                                    {appointment.patient ? appointment.patient.gender === "Male" ? <BsGenderMale size={25} color='blue'/> : <BsGenderFemale size={25} color='pink'/> : appointment.gender === "Male" ? <BsGenderMale size={25} color='blue'/> : <BsGenderFemale size={25} color='pink'/>}
+                                    <Box>
+                                        <Text fontSize="xs" fontWeight="medium" color="gray.500">
+                                            Name
+                                        </Text>
+                                        <Text fontSize="xs" fontWeight="semibold" color="gray.700">
+                                            {appointment.patient.name ? appointment.patient.name : appointment.name}
+                                        </Text>
+                                    </Box>
+                                </Flex>
+                                <Box>
+                                    <Text fontSize="xs" fontWeight="medium" color="gray.500">
+                                        Contact
+                                    </Text>
+                                    <Text fontSize="xs" fontWeight="semibold" color="gray.700">
+                                        {appointment.patient.contact ? appointment.patient.contact : appointment.contact}
+                                    </Text>
+                                </Box>
+                                <Box>
+                                    <Text fontSize="xs" fontWeight="medium" color="gray.500">
+                                        Age
+                                    </Text>
+                                    <Text fontSize="xs" fontWeight="semibold" color="gray.700">
+                                        {appointment.age}
+                                    </Text>
+                                </Box>
+                            </Flex>
+                            <Text fontSize="xs" fontWeight="medium" color="gray.500">
+                                Illness Description
+                            </Text>
+                            <Text fontSize='xs' fontWeight='medium' maxW='95%' noOfLines={5}>
+                                {appointment.illness_description}
                             </Text>               
                         </Box>                    
                     </Flex>                    
@@ -47,55 +75,16 @@ const TimelineItem = ({ title, date, description }) => (
 );
   
 
-const VerticalTimeline = ({ events }) => (
+const VerticalTimeline = ({ appointments }) => (
     <Flex direction="column" gap={1}>
-        {events.map((event, index) => (
-            <TimelineItem key={index} {...event} />
+        {appointments.map((appointment, index) => (
+            <TimelineItem key={index} {...appointment} />
         ))}
     </Flex>
 );
 
-// Example usage
-const events = [
-    {
-        title: 'Event 1',
-        date: '2023-01-01',
-        description: 'Description of event 1.',
-    },
-    {
-        title: 'Event 2',
-        date: '2023-02-01',
-        description: 'Description of event 2.',
-    },
-    {
-        title: 'Event 3',
-        date: '2023-03-01',
-        description: 'Description of event 3.',
-    },
-    {
-        title: 'Event 4',
-        date: '2023-03-01',
-        description: 'Description of event 3.',
-    },
-    {
-        title: 'Event 5',
-        date: '2023-03-01',
-        description: 'Description of event 3.',
-    },
-    {
-        title: 'Event 4',
-        date: '2023-03-01',
-        description: 'Description of event 3.',
-    },
-    {
-        title: 'Event 5',
-        date: '2023-03-01',
-        description: 'Description of event 3.',
-    },
-];
-
-export const AppointmentTimelineChart = () => (
+export const AppointmentTimelineChart = ({appointments}) => (
     <Box pt={1} px={4}>
-        <VerticalTimeline events={events} />
+        <VerticalTimeline appointments={appointments} />
     </Box>
 );

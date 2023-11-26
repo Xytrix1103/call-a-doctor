@@ -26,7 +26,9 @@ import {useAuth} from "../../components/AuthCtx.jsx";
 import {NavLink} from "react-router-dom";
 import { FaUser, FaStethoscope, FaStar, FaStarHalf } from "react-icons/fa";
 import { BiSearchAlt2 } from "react-icons/bi";
+import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
 import { GiMedicines } from "react-icons/gi";
+import { GoDotFill } from "react-icons/go";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
@@ -43,6 +45,79 @@ const GenderDoughnutChart = memo(() => {
             {
                 data: [300, 50, 100],
                 backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+            },
+        ],
+    };
+
+    const chartOptions = {
+        cutout: '60%',
+    };
+
+    return <DoughnutChart data={chartData} options={chartOptions} />;
+});
+
+const AgeDoughnutChart = memo(() => {
+    const {user} = useAuth();
+    const clinicId = user.clinic;
+    const [ageRange, setAgeRange] = useState({
+        '0-19': 0,
+        '20-64': 0,
+        '65 and above': 0,
+    });
+    useEffect(() => {
+        onValue(
+            query(
+                ref(db, 'requests'),
+                orderByChild('clinic'),
+                equalTo(clinicId)
+            ),
+            (snapshot) => {
+                let ageRange = {
+                    '0-19': 0,
+                    '20-64': 0,
+                    '65 and above': 0,
+                };
+                const data = snapshot.val();
+                for (let id in data) {
+                    if (data[id].approved) {
+                        if (data[id].patient == null) {
+                            get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
+                                const dob = new Date(userSnapshot.val().dob);
+                                const age = Math.floor((new Date() - dob) / 3.15576e+10);
+                                console.log(dob, age)
+                                if (age >= 0 && age <= 19) {
+                                    ageRange['0-19']++;
+                                } else if (age >= 20 && age <= 64) {
+                                    ageRange['20-64']++;
+                                } else if (age >= 65) {
+                                    ageRange['65 and above']++;
+                                }
+                            });
+                        } else {
+                            const dob = new Date(data[id].patient.dob);
+                            const age = Math.floor((new Date() - dob) / 3.15576e+10);
+                            console.log(dob, age)
+                            if (age >= 0 && age <= 19) {
+                                ageRange['0-19']++;
+                            } else if (age >= 20 && age <= 64) {
+                                ageRange['20-64']++;
+                            } else if (age >= 65) {
+                                ageRange['65 and above']++;
+                            }
+                        }
+                    }
+                }      
+                setAgeRange(ageRange);
+            }
+        );
+    }, []);
+
+    const chartData = {
+        labels: ['0-19', '20-64', '65 & above'],
+        datasets: [
+            {
+                data: [ageRange['0-19'], ageRange['20-64'], ageRange['65 and above']],
+                backgroundColor: ['#14ccff', '#3245d1', '#7e14ff'],
             },
         ],
     };
@@ -92,18 +167,54 @@ const PatientActivityBarChart = memo(() => {
 });
 
 const PatientRequests = ({ request }) => {
-    
+    return (
+        <Box w='16rem' h='9rem' border='2px' rounded='lg' borderColor='pink.200' p={2} justifyContent='center' alignItems='center'>
+            <Box w='15rem' h='6rem'>
+                <Flex alignItems='center' w='full'>
+                    <Box w='full'>
+                        <Flex alignItems='center' justifyContent='space-between'>
+                            <Box w='full'>
+                                <Flex alignItems='center' gap={1}>
+                                    {request.patient ? request.patient.gender === "Male" ? <BsGenderMale size={15} color='blue'/> : <BsGenderFemale size={15} color='pink'/> : request.gender === "Male" ? <BsGenderMale size={15} color='blue'/> : <BsGenderFemale size={15} color='pink'/>}
+                                    <Text fontSize="sm" fontWeight="semibold" maxW='95%' isTruncated>
+                                        {request.patient ? request.patient.name : request.name}
+                                    </Text>       
+                                    <GoDotFill size='7' color='gray'/>
+                                    <Text fontSize="2xs" fontWeight='medium' color="gray.700">
+                                        {request.date}
+                                    </Text>         
+                                    <GoDotFill size='7' color='gray'/>
+                                    <Text fontSize="2xs" fontWeight='medium' color="gray.700">
+                                        {request.appointment_time}
+                                    </Text>                                                                           
+                                </Flex>
+                                <Text fontSize="xs" fontWeight='medium' color="gray.700" maxW='95%' isTruncated>
+                                    {request.patient ? request.patient.address : request.address}
+                                </Text>                          
+                            </Box>
+
+                        </Flex>
+                    </Box>                    
+                </Flex>    
+                <Divider my={1} w='full' />
+                <Text fontSize='xs' fontWeight='medium' maxW='full' noOfLines={4}>
+                    {request.illness_description}
+                </Text>                                                                        
+            </Box>
+        </Box>
+    )
 };
 
 function ClinicDashboard() {
     const {user} = useAuth();
     const clinicId = user.clinic;
-    console.log(clinicId);
     const [clinic, setClinic] = useState('');
     const [doctors, setDoctors] = useState([]);
     const [doctorsCount, setDoctorsCount] = useState(0);
     const [ratings, setRatings] = useState([]);
     const [patientRequests, setPatientRequests] = useState([]);
+    const [patientCount, setPatientCount] = useState(0);
+    const [doctorAppointments, setDoctorAppointments] = useState([]);
 	const [appointments, setAppointments] = useState([]);
 
     const libs = ['places'];
@@ -173,6 +284,27 @@ function ClinicDashboard() {
         setGlobalPatientFilterValue(value);
     };
 
+    function formatDate(isoDate) {
+        const date = new Date(isoDate);
+        const dd = String(date.getDate()).padStart(2, '0');
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const yyyy = date.getFullYear();
+        return `${dd}/${mm}/${yyyy}`;
+    }
+
+    function formatAge(dob) {
+        const date = new Date(dob);
+        const age = Math.floor((new Date() - date) / 3.15576e+10);
+        return age;
+    }
+
+    function fetchDoctorData(doctorId) {
+        const doctorRef = ref(db, `users/${doctorId}`);
+        return get(doctorRef).then((doctorSnapshot) => {
+            return doctorSnapshot.val();
+        });
+    }
+
     useEffect(() => {
         // Fetch clinic details from Realtime Database
         onValue(ref(db, `clinics/${clinicId}`), (snapshot) => {
@@ -240,15 +372,20 @@ function ClinicDashboard() {
             ),
             (snapshot) => {
                 const requests = [];
-                snapshot.forEach((snapshot) => {
-                    const data = snapshot.val();
-                    for (let id in data) {
+                const appointments = [];
+                let patientCount = 0;
+                const data = snapshot.val();
+                console.log(data);
+                for (let id in data) {
+                    if (!data[id].approved) {
                         if (data[id].patient == null) {
                             get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
                                 data[id] = {
                                     id: id,
                                     ...data[id],
                                     ...userSnapshot.val(),
+                                    age: formatAge(userSnapshot.val().dob),
+                                    date: formatDate(data[id].date),
                                 }
                                 requests.push(data[id]);
                             });
@@ -257,19 +394,53 @@ function ClinicDashboard() {
                                 id: id,
                                 ...data[id],
                                 ...data[id].patient,
+                                age: formatAge(data[id].patient.dob),
+                                date: formatDate(data[id].date),
                             }
                             requests.push(data[id]);
+                        }                        
+                    } else {
+                        if (data[id].patient == null) {
+                            get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
+                                fetchDoctorData(data[id].doctor).then((doctorData) => {
+                                    data[id] = {
+                                        id: id,
+                                        ...data[id],
+                                        ...userSnapshot.val(),
+                                        age: formatAge(userSnapshot.val().dob),
+                                        date: formatDate(data[id].date),
+                                        doctor: doctorData,
+                                    };
+                                    appointments.push(data[id]);
+                                });
+                                patientCount++;
+                            });
+                        } else {
+                            fetchDoctorData(data[id].doctor).then((doctorData) => {
+                                data[id] = {
+                                    id: id,
+                                    ...data[id],
+                                    ...data[id].patient,
+                                    age: formatAge(data[id].patient.dob),
+                                    date: formatDate(data[id].date),
+                                    doctor: doctorData,
+                                };
+                                appointments.push(data[id]);
+                            });
+                            patientCount++;
                         }
                     }
-                });
-                console.log(requests);
-                setPatientRequests(requests);                
+                }
+                setPatientRequests(requests);       
+                setDoctorAppointments(appointments);  
+                console.log(appointments);
+                console.log(patientCount);      
+                setPatientCount(patientCount); 
             }
         );
-    
-        // Set dummy appointments
+
         setAppointments(generateDummyAppointments(20));
-    }, [clinicId]); // Make sure to include clinicId as a dependency
+    }, [clinicId]);
 
     if (loadError) return 'Error loading maps';
     if (!isLoaded) return 'Loading maps';
@@ -317,7 +488,7 @@ function ClinicDashboard() {
                                             <Text fontWeight='medium' fontSize='sm' color='gray.600'>
                                                 Total Patients
                                             </Text>            
-                                            <Text fontWeight='semibold'>10</Text>                                
+                                            <Text fontWeight='semibold'>{patientCount}</Text>                                
                                         </Box>
                                     </Flex>
                                 </Box>
@@ -397,7 +568,7 @@ function ClinicDashboard() {
                                 <Text fontSize='md' fontWeight='semibold' letterSpacing='wide' mt={3} mx={3} textAlign='center'>
                                     Patient Age Distribution
                                 </Text>
-                                <GenderDoughnutChart/>
+                                <AgeDoughnutChart/>
                             </Flex>
                         </Box>                        
                     </Flex>
@@ -577,54 +748,11 @@ function ClinicDashboard() {
                                         justifyContent='center' 
                                         gap={6}
                                     >
-                                        <Box w='16rem' h='8rem' border='2px' rounded='lg' borderColor='pink.200' p={2} justifyContent='center' alignItems='center'>
-                                            <Box w='15rem' h='6rem'>
-                                                <Flex alignItems='center' w='full'>
-                                                    <Box w='full'>
-                                                        <Text fontSize="sm" fontWeight="semibold" maxW='80%' isTruncated>
-                                                            John Doe
-                                                        </Text>            
-                                                    </Box>                    
-                                                </Flex>    
-                                                <Divider my={1} w='full' />
-                                                <Text fontSize='xs' fontWeight='medium' maxW='full' noOfLines={4}>
-                                                    Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description
-                                                </Text>                                                                        
-                                            </Box>
-                                        </Box>
-                                        <Box w='16rem' h='8rem' border='2px' rounded='lg' borderColor='pink.200' p={2} justifyContent='center' alignItems='center'>
-                                            <Box w='15rem' h='6rem'>
-                                                <Flex alignItems='center' w='full'>
-                                                    <Avatar src="\src\assets\images\Default_User_Profile.png" size='sm'/>
-                                                    <Box ml={2} w='full'>
-                                                        <Text fontSize="sm" fontWeight="semibold" maxW='80%' isTruncated>
-                                                            John Doe
-                                                        </Text>            
-                                                    </Box>                    
-                                                </Flex>    
-                                                <Divider my={1} w='full' />
-                                                <Text fontSize='xs' fontWeight='medium' maxW='full' noOfLines={4}>
-                                                    Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description
-                                                </Text>                                                                        
-                                            </Box>
-                                        </Box>
-                                        <Box w='16rem' h='8rem' border='2px' rounded='lg' borderColor='pink.200' p={2} justifyContent='center' alignItems='center'>
-                                            <Box w='15rem' h='6rem'>
-                                                <Flex alignItems='center' w='full'>
-                                                    <Avatar src="\src\assets\images\Default_User_Profile.png" size='sm'/>
-                                                    <Box ml={2} w='full'>
-                                                        <Text fontSize="sm" fontWeight="semibold" maxW='80%' isTruncated>
-                                                            John Doe
-                                                        </Text>            
-                                                    </Box>                    
-                                                </Flex>    
-                                                <Divider my={1} w='full' />
-                                                <Text fontSize='xs' fontWeight='medium' maxW='full' noOfLines={4}>
-                                                    Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description  Description
-                                                </Text>                                                                        
-                                            </Box>
-                                        </Box>
-                                        
+                                        {
+                                            patientRequests.map((request) => (
+                                                <PatientRequests request={request} />
+                                            ))
+                                        }        
                                     </Flex>
                                 </Box>
                             </TabPanel>
@@ -647,7 +775,7 @@ function ClinicDashboard() {
                                         },
                                     }}       
                                 >
-                                    <AppointmentTimelineChart />
+                                    <AppointmentTimelineChart appointments={doctorAppointments} />
                                 </Box>
                             </TabPanel>
                         </TabPanels>
