@@ -1,7 +1,7 @@
 import {db} from "./firebase";
 import {ref, update} from "firebase/database";
 import {secondaryAuth, storage} from "./firebase.js";
-import {deleteObject, getDownloadURL, ref as sRef, uploadBytes} from "firebase/storage";
+import {getDownloadURL, ref as sRef, uploadBytes} from "firebase/storage";
 
 export const update_admin = async (uid, data) => {
 	let new_data = {};
@@ -35,22 +35,22 @@ export const update_doctor = async (uid, data) => {
 				return {success: true};
 			}
 			
-			return deleteObject(sRef(storage, `doctors/${uid}`))
-				.then(() => {
-					return uploadBytes(sRef(storage, `doctors/${uid}`), image)
-						.then((res) => {
-							return getDownloadURL(sRef(storage, `doctors/${uid}`));
-						})
-						.then((url) => {
-							return update(ref(db, `users/${uid}`), {
-								image: url
-							})
-						})
-						.catch((error) => {
-							console.log(error);
-							return {error: error};
-						});
+			return uploadBytes(sRef(storage, `doctors/${uid}`), image)
+				.then((res) => {
+					return getDownloadURL(sRef(storage, `doctors/${uid}`));
 				})
+				.then((url) => {
+					return update(ref(db, `users/${uid}`), {
+						image: url
+					})
+				})
+				.catch((error) => {
+					console.log(error);
+					return {error: error};
+				});
+		})
+		.then(() => {
+			return {success: true};
 		})
 		.catch((error) => {
 			console.log(error);

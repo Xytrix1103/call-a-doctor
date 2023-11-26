@@ -114,7 +114,6 @@ function ManageUser() {
                                 color="gray.900"
                                 size="md"
                                 focusBorderColor="blue.500"
-                                defaultValue={user?.role}
                                 value={(user?.role === "ClinicAdmin" ? "Clinic Admin" : user?.role)}
                                 isDisabled={!!id}
                             >

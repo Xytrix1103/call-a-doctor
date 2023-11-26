@@ -54,16 +54,22 @@ export const ClinicAdminForm = ({user}) => {
     }, []);
 
     useEffect(() => {
-        if (user) {
-            setValue('name', user.name);
-            setValue('email', user.email);
-            setValue('clinic', user.clinic);
+        if (clinics.length > 0) {
+            if (user) {
+                setValue('name', user.name);
+                setValue('email', user.email);
+                setValue("clinic", user?.clinic);
+            } else {
+                setValue('name', null);
+                setValue('email', null);
+                setValue('clinic',  clinics?.[0]?.id);
+            }
         } else {
             setValue('name', null);
             setValue('email', null);
-            setValue('clinic', null);
+            setValue('clinic',  '');
         }
-    }, [user]);
+    }, [user, clinics]);
     
     
     const onSubmit = async (data) => {
