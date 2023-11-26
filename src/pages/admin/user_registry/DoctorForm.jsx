@@ -14,13 +14,17 @@ import {
 	Select,
 	Text,
 	Textarea,
+	useToast,
 } from '@chakra-ui/react';
-import {useRef, useState, useEffect} from "react";
+import {useEffect, useRef, useState} from "react";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
 import {useForm} from "react-hook-form";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 import {db} from "../../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
+import {register_doctor} from "../../../../api/auth.js";
+import {update_doctor} from "../../../../api/admin.js";
+import {useNavigate} from "react-router-dom";
 
 export const DoctorForm = ({user}) => {
     console.log("DoctorForm");
@@ -29,6 +33,9 @@ export const DoctorForm = ({user}) => {
 		reset,
 		handleSubmit,
 		register,
+        getValues,
+	    watch,
+	    trigger,
 		formState: {
 			errors
 		}
@@ -41,6 +48,8 @@ export const DoctorForm = ({user}) => {
     const imageRef = useRef(null);
 	const previewImageRef = useRef(null);
 	const previewImageContainerRef = useRef(null);
+	const toast = useToast();
+	const navigate = useNavigate();
 
     useEffect(() => {
         onValue(query(ref(db, "clinics")), (snapshot) => {
@@ -57,21 +66,40 @@ export const DoctorForm = ({user}) => {
     }, []);
 
     useEffect(() => {
-        if (user) {
-            setValue('name', user.name);
-            setValue('email', user.email);
-            setValue('phone', user.phone);
-            setValue('date_of_birth', user.dob);
-            setValue('qualification', user.qualification);
-            setValue('introduction', user.introduction);
-        }
-    }, [user]);
+		if(clinics.length > 0) {
+	        if (user) {
+	            setValue('name', user?.name);
+	            setValue('email', user?.email);
+	            setValue('phone', user?.phone);
+	            setValue('date_of_birth', user?.date_of_birth);
+				setValue("clinic", user?.clinic);
+	            setValue('qualification', user?.qualification);
+	            setValue('introduction', user?.introduction);
+	        } else {
+				setValue('name', null);
+				setValue('email', null);
+				setValue('phone', null);
+				setValue('date_of_birth', null);
+				setValue("clinic", clinics?.[0]?.id);
+				setValue('qualification', null);
+				setValue('introduction', null);
+	        }
+		} else {
+			setValue('name', null);
+			setValue('email', null);
+			setValue('phone', null);
+			setValue('date_of_birth', null);
+			setValue('clinic',  '');
+			setValue('qualification', null);
+			setValue('introduction', null);
+		}
+    }, [user, clinics]);
 
     useEffect(() => {
-        if (user.image) {
-            setImageSrc(user.image);
+        if (user?.image) {
+            setImageSrc(user?.image);
         }
-    }, [user.image]);
+    }, [user]);
 	
 	const handleDragEnter = (e) => {
 		e.preventDefault();
@@ -121,13 +149,110 @@ export const DoctorForm = ({user}) => {
 	};
 	
 	const onSubmit = async (data) => {
-        console.log("Submitting doctor form");
-		data = {
-			...data,
-			image: imageRef.current.files[0],
-		}
+        console.log("Submitting doctor form", data);
 		
-		await add_doctor(data);
+		if (!user) {
+			await trigger();
+			const password = data["password"];
+			const confirm_password = data["confirm_password"];
+			
+			if (password !== confirm_password) {
+				alert("Passwords do not match!");
+				return;
+			}
+			
+			if (imageRef.current.files.length === 0) {
+				alert("Please upload an image");
+				return;
+			}
+			
+			data = {
+				...data,
+				image: imageRef.current.files[0],
+			}
+			
+			console.log(data);
+			
+			register_doctor(data).then((res) => {
+				console.log(res);
+				if (res.error) {
+					toast({
+						title: "Error!",
+						description: res.error,
+						status: "error",
+						duration: 5000,
+						isClosable: true,
+					});
+				} else {
+					toast({
+						title: "Success!",
+						description: "Doctor has been created!",
+						status: "success",
+						duration: 5000,
+						isClosable: true,
+					});
+					navigate('/admin/users');
+				}
+			}).catch((err) => {
+				console.log(err);
+				toast({
+					title: "Error!",
+					description: "An error has occurred!",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
+			});
+		} else {
+			await trigger(['name', 'phone', 'date_of_birth', 'qualification', 'introduction', 'clinic']);
+			let update = {};
+			
+			//loop thru form values
+			for (const [key, value] of Object.entries(data)) {
+				if (value !== user[key] && key !== 'confirm_password' && key !== 'password' && key !== 'email') {
+					update[key] = value;
+				}
+			}
+			
+			if (imageSrc !== user.image) {
+				update['image'] = imageRef.current.files[0];
+			} else {
+				update['image'] = null;
+			}
+			
+			if (Object.keys(update).length > 0) {
+				update_doctor(user.uid, update).then((res) => {
+					console.log(res);
+					if (res.error) {
+						toast({
+							title: "Error!",
+							description: res.error,
+							status: "error",
+							duration: 5000,
+							isClosable: true,
+						});
+					} else {
+						toast({
+							title: "Success!",
+							description: "Doctor has been updated!",
+							status: "success",
+							duration: 5000,
+							isClosable: true,
+						});
+						navigate('/admin/users');
+					}
+				}).catch((err) => {
+					console.log(err);
+					toast({
+						title: "Error!",
+						description: "An error has occurred!",
+						status: "error",
+						duration: 5000,
+						isClosable: true,
+					});
+				});
+			}
+		}
 	}
 
     return (
@@ -160,9 +285,9 @@ export const DoctorForm = ({user}) => {
                                     })
                                 }
                             />        
-                        <FormErrorMessage>
-                            {errors.email && errors.email.message}
-                        </FormErrorMessage>                            
+	                        <FormErrorMessage>
+	                            {errors.name && errors.name.message}
+	                        </FormErrorMessage>
                         </FormControl>
                     </Box>
                     <Flex alignItems="center" justifyContent="space-between" mt={6}>
@@ -215,8 +340,8 @@ export const DoctorForm = ({user}) => {
                                         ...register("gender")
                                     }
                                 >
-                                    <option value="Male" selected={user.gender === "Male"}>Male</option>
-                                    <option value="Female" selected={user.gender === "Female"}>Female</option>
+                                    <option value="Male" selected={user?.gender === "Male"}>Male</option>
+                                    <option value="Female" selected={user?.gender === "Female"}>Female</option>
                                 </Select>
                             </FormControl>
                         </Box>
@@ -269,15 +394,16 @@ export const DoctorForm = ({user}) => {
                                 color="gray.900"
                                 size="md"
                                 focusBorderColor="blue.500"
+                                value={watch("clinic") || clinics?.[0]?.id}
                                 {
-                                    ...register("clinic")
+	                                ...register("clinic")
                                 }
                             >
-                                {clinics.map((clinic) => (
-                                    <option key={clinic.id} value={clinic.id} selected={clinic.id === user.clinic}>
-                                        {clinic.name}
-                                    </option>
-                                ))}
+	                            {clinics.map((clinic) => (
+		                            <option key={clinic.id} value={clinic.id}>
+			                            {clinic.name}
+		                            </option>
+	                            ))}
                             </Select>
                         </FormControl>
                     </Box>
@@ -353,6 +479,7 @@ export const DoctorForm = ({user}) => {
                                         required: "Email is required",
                                     })
                                 }
+                                disabled={!!user}
                                 placeholder="john.doe@gmail.com"
                                 rounded="xl"
                                 borderWidth="1px"
@@ -367,57 +494,64 @@ export const DoctorForm = ({user}) => {
                             </FormErrorMessage>
                         </FormControl>
                     </Box>
-                    <Box>
-                        <FormControl isInvalid={errors.password}>
-                            <FormLabel mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900">
-                                Password <Text as="span" color="red.500" fontWeight="bold">*</Text>
-                            </FormLabel>
-                            <InputGroup size='md'>
-                                <Input
-                                    variant="filled"
-                                    type={showPassword ? "text" : "password"}
-                                    id="password"
-                                    {
-                                        ...register("password", {
-                                            required: "Password is required",
-                                            pattern: {
-                                                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                                                message: "Invalid password format",
-                                            },            
-                                        })
-                                    }
-                                    placeholder="•••••••••"
-                                    rounded="xl"
-                                    borderWidth="1px"
-                                    borderColor="gray.300"
-                                    color="gray.900"
-                                    size="md"
-                                    focusBorderColor="blue.500"
-                                    p={2.5}
-                                />
-                                <InputRightElement>
-                                    <IconButton
-                                        aria-label="Show password"
-                                        size="lg"
-                                        variant="ghost"
-                                        icon={showPassword ? <IoMdEyeOff /> : <IoMdEye />}
-                                        _focus={{ bg: "transparent", borderColor: "transparent", outline: "none" }}
-                                        _hover={{ bg: "transparent", borderColor: "transparent", outline: "none" }}
-                                        _active={{ bg: "transparent", borderColor: "transparent", outline: "none" }}
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        tabIndex="-1"
-                                    />
-                                </InputRightElement>
-                            </InputGroup>
-                            <FormHelperText fontSize="xs">
-                                Minimum eight characters, at least one uppercase letter, one lowercase letter,
-                                one number and one special character
-                            </FormHelperText>
-                            <FormErrorMessage>
-                                {errors.password && errors.password.message}
-                            </FormErrorMessage>
-                        </FormControl>
-                    </Box>
+	                {
+						!user && (
+							<>
+								
+								<Box>
+									<FormControl isInvalid={errors.password}>
+										<FormLabel mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900">
+											Password <Text as="span" color="red.500" fontWeight="bold">*</Text>
+										</FormLabel>
+										<InputGroup size='md'>
+											<Input
+												variant="filled"
+												type={showPassword ? "text" : "password"}
+												id="password"
+												{
+													...register("password", {
+														required: "Password is required",
+														pattern: {
+															value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+															message: "Invalid password format",
+														},
+													})
+												}
+												placeholder="•••••••••"
+												rounded="xl"
+												borderWidth="1px"
+												borderColor="gray.300"
+												color="gray.900"
+												size="md"
+												focusBorderColor="blue.500"
+												p={2.5}
+											/>
+											<InputRightElement>
+												<IconButton
+													aria-label="Show password"
+													size="lg"
+													variant="ghost"
+													icon={showPassword ? <IoMdEyeOff /> : <IoMdEye />}
+													_focus={{ bg: "transparent", borderColor: "transparent", outline: "none" }}
+													_hover={{ bg: "transparent", borderColor: "transparent", outline: "none" }}
+													_active={{ bg: "transparent", borderColor: "transparent", outline: "none" }}
+													onClick={() => setShowPassword(!showPassword)}
+													tabIndex="-1"
+												/>
+											</InputRightElement>
+										</InputGroup>
+										<FormHelperText fontSize="xs">
+											Minimum eight characters, at least one uppercase letter, one lowercase letter,
+											one number and one special character
+										</FormHelperText>
+										<FormErrorMessage>
+											{errors.password && errors.password.message}
+										</FormErrorMessage>
+									</FormControl>
+								</Box>
+							</>
+                        )
+	                }
                 </Box>
                 <Box w="full">
                     <FormControl w="full" h="full" display="grid" gridTemplateRows="auto 1fr">
@@ -451,7 +585,6 @@ export const DoctorForm = ({user}) => {
                                     left={0}
                                     zIndex={1}
                                     cursor="pointer"
-                                    isRequired={!user.image}
                                     ref={imageRef}
                                     onChange={handleFileInputChange}
                                 />

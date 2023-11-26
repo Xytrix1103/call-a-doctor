@@ -2,8 +2,9 @@ import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} fro
 import {auth, db, secondaryAuth} from "./firebase.js";
 import {ref, set} from "firebase/database";
 
-export const register = async (data) => {
+export const register = async (data, asAdmin=false) => {
 	const {email, password, name, gender="", date_of_birth="", phone = "", address = "", role="Patient"} = data;
+	const authObj = asAdmin ? secondaryAuth : auth;
 	
 	return await createUserWithEmailAndPassword(auth, email, password).then(async (newUser) => {
 		if (newUser) {
@@ -35,10 +36,11 @@ export const register = async (data) => {
 	});
 }
 
-export const register_clinic_admin = async (data) => {
+export const register_clinic_admin = async (data, asAdmin=false) => {
 	const {email, password, name, role="ClinicAdmin", clinic=null} = data;
+	const authObj = asAdmin ? secondaryAuth : auth;
 	
-	return await createUserWithEmailAndPassword(auth, email, password).then(async (newUser) => {
+	return await createUserWithEmailAndPassword(authObj, email, password).then(async (newUser) => {
 		if (newUser) {
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
@@ -147,8 +149,10 @@ export const resetPassword = async (email) => {
 export const updateEmail = async (email) => {
 	auth.currentUser.updateEmail(email).then(() => {
 		console.log("email updated");
+		return true;
 	}).catch((error) => {
 		console.log(error);
+		return false;
 	});
 }
 
