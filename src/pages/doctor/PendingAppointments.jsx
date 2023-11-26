@@ -34,6 +34,7 @@ import { PendingAppointmentsCard } from './PendingAppointmentsCard.jsx';
 function PendingAppointments() {
 	const {user} = useAuth();
 	const [appointments, setAppointments] = useState([]);
+	const [clinic, setClinic] = useState({});
 	const form = useForm();
 
 	useEffect(() => {
@@ -50,11 +51,11 @@ function PendingAppointments() {
 	
 				const [startTime, endTime] = appointment_time.split('-');
 				const formattedAppointmentTime = `${startTime.trim()} to ${endTime.trim()}`;
-	
-				// Convert dob to age
-				console.log(reqSnapshot.val().patient.dob);
-				const age = Math.floor((new Date() - new Date(reqSnapshot.val().patient.dob).getTime()) / 3.15576e+10);
-				console.log(age);
+
+				const birthDate = new Date(reqSnapshot.val().patient.dob);
+				const currentDate = new Date();
+				const age = currentDate.getFullYear() - birthDate.getFullYear() - (currentDate.getMonth() < birthDate.getMonth() || (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate()) ? 1 : 0);
+
 				requests.push({
 					id: reqSnapshot.key,
 					date: formattedDate,
@@ -65,6 +66,12 @@ function PendingAppointments() {
 			});
 			setAppointments(requests);
 		});
+
+		onValue(query(ref(db, `clinics/${user.clinic}`)), (snapshot) => {
+            const data = snapshot.val();
+            console.log(data);
+            setClinic(data);
+        });
 	}, []);
 	
 	return (
@@ -78,7 +85,7 @@ function PendingAppointments() {
 					<Text fontSize='xl' fontWeight='bold' letterSpacing='wide'>Pending Patient Appointments</Text>
 				</Box>
 				{appointments.map((appointment) => (
-					<PendingAppointmentsCard appointment={appointment} form={form}/>
+					<PendingAppointmentsCard clinic={clinic} appointment={appointment} form={form}/>
 				))}
 			</Box>
 		</Center>
