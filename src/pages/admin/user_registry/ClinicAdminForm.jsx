@@ -61,7 +61,7 @@ export const ClinicAdminForm = ({user}) => {
         } else {
             setValue('name', null);
             setValue('email', null);
-            setValue('clinic', clinics[0].id);
+            setValue('clinic', null);
         }
     }, [user]);
     
