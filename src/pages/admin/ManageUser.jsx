@@ -3,23 +3,25 @@ import {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {AiOutlineArrowLeft} from "react-icons/ai";
 import {db} from "../../../api/firebase.js";
-import {onValue, query, ref} from "firebase/database";
-import {AdminForm} from '../admin/user_registry/AdminForm';
-import {DoctorForm} from '../admin/user_registry/DoctorForm';
-import {PatientForm} from '../admin/user_registry/PatientForm';
-import {ClinicAdminForm} from '../admin/user_registry/ClinicAdminForm';
+import {equalTo, limitToFirst, onValue, orderByChild, query, ref} from "firebase/database";
+import {AdminForm} from './user_registry/AdminForm.jsx';
+import {DoctorForm} from './user_registry/DoctorForm.jsx';
+import {PatientForm} from './user_registry/PatientForm.jsx';
+import {ClinicAdminForm} from './user_registry/ClinicAdminForm.jsx';
 
 function ManageUser() {
     const roles = ['Admin', 'Doctor', 'Patient', 'Clinic Admin'];
     const [selectedRole, setSelectedRole] = useState(roles[0]);
-    const [user, setUser] = useState({});
+    const [user, setUser] = useState(null);
     const navigate = useNavigate();
     const { id } = useParams();
+    console.log(id);
 
     useEffect(() => {
         if (id) {
-            onValue(query(ref(db, 'users')), (snapshot) => {
+            onValue(query(ref(db, 'users'), orderByChild('uid'), equalTo(id), limitToFirst(1)), (snapshot) => {
                 snapshot.forEach((childSnapshot) => {
+                    console.log(childSnapshot.val());
                     if (childSnapshot.key === id) {
                         setUser(childSnapshot.val());
                         if (childSnapshot.val().role === 'ClinicAdmin') {
@@ -31,6 +33,9 @@ function ManageUser() {
                     }
                 });
             });
+        } else {
+            setUser(null);
+            setSelectedRole(roles[0]);
         }
     }, []);
     
@@ -109,11 +114,11 @@ function ManageUser() {
                                 color="gray.900"
                                 size="md"
                                 focusBorderColor="blue.500"
-                                value={id ? selectedRole : user.role}
+                                defaultValue={user?.role}
                                 isDisabled={!!id}
                             >
                                 {roles.map((role) => (
-                                    <option key={role} value={role}>
+                                    <option key={role} value={role} selected={role === (user?.role === "ClinicAdmin" ? "Clinic Admin" : user?.role)}>
                                         {role}
                                     </option>
                                 ))}

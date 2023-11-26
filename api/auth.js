@@ -148,8 +148,10 @@ export const resetPassword = async (email) => {
 export const updateEmail = async (email) => {
 	auth.currentUser.updateEmail(email).then(() => {
 		console.log("email updated");
+		return true;
 	}).catch((error) => {
 		console.log(error);
+		return false;
 	});
 }
 
