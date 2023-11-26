@@ -24,7 +24,7 @@ import {
 import {BiSolidPhone, BiLinkExternal} from "react-icons/bi";
 import {BsCalendarDayFill} from "react-icons/bs";
 import {FaHospital} from "react-icons/fa";
-import {FaCheck, FaFileSignature, FaX, FaUser, FaMapLocationDot, FaPlus, FaTrash } from "react-icons/fa6";
+import {FaCheck, FaFileSignature, FaX, FaUser, FaMapLocationDot, FaPlus, FaTrash, FaCar } from "react-icons/fa6";
 import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
 import { GiSandsOfTime, GiMedicines } from "react-icons/gi";
 import {GoDotFill} from "react-icons/go";
@@ -204,15 +204,20 @@ const PrescriptionModal = ({ isOpen, onClose, handleSubmitPrescription, register
     };
   
     return (
-        <Modal size="5xl" isCentered isOpen={isOpen} onClose={onClose}>
+        <Modal size="6xl" isCentered isOpen={isOpen} onClose={onClose}>
             <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(3px) hue-rotate(90deg)" />
             <ModalContent>
-                <ModalHeader>Add Prescription</ModalHeader>
+                <ModalHeader>
+                    Add Prescription
+                </ModalHeader>
                 <ModalCloseButton _focus={{ boxShadow: 'none', outline: 'none' }} />
                 <Divider mb={2} borderWidth="1px" borderColor="blackAlpha.300" />
                 <ModalBody>
-                    <Text fontSize='sm' fontWeight='light' letterSpacing='wide' mb={3}>Adding a prescription will mark the appointment as completed.</Text>
-                    {prescriptions.map((prescription) => (
+                    <Flex w='full' alignItems='center' justifyContent='space-between' mb={4}>
+                        <Text fontSize='sm' fontWeight='light' letterSpacing='wide' mb={3}>Adding a prescription will mark the appointment as completed.</Text>
+                        <IconButton aria-label="Add row" icon={<FaPlus />} colorScheme="green" onClick={addRow} />
+                    </Flex>
+                    {prescriptions.map((prescription, index) => (
                         <Flex key={prescription.id} mb={4} alignItems="center">
                             <FormControl isInvalid={errors.prescription} flex="1">
                                 <Input
@@ -223,7 +228,10 @@ const PrescriptionModal = ({ isOpen, onClose, handleSubmitPrescription, register
                                     })}
                                 />
                             </FormControl>
-                            <FormControl isInvalid={errors.prescription} flex="0.5" ml={2}>
+                            <Box mx={2}>
+                                <FaX size={10} color='grey'/>
+                            </Box>
+                            <FormControl isInvalid={errors.prescription} flex="0.5">
                                 <Input
                                     placeholder="Qty"
                                     name={`qty_${prescription.id}`}
@@ -232,16 +240,22 @@ const PrescriptionModal = ({ isOpen, onClose, handleSubmitPrescription, register
                                     })}
                                 />
                             </FormControl>
-                            <FormControl isInvalid={errors.prescription} flex="1" ml={2}>
+                            <Box mx={2}>
+                                <FaX size={10} color='grey'/>
+                            </Box>
+                            <FormControl isInvalid={errors.prescription} flex="0.5">
                                 <Input
-                                    placeholder="Unit of Measure"
+                                    placeholder="Unit"
                                     name={`unit_${prescription.id}`}
                                     {...register(`unit_${prescription.id}`, {
                                         required: 'This field is required.',
                                     })}
                                 />
                             </FormControl>
-                            <FormControl isInvalid={errors.prescription} flex="1" ml={2}>
+                            <Box mx={2}>
+                                <FaX size={10} color='grey'/>
+                            </Box>
+                            <FormControl isInvalid={errors.prescription} flex="1">
                                 <Input
                                     placeholder="Dosage"
                                     name={`dosage_${prescription.id}`}
@@ -250,7 +264,10 @@ const PrescriptionModal = ({ isOpen, onClose, handleSubmitPrescription, register
                                     })}
                                 />
                             </FormControl>
-                            <FormControl isInvalid={errors.prescription} flex="2" ml={2}>
+                            <Box mx={2}>
+                                <FaX size={10} color='grey'/>
+                            </Box>
+                            <FormControl isInvalid={errors.prescription} flex="2">
                                 <Input
                                     placeholder="Instructions"
                                     name={`instructions_${prescription.id}`}
@@ -264,13 +281,11 @@ const PrescriptionModal = ({ isOpen, onClose, handleSubmitPrescription, register
                                 icon={<FaTrash />}
                                 colorScheme="red"
                                 onClick={() => deleteRow(prescription.id)}
-                                ml={2}
+                                ml={3}
+                                isDisabled={index === 0}
                             />
                         </Flex>
                     ))}
-                    <Flex justify="flex-end" mt={2}>
-                        <IconButton aria-label="Add row" icon={<FaPlus />} colorScheme="green" onClick={addRow} />
-                    </Flex>
                 </ModalBody>
                 <ModalFooter mt={4}>
                     <Box display="flex">
@@ -287,9 +302,37 @@ const PrescriptionModal = ({ isOpen, onClose, handleSubmitPrescription, register
     );
 };
 
+const ArrivalStatusModal = ({ isOpen, onClose, handleSubmitArrivalStatus }) => {
+    return (
+        <Modal size="lg" isCentered isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(3px) hue-rotate(90deg)" />
+            <ModalContent>
+                <ModalHeader>Change Arrival Status</ModalHeader>
+                <ModalCloseButton _focus={{ boxShadow: 'none', outline: 'none' }} />
+                <Divider mb={2} borderWidth="1px" borderColor="blackAlpha.300" />
+                <ModalBody>
+                    <Text fontSize='md' fontWeight='medium' letterSpacing='wide' mb={3}>Confirm change of arrival status?</Text>
+                    <Text fontSize='sm' fontWeight='light' letterSpacing='wide' mt={6}>This action cannot be undone.</Text>
+                </ModalBody>
+                <ModalFooter >
+                    <Box display="flex">
+                    <Button mr={3} backgroundColor="green" color="white" type="submit" onClick={handleSubmitArrivalStatus}>
+                        Submit
+                    </Button>
+                    <Button backgroundColor="blue.400" color="white" onClick={onClose}>
+                        Close
+                    </Button>
+                    </Box>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
+    );
+};
+
 export const PendingAppointmentsCard = ({ clinic, appointment, form }) => {
     const [distance, setDistance] = useState(null);
     const [duration, setDuration] = useState(null);
+    const { isOpen: isOpenArrivalStatus, onOpen: onOpenArrivalStatus, onClose: onCloseArrivalStatus } = useDisclosure();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const {
         handleSubmit,
@@ -308,6 +351,9 @@ export const PendingAppointmentsCard = ({ clinic, appointment, form }) => {
         console.log(data);
     }
 
+    const handleSubmitArrivalStatus = (data) => {
+        console.log(data);
+    }
  
     return (
         <Flex
@@ -402,35 +448,64 @@ export const PendingAppointmentsCard = ({ clinic, appointment, form }) => {
                             </Box>                                                        
                         </Flex>
 
-                        <Box mb={2} w='full'>
-                            <Flex alignItems='center' mx={3}>
-                                <BsCalendarDayFill size={20} />
-                                <Text fontSize='sm' letterSpacing='wide' ml={4}>
-                                    <Text fontWeight='medium' color='grey'>Appointment Date & Time</Text> 
-                                    <Text>{appointment.date}</Text>
-                                    <Text>{appointment.appointment_time}</Text>
-                                </Text>                                    
-                            </Flex>
-                        </Box>    
+                        <Flex alignItems='center' mb={2}>
+                            <Box mb={2} w='33.3%'>
+                                <Flex alignItems='center' mx={3}>
+                                    <BsCalendarDayFill size={20} />
+                                    <Text fontSize='sm' letterSpacing='wide' ml={4}>
+                                        <Text fontWeight='medium' color='grey'>Appointment Time</Text> 
+                                        <Text>{appointment.appointment_time}</Text>
+                                    </Text>                                    
+                                </Flex>
+                            </Box>  
+                            <Box mb={2} w='33.3%' >
+                                <Flex alignItems='center' justifyContent='center' mx={3}>
+                                    <FaCar size={20} />
+                                    <Text fontSize='sm' letterSpacing='wide' ml={4} >
+                                    <Text fontWeight='medium' color='grey'>Arrival Status</Text> {appointment.has_arrived ? "Arrived" : "On The Way"}
+                                    </Text>                                    
+                                </Flex>
+                            </Box>                                            
+                        </Flex>  
 
                         <Flex position='absolute' bottom={4} right={4}>
-                            <IconButton
-                                aria-label="Add Prescription"
-                                icon={<GiMedicines size={30} />}
-                                color='white'
-                                variant="solid"
-                                bgColor='blue.500'
-                                size="lg"
-                                _hover={{ transform: 'scale(1.1)' }}
-                                _focus={{ boxShadow: 'none', outline: 'none' }}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    onOpen();
-                                }}
-                            />                          
+                            {
+                                appointment.has_arrived ?
+                                    <IconButton
+                                        aria-label="Add Prescription"
+                                        icon={<GiMedicines size={30} />}
+                                        color='white'
+                                        variant="solid"
+                                        bgColor='blue.500'
+                                        size="lg"
+                                        _hover={{ transform: 'scale(1.1)' }}
+                                        _focus={{ boxShadow: 'none', outline: 'none' }}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            onOpen();
+                                        }}
+                                    />              
+                                :
+                                    <IconButton
+                                        aria-label="Change Arrival Status"
+                                        icon={<FaCar size={30} />}
+                                        color='white'
+                                        variant="solid"
+                                        bgColor='blue.500'
+                                        size="lg"
+                                        _hover={{ transform: 'scale(1.1)' }}
+                                        _focus={{ boxShadow: 'none', outline: 'none' }}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            onOpenArrivalStatus();
+                                        }}
+                                    />                  
+                            }
+                   
                         </Flex>                     
 
                         <PrescriptionModal isOpen={isOpen} onClose={onClose} handleSubmitPrescription={handleSubmitPrescription} register={register} errors={errors} />
+                        <ArrivalStatusModal isOpen={isOpenArrivalStatus} onClose={onCloseArrivalStatus} handleSubmitArrivalStatus={handleSubmitArrivalStatus} />
                     </Flex>
                 </Flex>
             </Box>
