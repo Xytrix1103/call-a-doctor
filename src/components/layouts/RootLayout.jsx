@@ -6,6 +6,7 @@ import {Box, Grid} from "@chakra-ui/react";
 import AdminNavbar from "../navbars/AdminNavbar.jsx";
 import PatientNavbar from "../navbars/PatientNavbar.jsx";
 import ClinicNavbar from "../navbars/ClinicNavbar.jsx";
+import DoctorNavbar from "../navbars/DoctorNavbar.jsx";
 
 const RootLayout = () => {
 	const {user, loading} = useAuth();
@@ -44,6 +45,8 @@ const RootLayout = () => {
 												<ClinicNavbar/> :
 												user.role === "Admin" ?
 													<AdminNavbar/> :
+													user.role === "Doctor" ?
+														<DoctorNavbar/> :
 													<></>
 									}
 									<Box w="100%" h="100%" bg="#f4f4f4" overflow="auto" p={5}>
