@@ -40,8 +40,8 @@ const ClinicNavbar = () => {
 				)
 				}
 				{user.clinic && (
-					<Link as={NavLink} color="teal.500" to="/clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
-						Clinic List
+					<Link as={NavLink} color="teal.500" to="/patient-requests" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
+						Requests
 					</Link>
 				)
 				}

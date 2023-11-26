@@ -91,6 +91,9 @@ const PatientActivityBarChart = memo(() => {
     return <BarChart data={chartData} options={chartOptions} />;
 });
 
+const PatientRequests = ({ request }) => {
+    
+};
 
 function ClinicDashboard() {
     const {user} = useAuth();
@@ -186,7 +189,7 @@ function ClinicDashboard() {
                 const service = new window.google.maps.places.PlacesService(document.createElement('div'));
                 service.getDetails(
                 {
-                    placeId: clinic.placeId,
+                    placeId: clinic.place_id,
                     fields: ['name', 'formatted_address', 'rating'],
                 },
                 (result, status) => {
@@ -541,8 +544,7 @@ function ClinicDashboard() {
                                         <Box w='16rem' h='8rem' border='2px' rounded='lg' borderColor='pink.200' p={2} justifyContent='center' alignItems='center'>
                                             <Box w='15rem' h='6rem'>
                                                 <Flex alignItems='center' w='full'>
-                                                    <Avatar src="\src\assets\images\Default_User_Profile.png" size='sm'/>
-                                                    <Box ml={2} w='full'>
+                                                    <Box w='full'>
                                                         <Text fontSize="sm" fontWeight="semibold" maxW='80%' isTruncated>
                                                             John Doe
                                                         </Text>            
