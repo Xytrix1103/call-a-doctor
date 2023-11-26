@@ -20,7 +20,7 @@ import {
     Divider,
 } from '@chakra-ui/react';
 import {useRef, useState, useEffect, memo} from "react";
-import {onValue, query, ref, orderByChild, equalTo} from "firebase/database";
+import {onValue, get, query, ref, orderByChild, equalTo} from "firebase/database";
 import {db} from "../../../api/firebase.js";
 import {useAuth} from "../../components/AuthCtx.jsx";
 import {NavLink} from "react-router-dom";
@@ -103,7 +103,7 @@ function ClinicDashboard() {
     const [doctors, setDoctors] = useState([]);
     const [doctorsCount, setDoctorsCount] = useState(0);
     const [ratings, setRatings] = useState([]);
-
+    const [patientRequests, setPatientRequests] = useState([]);
 	const [appointments, setAppointments] = useState([]);
 
     const libs = ['places'];
@@ -231,28 +231,41 @@ function ClinicDashboard() {
             }
         );
 
-        onValue(
-            query(
-                ref(db, 'requests'),
-                orderByChild('clinic'),
-                equalTo(clinicId)
-            ),
-            (snapshot) => {
-                const doctors = [];
-                snapshot.forEach((childSnapshot) => {
-                    const user = childSnapshot.val();
-                    if (user.clinic === clinicId) {
-                        console.log(user);
-                        doctors.push({
-                            id: childSnapshot.key,
-                            ...user,
-                        });
-                    }
-                });
-                setDoctors(doctors);
-                setDoctorsCount(doctors.length);
-            }
-        );
+        // // Fetch patient requests from Realtime Database
+        // onValue(
+        //     query(
+        //         ref(db, 'requests'),
+        //         orderByChild('clinic'),
+        //         equalTo(clinicId)
+        //     ),
+        //     (snapshot) => {
+        //         const requests = [];
+        //         snapshot.forEach((snapshot) => {
+        //             const data = snapshot.val();
+        //             for (let id in data) {
+        //                 if (data[id].patient == null) {
+        //                     get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
+        //                         data[id] = {
+        //                             id: id,
+        //                             ...data[id],
+        //                             ...userSnapshot.val(),
+        //                         }
+        //                         requests.push(data[id]);
+        //                     });
+        //                 } else {
+        //                     data[id] = {
+        //                         id: id,
+        //                         ...data[id],
+        //                         ...data[id].patient,
+        //                     }
+        //                     requests.push(data[id]);
+        //                 }
+        //             }
+        //         });
+        //         console.log(requests);
+        //         setPatientRequests(requests);                
+        //     }
+        // );
     
         // Set dummy appointments
         setAppointments(generateDummyAppointments(20));
