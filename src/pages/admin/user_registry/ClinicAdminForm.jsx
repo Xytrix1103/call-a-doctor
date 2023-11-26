@@ -89,9 +89,14 @@ export const ClinicAdminForm = ({user}) => {
         console.log("Submitting admin form", data);
         
         if (!user) {
-            await trigger();
+            const valid = await trigger();
             const password = data["password"];
             const confirm_password = data["confirm_password"];
+            
+            if(!valid) {
+                alert("Invalid entry!");
+                return;
+            }
             
             if (password !== confirm_password) {
                 alert("Passwords do not match!");
@@ -129,8 +134,13 @@ export const ClinicAdminForm = ({user}) => {
                 });
             });
         } else {
-            await trigger(['name']);
+            const valid = await trigger(['name']);
             let update = {};
+            
+            if(!valid) {
+                alert("Invalid entry!");
+                return;
+            }
             
             //loop thru form values
             for (const [key, value] of Object.entries(data)) {
@@ -195,8 +205,14 @@ export const ClinicAdminForm = ({user}) => {
     };
 
     const handleEmailSubmit = async () => {
-        await trigger(['new_email']);
+        const valid = await trigger(['new_email']);
         console.log("Submitting email modal")
+        
+        if(!valid) {
+            alert("Invalid email!");
+            onCloseEmailModal();
+            return;
+        }
         
         update_email(user, getValues('new_email')).then((res) => {
             console.log(res);
@@ -228,19 +244,27 @@ export const ClinicAdminForm = ({user}) => {
                 isClosable: true,
             });
         });
+        onCloseEmailModal();
     };
 
     const handlePasswordSubmit = async () => {
-        await trigger(['new_password', 'new_confirm_password']);
+        const valid = await trigger(['new_password', 'new_confirm_password']);
         console.log("Submitting password modal");
+        
+        if(!valid) {
+            alert("Invalid password!");
+            return;
+        }
         
         if (getValues('new_password') !== getValues('new_confirm_password')) {
             alert("Passwords do not match!");
+            onClosePasswordModal();
             return;
         }
         
         update_password(user, getValues('new_password')).then((res) => {
             console.log(res);
+            onClosePasswordModal();
             if (res.error) {
                 toast({
                     title: "Error!",
@@ -269,6 +293,7 @@ export const ClinicAdminForm = ({user}) => {
                 isClosable: true,
             });
         });
+        onClosePasswordModal();
     };
 
     return (
