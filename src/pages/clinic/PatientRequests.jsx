@@ -204,7 +204,7 @@ function PatientRequests() {
 			const requests = [];
 			for (let id in data) {
 				if (data[id].patient == null) {
-					get(ref(db, `users/${id}`)).then((userSnapshot) => {
+					get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
 						data[id] = {
 							id: id,
 							...data[id],
