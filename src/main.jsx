@@ -23,6 +23,7 @@ import ClinicRegistryApproval from "./pages/admin/ClinicRegistryApproval.jsx";
 import ClinicRegistryDetails from './pages/admin/ClinicRegistryDetails';
 import ApprovedClinicDetails from './pages/admin/ApprovedClinicDetails';
 import ApprovedClinicList from './pages/admin/ApprovedClinicList';
+import PendingAppointments from './pages/doctor/PendingAppointments';
 import UserList from './pages/admin/UserList';
 import AdminRegistry from './pages/admin/AdminRegistry';
 
@@ -47,7 +48,7 @@ const router = createBrowserRouter(
 				<Route path="doctors/add" element={<AddDoctorToList/>}/>
 			</Route>
 			<Route element={<DoctorLayout/>}>
-				
+				<Route path="appointments" element={<PendingAppointments/>}/>
 			</Route>
 			<Route path='/admin' element={<AdminLayout/>}>
 				<Route path="clinics" element={<ApprovedClinicList/>}/>
