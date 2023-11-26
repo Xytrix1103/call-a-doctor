@@ -231,41 +231,41 @@ function ClinicDashboard() {
             }
         );
 
-        // // Fetch patient requests from Realtime Database
-        // onValue(
-        //     query(
-        //         ref(db, 'requests'),
-        //         orderByChild('clinic'),
-        //         equalTo(clinicId)
-        //     ),
-        //     (snapshot) => {
-        //         const requests = [];
-        //         snapshot.forEach((snapshot) => {
-        //             const data = snapshot.val();
-        //             for (let id in data) {
-        //                 if (data[id].patient == null) {
-        //                     get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
-        //                         data[id] = {
-        //                             id: id,
-        //                             ...data[id],
-        //                             ...userSnapshot.val(),
-        //                         }
-        //                         requests.push(data[id]);
-        //                     });
-        //                 } else {
-        //                     data[id] = {
-        //                         id: id,
-        //                         ...data[id],
-        //                         ...data[id].patient,
-        //                     }
-        //                     requests.push(data[id]);
-        //                 }
-        //             }
-        //         });
-        //         console.log(requests);
-        //         setPatientRequests(requests);                
-        //     }
-        // );
+        // Fetch patient requests from Realtime Database
+        onValue(
+            query(
+                ref(db, 'requests'),
+                orderByChild('clinic'),
+                equalTo(clinicId)
+            ),
+            (snapshot) => {
+                const requests = [];
+                snapshot.forEach((snapshot) => {
+                    const data = snapshot.val();
+                    for (let id in data) {
+                        if (data[id].patient == null) {
+                            get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
+                                data[id] = {
+                                    id: id,
+                                    ...data[id],
+                                    ...userSnapshot.val(),
+                                }
+                                requests.push(data[id]);
+                            });
+                        } else {
+                            data[id] = {
+                                id: id,
+                                ...data[id],
+                                ...data[id].patient,
+                            }
+                            requests.push(data[id]);
+                        }
+                    }
+                });
+                console.log(requests);
+                setPatientRequests(requests);                
+            }
+        );
     
         // Set dummy appointments
         setAppointments(generateDummyAppointments(20));
