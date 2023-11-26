@@ -1,13 +1,5 @@
 import {
     Button,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-    useDisclosure,
     Flex,
     FormControl,
     FormErrorMessage,
@@ -17,7 +9,15 @@ import {
     Input,
     InputGroup,
     InputRightElement,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
     Text,
+    useDisclosure,
     useToast
 } from '@chakra-ui/react';
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
@@ -27,7 +27,7 @@ import {register_admin} from "../../../../api/auth.js";
 import {useNavigate} from "react-router-dom";
 import {update_admin} from "../../../../api/admin.js";
 
-export const AdminForm = ({user}) => {
+export const AdminForm = ({user, self=false}) => {
     console.log("AdminForm");
     const {
         setValue,
@@ -557,7 +557,9 @@ export const AdminForm = ({user}) => {
                     w="full"
                     type="submit"
                 >
-                    {user ? "Edit Admin" : "Add Admin"}
+                    {
+                        self ? "Save Changes" : (user ? "Edit Admin" : "Add Admin")
+                    }
                 </Button>                    
             </Flex>
         </form>

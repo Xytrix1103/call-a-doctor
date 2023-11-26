@@ -24,6 +24,7 @@ import ApprovedClinicDetails from './pages/admin/ApprovedClinicDetails';
 import ApprovedClinicList from './pages/admin/ApprovedClinicList';
 import UserList from './pages/admin/UserList';
 import ManageUser from './pages/admin/ManageUser';
+import Profile from "./pages/auth/Profile.jsx";
 
 
 const router = createBrowserRouter(
@@ -34,6 +35,7 @@ const router = createBrowserRouter(
 			<Route path="register" element={<PatientRegistry/>}/>
 			<Route path="forgot" element={<></>}/>
 			<Route path="register-clinic" element={<ClinicRegistry/>}/>
+			<Route path="profile" element={<Profile/>}/>
 			<Route element={<PatientLayout/>}>
 				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="clinics/:id" element={<ClinicDetails/>}/>

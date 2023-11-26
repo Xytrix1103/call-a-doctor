@@ -1,14 +1,6 @@
 import {
 	Box,
 	Button,
-	Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-    useDisclosure,
 	Flex,
 	FormControl,
 	FormErrorMessage,
@@ -22,9 +14,17 @@ import {
 	InputLeftElement,
 	InputRightElement,
 	Link,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	ModalOverlay,
 	Select,
 	Text,
 	Textarea,
+	useDisclosure,
 	useToast,
 } from '@chakra-ui/react';
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
@@ -214,7 +214,7 @@ const Map = ({user, place, setPlace}) => {
 
 const MemoizedMap = memo(Map);
 
-export const PatientForm = ({user}) => {
+export const PatientForm = ({user, self=false}) => {
     console.log("PatientForm");
     const {
         setValue,
@@ -904,7 +904,9 @@ export const PatientForm = ({user}) => {
 							mb={4}
 							w="full"
 						>
-							{user ? "Edit Patient" : "Add Patient"}
+							{
+								self ? "Save Changes" : (user ? "Edit Patient" : "Add Patient")
+							}
 						</Button>
 					</Box>
                 </Box>

@@ -30,7 +30,7 @@ import {register_clinic_admin} from "../../../../api/auth.js";
 import {useNavigate} from "react-router-dom";
 import {update_admin, update_email, update_password} from "../../../../api/admin.js";
 
-export const ClinicAdminForm = ({user}) => {
+export const ClinicAdminForm = ({user, self=false}) => {
     const {
         setValue,
 		handleSubmit,
@@ -673,7 +673,9 @@ export const ClinicAdminForm = ({user}) => {
                     mb={4}
                     w="full"
                 >
-                    {user ? "Edit Clinic Admin" : "Add Clinic Admin"}
+                    {
+                        self ? "Save Changes" : (user ? "Edit Clinic Admin" : "Add Clinic Admin")
+                    }
                 </Button>     
             </Flex>
         </form>

@@ -1,14 +1,6 @@
 import {
 	Box,
 	Button,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-    useDisclosure,
 	Flex,
 	FormControl,
 	FormErrorMessage,
@@ -19,9 +11,17 @@ import {
 	Input,
 	InputGroup,
 	InputRightElement,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	ModalOverlay,
 	Select,
 	Text,
 	Textarea,
+	useDisclosure,
 	useToast,
 } from '@chakra-ui/react';
 import {useEffect, useRef, useState} from "react";
@@ -34,7 +34,7 @@ import {register_doctor} from "../../../../api/auth.js";
 import {update_doctor} from "../../../../api/admin.js";
 import {useNavigate} from "react-router-dom";
 
-export const DoctorForm = ({user}) => {
+export const DoctorForm = ({user, self=false}) => {
     console.log("DoctorForm");
     const {
         setValue,
@@ -864,7 +864,9 @@ export const DoctorForm = ({user}) => {
                                 mb={4}
                                 w="full"
                             >
-                                {user ? "Edit Doctor" : "Add Doctor"}
+	                            {
+		                            self ? "Save Changes" : (user ? "Edit Doctor" : "Add Doctor")
+	                            }
                             </Button>                                
                         </Box>
                     </FormControl>
