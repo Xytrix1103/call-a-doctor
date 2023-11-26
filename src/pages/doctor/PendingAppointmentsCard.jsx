@@ -25,7 +25,7 @@ import {GiMedicines, GiSandsOfTime} from "react-icons/gi";
 import {GoDotFill} from "react-icons/go";
 import {useState} from 'react';
 import {DirectionsRenderer, GoogleMap, InfoWindow, Marker, useLoadScript} from '@react-google-maps/api';
-import {prescribe} from "../../../api/doctor.js";
+import {mark_arrived, prescribe} from "../../../api/doctor.js";
 
 function Map({place_id, onDistanceChange, clinic_place_id}) {
 	const mapStyle = {
@@ -399,6 +399,40 @@ export const PendingAppointmentsCard = ({clinic, appointment, form}) => {
 	
 	const handleSubmitArrivalStatus = (data) => {
 		console.log(data);
+		
+		mark_arrived(appointment.id).then((res) => {
+			if (res.success) {
+				toast({
+					title: "Success",
+					description: "Arrival status changed.",
+					position: "top",
+					status: "success",
+					duration: 3000,
+					isClosable: true,
+				});
+				onCloseArrivalStatus();
+			} else {
+				toast({
+					title: "Error",
+					description: "Unable to change arrival status.",
+					position: "top",
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+				});
+			}
+		}).catch((err) => {
+			toast({
+				title: "Error",
+				description: "Unable to change arrival status.",
+				position: "top",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+			});
+			
+			console.log(err);
+		});
 	}
 	
 	
@@ -555,7 +589,7 @@ export const PendingAppointmentsCard = ({clinic, appointment, form}) => {
 						</Flex>
 						
 						<PrescriptionModal isOpen={isOpen} onClose={onClose} handleSubmitPrescription={handleSubmitPrescription}/>
-						<ArrivalStatusModal isOpen={isOpenArrivalStatus} onClose={onCloseArrivalStatus}/>
+						<ArrivalStatusModal isOpen={isOpenArrivalStatus} onClose={onCloseArrivalStatus} handleSubmitArrivalStatus={handleSubmitArrivalStatus}/>
 					</Flex>
 				</Flex>
 			</Box>
