@@ -3,7 +3,7 @@ import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
 import { FaEarthAsia } from "react-icons/fa6";
 import { GoDotFill } from "react-icons/go";
 
-const TimelineItem = ({ key, ...appointment }) => (
+const TimelineItem = ({ appointment }) => (
     <Flex>
         <Box justifyContent='center' alignItems='center' mb={5}>
             <Box bgColor="blue.500" w="2px" h="50%" my={3} ml={'6px'}/>
@@ -39,7 +39,7 @@ const TimelineItem = ({ key, ...appointment }) => (
                                             Name
                                         </Text>
                                         <Text fontSize="xs" fontWeight="semibold" color="gray.700">
-                                            {appointment.patient.name ? appointment.patient.name : appointment.name}
+                                            {appointment.patient ? appointment.patient.name : appointment.name}
                                         </Text>
                                     </Box>
                                 </Flex>
@@ -48,7 +48,7 @@ const TimelineItem = ({ key, ...appointment }) => (
                                         Contact
                                     </Text>
                                     <Text fontSize="xs" fontWeight="semibold" color="gray.700">
-                                        {appointment.patient.contact ? appointment.patient.contact : appointment.contact}
+                                        {appointment.patient ? appointment.patient.contact : appointment.phone}
                                     </Text>
                                 </Box>
                                 <Box>
@@ -77,8 +77,8 @@ const TimelineItem = ({ key, ...appointment }) => (
 
 const VerticalTimeline = ({ appointments }) => (
     <Flex direction="column" gap={1}>
-        {appointments.map((appointment, index) => (
-            <TimelineItem key={index} {...appointment} />
+        {appointments.map((appointment) => (
+            <TimelineItem appointment={appointment} />
         ))}
     </Flex>
 );

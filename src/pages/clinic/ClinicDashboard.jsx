@@ -39,12 +39,62 @@ import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.
 import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
 
 const GenderDoughnutChart = memo(() => {
+    const {user} = useAuth();
+    const clinicId = user.clinic;
+    const [maleCount, setMaleCount] = useState(0);
+    const [femaleCount, setFemaleCount] = useState(0);
+
+    useEffect(() => {
+        onValue(
+            query(
+                ref(db, 'requests'),
+                orderByChild('clinic'),
+                equalTo(clinicId)
+            ),
+            (snapshot) => {
+                const data = snapshot.val();
+                let malePatientCount = 0;
+                let femalePatientCount = 0;
+                const promises = []; 
+        
+                for (let id in data) {
+                    if (data[id].approved) {
+                        if (data[id].patient == null) {
+                            const promise = get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
+                                const userData = userSnapshot.val();
+                                if (userData.gender === "Male") {
+                                    malePatientCount++;
+                                } else {
+                                    femalePatientCount++;
+                                }
+                            });
+                            promises.push(promise);
+                        } else {
+                            if (data[id].patient.gender === "Male") {
+                                malePatientCount++;
+                            } else {
+                                femalePatientCount++;
+                            }
+                        }
+                    }
+                }
+
+                Promise.all(promises).then(() => {
+                console.log(malePatientCount);
+                console.log(femalePatientCount);
+                setMaleCount(malePatientCount);
+                setFemaleCount(femalePatientCount);
+                });
+            }
+        );
+    }, []);
+
     const chartData = {
-        labels: ['A', 'B', 'C'],
+        labels: ['Male', 'Female'],
         datasets: [
             {
-                data: [300, 50, 100],
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+                data: [maleCount, femaleCount],
+                backgroundColor: ['#14ccff', '#ff63d8'],
             },
         ],
     };
@@ -84,7 +134,6 @@ const AgeDoughnutChart = memo(() => {
                             get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
                                 const dob = new Date(userSnapshot.val().dob);
                                 const age = Math.floor((new Date() - dob) / 3.15576e+10);
-                                console.log(dob, age)
                                 if (age >= 0 && age <= 19) {
                                     ageRange['0-19']++;
                                 } else if (age >= 20 && age <= 64) {
@@ -96,7 +145,6 @@ const AgeDoughnutChart = memo(() => {
                         } else {
                             const dob = new Date(data[id].patient.dob);
                             const age = Math.floor((new Date() - dob) / 3.15576e+10);
-                            console.log(dob, age)
                             if (age >= 0 && age <= 19) {
                                 ageRange['0-19']++;
                             } else if (age >= 20 && age <= 64) {
@@ -168,15 +216,15 @@ const PatientActivityBarChart = memo(() => {
 
 const PatientRequests = ({ request }) => {
     return (
-        <Box w='16rem' h='9rem' border='2px' rounded='lg' borderColor='pink.200' p={2} justifyContent='center' alignItems='center'>
-            <Box w='15rem' h='6rem'>
+        <Box w='20rem' h='9rem' border='2px' rounded='lg' borderColor='pink.200' p={2} justifyContent='center' alignItems='center'>
+            <Box w='19rem' h='6rem'>
                 <Flex alignItems='center' w='full'>
                     <Box w='full'>
                         <Flex alignItems='center' justifyContent='space-between'>
                             <Box w='full'>
                                 <Flex alignItems='center' gap={1}>
                                     {request.patient ? request.patient.gender === "Male" ? <BsGenderMale size={15} color='blue'/> : <BsGenderFemale size={15} color='pink'/> : request.gender === "Male" ? <BsGenderMale size={15} color='blue'/> : <BsGenderFemale size={15} color='pink'/>}
-                                    <Text fontSize="sm" fontWeight="semibold" maxW='95%' isTruncated>
+                                    <Text fontSize="sm" fontWeight="semibold" isTruncated>
                                         {request.patient ? request.patient.name : request.name}
                                     </Text>       
                                     <GoDotFill size='7' color='gray'/>
@@ -192,7 +240,6 @@ const PatientRequests = ({ request }) => {
                                     {request.patient ? request.patient.address : request.address}
                                 </Text>                          
                             </Box>
-
                         </Flex>
                     </Box>                    
                 </Flex>    
@@ -314,7 +361,6 @@ function ClinicDashboard() {
                     id: snapshot.key,
                     ...clinicData,
                 };
-                console.log(clinic);
                 setClinic(clinic);
 
                 // Fetch ratings using Places API
@@ -327,7 +373,6 @@ function ClinicDashboard() {
                 (result, status) => {
                     if (status === window.google.maps.places.PlacesServiceStatus.OK) {
                         setRatings(result.rating || []);
-                        console.log(result.rating || []);
                     } else {
                         console.error(`Error fetching place details: Status - ${status}`);
                     }
@@ -351,7 +396,6 @@ function ClinicDashboard() {
                 snapshot.forEach((childSnapshot) => {
                     const user = childSnapshot.val();
                     if (user.clinic === clinicId) {
-                        console.log(user);
                         doctors.push({
                             id: childSnapshot.key,
                             ...user,
@@ -375,7 +419,6 @@ function ClinicDashboard() {
                 const appointments = [];
                 let patientCount = 0;
                 const data = snapshot.val();
-                console.log(data);
                 for (let id in data) {
                     if (!data[id].approved) {
                         if (data[id].patient == null) {
@@ -413,8 +456,8 @@ function ClinicDashboard() {
                                     };
                                     appointments.push(data[id]);
                                 });
-                                patientCount++;
                             });
+                            patientCount++;
                         } else {
                             fetchDoctorData(data[id].doctor).then((doctorData) => {
                                 data[id] = {
@@ -429,12 +472,10 @@ function ClinicDashboard() {
                             });
                             patientCount++;
                         }
-                    }
+                    }               
                 }
                 setPatientRequests(requests);       
-                setDoctorAppointments(appointments);  
-                console.log(appointments);
-                console.log(patientCount);      
+                setDoctorAppointments(appointments);     
                 setPatientCount(patientCount); 
             }
         );
@@ -750,7 +791,7 @@ function ClinicDashboard() {
                                     >
                                         {
                                             patientRequests.map((request) => (
-                                                <PatientRequests request={request} />
+                                                <PatientRequests key={request.id} request={request} />
                                             ))
                                         }        
                                     </Flex>
