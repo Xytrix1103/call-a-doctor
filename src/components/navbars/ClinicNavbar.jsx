@@ -45,6 +45,12 @@ const ClinicNavbar = () => {
 					</Link>
 				)
 				}
+				{user.clinic && (
+					<Link as={NavLink} color="teal.500" to="/appointments" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
+						Appointment History
+					</Link>
+				)
+				}
 				<Menu marginRight={6}>
 					<MenuButton as={Link} color="teal.500" display="flex" alignItems="center">
 						<Flex alignItems="center">

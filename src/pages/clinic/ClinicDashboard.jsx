@@ -38,56 +38,69 @@ import {AppointmentTimelineChart} from "../../components/charts/AppointmentTimel
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
 import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
 
-const GenderDoughnutChart = memo(() => {
-    const {user} = useAuth();
-    const clinicId = user.clinic;
+const TimeSlotDoughnutChart = memo(({ appointments }) => {
+    const [timeSlotDistribution, setTimeSlotDistribution] = useState({
+        '8AM-10AM': 0,
+        '10AM-12PM': 0,
+        '12PM-2PM': 0,
+        '2PM-4PM': 0,
+        '4PM-6PM': 0,
+        '6PM-8PM': 0,
+    });
+
+    useEffect(() => {
+        // Process appointments to update time slot distribution
+        appointments.forEach((appointment) => {
+            if (appointment.approved) {
+                const appointmentTime = appointment.appointment_time;
+                setTimeSlotDistribution((prevDistribution) => ({
+                    ...prevDistribution,
+                    [appointmentTime]: prevDistribution[appointmentTime] + 1,
+                }));
+            }
+        });
+    }, [appointments]);
+
+    const chartData = {
+        labels: ['8AM-10AM', '10AM-12PM', '12PM-2PM', '2PM-4PM', '4PM-6PM', '6PM-8PM'],
+        datasets: [
+            {
+                data: [
+                    timeSlotDistribution['8AM-10AM'],
+                    timeSlotDistribution['10AM-12PM'],
+                    timeSlotDistribution['12PM-2PM'],
+                    timeSlotDistribution['2PM-4PM'],
+                    timeSlotDistribution['4PM-6PM'],
+                    timeSlotDistribution['6PM-8PM'],
+                ],
+                backgroundColor: ['#3C91E6', '#9FD356', '#342E37', '#8C2155', '#5C1A1B', '#FA824C'],
+            },
+        ],
+    };
+
+    const chartOptions = {
+        cutout: '60%',
+    };
+
+    return <DoughnutChart data={chartData} options={chartOptions} />;
+});
+
+const GenderDoughnutChart = memo(({ appointments }) => {
     const [maleCount, setMaleCount] = useState(0);
     const [femaleCount, setFemaleCount] = useState(0);
 
     useEffect(() => {
-        onValue(
-            query(
-                ref(db, 'requests'),
-                orderByChild('clinic'),
-                equalTo(clinicId)
-            ),
-            (snapshot) => {
-                const data = snapshot.val();
-                let malePatientCount = 0;
-                let femalePatientCount = 0;
-                const promises = []; 
-        
-                for (let id in data) {
-                    if (data[id].approved) {
-                        if (data[id].patient == null) {
-                            const promise = get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
-                                const userData = userSnapshot.val();
-                                if (userData.gender === "Male") {
-                                    malePatientCount++;
-                                } else {
-                                    femalePatientCount++;
-                                }
-                            });
-                            promises.push(promise);
-                        } else {
-                            if (data[id].patient.gender === "Male") {
-                                malePatientCount++;
-                            } else {
-                                femalePatientCount++;
-                            }
-                        }
-                    }
-                }
+        // Process appointments to update gender counts
+        appointments.forEach((appointment) => {
+            const gender = appointment.patient ? appointment.patient.gender : appointment.gender;
 
-                Promise.all(promises).then(() => {
-                console.log(malePatientCount);
-                console.log(femalePatientCount);
-                setMaleCount(malePatientCount);
-                setFemaleCount(femalePatientCount);
-                });
+            if (gender === "Male") {
+                setMaleCount((prevCount) => prevCount + 1);
+            } else {
+                setFemaleCount((prevCount) => prevCount + 1);
             }
-        );
-    }, []);
+        });
+    }, [appointments]);
 
     const chartData = {
         labels: ['Male', 'Female'],
@@ -106,66 +119,35 @@ const GenderDoughnutChart = memo(() => {
     return <DoughnutChart data={chartData} options={chartOptions} />;
 });
 
-const AgeDoughnutChart = memo(() => {
-    const {user} = useAuth();
-    const clinicId = user.clinic;
+const AgeDoughnutChart = memo(({ appointments }) => {
     const [ageRange, setAgeRange] = useState({
         '0-19': 0,
         '20-64': 0,
         '65 and above': 0,
     });
+
     useEffect(() => {
-        onValue(
-            query(
-                ref(db, 'requests'),
-                orderByChild('clinic'),
-                equalTo(clinicId)
-            ),
-            (snapshot) => {
-                let ageRange = {
-                    '0-19': 0,
-                    '20-64': 0,
-                    '65 and above': 0,
-                };
-                const data = snapshot.val();
-                for (let id in data) {
-                    if (data[id].approved) {
-                        if (data[id].patient == null) {
-                            get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
-                                const dob = new Date(userSnapshot.val().dob);
-                                const age = Math.floor((new Date() - dob) / 3.15576e+10);
-                                if (age >= 0 && age <= 19) {
-                                    ageRange['0-19']++;
-                                } else if (age >= 20 && age <= 64) {
-                                    ageRange['20-64']++;
-                                } else if (age >= 65) {
-                                    ageRange['65 and above']++;
-                                }
-                            });
-                        } else {
-                            const dob = new Date(data[id].patient.dob);
-                            const age = Math.floor((new Date() - dob) / 3.15576e+10);
-                            if (age >= 0 && age <= 19) {
-                                ageRange['0-19']++;
-                            } else if (age >= 20 && age <= 64) {
-                                ageRange['20-64']++;
-                            } else if (age >= 65) {
-                                ageRange['65 and above']++;
-                            }
-                        }
-                    }
-                }      
-                setAgeRange(ageRange);
+        // Process appointments to update ageRange
+        appointments.forEach((appointment) => {
+            const dob = new Date(appointment.patient ? appointment.patient.dob : appointment.dob);
+            const age = Math.floor((new Date() - dob) / 3.15576e+10);
+
+            if (age >= 0 && age <= 19) {
+                setAgeRange((prevRange) => ({ ...prevRange, '0-19': prevRange['0-19'] + 1 }));
+            } else if (age >= 20 && age <= 64) {
+                setAgeRange((prevRange) => ({ ...prevRange, '20-64': prevRange['20-64'] + 1 }));
+            } else if (age >= 65) {
+                setAgeRange((prevRange) => ({ ...prevRange, '65 and above': prevRange['65 and above'] + 1 }));
             }
-        );
-    }, []);
+        });
+    }, [appointments]);
 
     const chartData = {
         labels: ['0-19', '20-64', '65 & above'],
         datasets: [
             {
                 data: [ageRange['0-19'], ageRange['20-64'], ageRange['65 and above']],
-                backgroundColor: ['#14ccff', '#3245d1', '#7e14ff'],
+                backgroundColor: ['#FFC857', '#E9724C', '#C5283D'],
             },
         ],
     };
@@ -177,27 +159,54 @@ const AgeDoughnutChart = memo(() => {
     return <DoughnutChart data={chartData} options={chartOptions} />;
 });
 
-const PatientActivityBarChart = memo(() => {
+const PatientActivityBarChart = memo(({ appointments }) => {
+    console.log('PatientActivityBarChart');
+
+    const appointmentsByDay = {
+        Monday: 0,
+        Tuesday: 0,
+        Wednesday: 0,
+        Thursday: 0,
+        Friday: 0,
+        Saturday: 0,
+        Sunday: 0,
+    };
+
+    appointments.forEach((appointment) => {
+        const [day, month, year] = appointment.date.split('/');
+
+        const appointmentDate = new Date(year, month - 1, day);
+    
+        const dayOfWeek = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(appointmentDate);
+        appointmentsByDay[dayOfWeek]++;
+    });
+
     const chartData = {
-        labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9'],
+        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         datasets: [
             {
                 barPercentage: 0.5,
                 barThickness: 24,
                 maxBarThickness: 48,
                 minBarLength: 2,
-                label: 'Sales',
-                data: [540, 325, 702, 620, 212, 980, 1200, 400, 800],
+                label: 'Patient Appointments',
+                data: [
+                    appointmentsByDay.Monday,
+                    appointmentsByDay.Tuesday,
+                    appointmentsByDay.Wednesday,
+                    appointmentsByDay.Thursday,
+                    appointmentsByDay.Friday,
+                    appointmentsByDay.Saturday,
+                    appointmentsByDay.Sunday,
+                ],
                 backgroundColor: [
-                    'rgb(255, 159, 64)',
-                    'rgb(75, 192, 192)',
-                    'rgb(54, 162, 235)',
-                    'rgb(153, 102, 255)',
-                    'rgb(54, 162, 235)',
-                    'rgb(255, 159, 64)',
-                    'rgb(255, 99, 132)',
-                    'rgb(255, 159, 64)',
-                    'rgb(75, 192, 192)',
+                    '#235789',
+                    '#034748',
+                    '#1481BA',
+                    '#246A73',
+                    '#6A0F49',
+                    '#B75D69',
+                    '#827191',
                 ],
             },
         ],
@@ -261,34 +270,14 @@ function ClinicDashboard() {
     const [ratings, setRatings] = useState([]);
     const [patientRequests, setPatientRequests] = useState([]);
     const [patientCount, setPatientCount] = useState(0);
+    const [appointmentCount, setAppointmentCount] = useState(0);
     const [doctorAppointments, setDoctorAppointments] = useState([]);
-	const [appointments, setAppointments] = useState([]);
 
     const libs = ['places'];
     const { isLoaded, loadError } = useLoadScript({
 		googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
 		libraries: libs,
 	});
-
-    // Function to generate dummy data
-    const generateDummyAppointments = (count) => {
-        const dummyAppointments = [];
-        const names = ['Joseph', 'John', 'Jane', 'Jack', 'Jill', 'Jenny', 'Jerry', 'Jasmine', 'Jared', 'Jade']
-        const clinics = ['Clinic A', 'Clinic B', 'Clinic C'];
-        const prescriptions = ['Prescription A', 'Prescription B', 'Prescription C'];
-        
-        for (let i = 1; i <= count; i++) {
-          dummyAppointments.push({
-            date: `2023-01-${i < 10 ? '0' + i : i}`, // Assuming January 2023
-            time: `10:00 AM`, // Assuming the same time for all
-            clinic: clinics[i % clinics.length], // Rotate through the clinics
-            name: names[i % names.length], // Rotate through the names
-            prescription: prescriptions[i % prescriptions.length], // Rotate through the prescriptions
-            rating: Math.floor(Math.random() * 5) + 1, // Random rating between 1 and 5
-          });
-        }
-        return dummyAppointments;
-    };
 
     const [doctorFilters, setDoctorFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -309,26 +298,6 @@ function ClinicDashboard() {
 
         setDoctorFilters(_filters);
         setGlobalDoctorFilterValue(value);
-    };
-
-    const [patientFilters, setPatientFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        name: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        date: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        time: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        prescription: { value: null, matchMode: FilterMatchMode.CONTAINS }
-    });
-
-    const [globalPatientFilterValue, setGlobalPatientFilterValue] = useState('');
-
-    const onGlobalPatientFilterChange = (e) => {
-        const value = e.target.value;
-        let _filters = { ...patientFilters };
-
-        _filters['global'].value = value;
-
-        setPatientFilters(_filters);
-        setGlobalPatientFilterValue(value);
     };
 
     function formatDate(isoDate) {
@@ -353,7 +322,6 @@ function ClinicDashboard() {
     }
 
     useEffect(() => {
-        // Fetch clinic details from Realtime Database
         onValue(ref(db, `clinics/${clinicId}`), (snapshot) => {
             const clinicData = snapshot.val();
             if (clinicData) {
@@ -362,8 +330,6 @@ function ClinicDashboard() {
                     ...clinicData,
                 };
                 setClinic(clinic);
-
-                // Fetch ratings using Places API
                 const service = new window.google.maps.places.PlacesService(document.createElement('div'));
                 service.getDetails(
                 {
@@ -379,12 +345,10 @@ function ClinicDashboard() {
                 }
                 );
             } else {
-                // Handle the case where the clinic with the specified ID is not found
                 console.error(`Clinic with ID ${clinicId} not found.`);
             }
         });
     
-        // Fetch doctors from Realtime Database
         onValue(
             query(
                 ref(db, 'users'),
@@ -407,7 +371,6 @@ function ClinicDashboard() {
             }
         );
 
-        // Fetch patient requests from Realtime Database
         onValue(
             query(
                 ref(db, 'requests'),
@@ -418,6 +381,7 @@ function ClinicDashboard() {
                 const requests = [];
                 const appointments = [];
                 let patientCount = 0;
+                let appointmentCount = 0;
                 const data = snapshot.val();
                 for (let id in data) {
                     if (!data[id].approved) {
@@ -458,6 +422,7 @@ function ClinicDashboard() {
                                 });
                             });
                             patientCount++;
+                            appointmentCount++;
                         } else {
                             fetchDoctorData(data[id].doctor).then((doctorData) => {
                                 data[id] = {
@@ -471,16 +436,16 @@ function ClinicDashboard() {
                                 appointments.push(data[id]);
                             });
                             patientCount++;
+                            appointmentCount++;
                         }
                     }               
                 }
                 setPatientRequests(requests);       
                 setDoctorAppointments(appointments);     
                 setPatientCount(patientCount); 
+                setAppointmentCount(appointmentCount);
             }
         );
-
-        setAppointments(generateDummyAppointments(20));
     }, [clinicId]);
 
     if (loadError) return 'Error loading maps';
@@ -515,9 +480,9 @@ function ClinicDashboard() {
 						<Box w='60%' bg='white' rounded='lg' boxShadow='md'>
                             <Flex w='full' alignItems='center' direction='column'>
                                 <Text fontSize='md' fontWeight='semibold' letterSpacing='wide' mt={3} mx={3} textAlign='center'>
-                                    Latest Patient Activity
+                                    Patient Activity Distribution
                                 </Text>
-                                <PatientActivityBarChart/>
+                                <PatientActivityBarChart appointments={doctorAppointments}/>
                             </Flex>
 						</Box>
                         <Flex w='40%' gap={5}>
@@ -578,7 +543,7 @@ function ClinicDashboard() {
                                             <Text fontWeight='medium' fontSize='sm' color='gray.600'>
                                                 Treatments
                                             </Text>            
-                                            <Text fontWeight='semibold'>21</Text>                                
+                                            <Text fontWeight='semibold'>{appointmentCount}</Text>                                
                                         </Box>
                                     </Flex>
                                 </Box>
@@ -591,9 +556,9 @@ function ClinicDashboard() {
                         <Box w='33%' bg='white' rounded='lg' boxShadow='md'>
                             <Flex w='full' alignItems='center' direction='column'>
                                 <Text fontSize='md' fontWeight='semibold' letterSpacing='wide' mt={3} mx={3} textAlign='center'>
-                                    Distribution of Patients
+                                    Time Slot Distribution
                                 </Text>
-                                <GenderDoughnutChart/>
+                                <TimeSlotDoughnutChart appointments={doctorAppointments}/>
                             </Flex>
                         </Box>
                         <Box w='33%' bg='white' rounded='lg' boxShadow='md'>
@@ -601,7 +566,7 @@ function ClinicDashboard() {
                                 <Text fontSize='md' fontWeight='semibold' letterSpacing='wide' mt={3} mx={3} textAlign='center'>
                                     Patient Gender Distribution
                                 </Text>
-                                <GenderDoughnutChart/>
+                                <GenderDoughnutChart appointments={doctorAppointments}/>
                             </Flex>
                         </Box>
                         <Box w='33%' bg='white' rounded='lg' boxShadow='md'>
@@ -609,43 +574,10 @@ function ClinicDashboard() {
                                 <Text fontSize='md' fontWeight='semibold' letterSpacing='wide' mt={3} mx={3} textAlign='center'>
                                     Patient Age Distribution
                                 </Text>
-                                <AgeDoughnutChart/>
+                                <AgeDoughnutChart appointments={doctorAppointments}/>
                             </Flex>
                         </Box>                        
                     </Flex>
-                </Box>
-                <Box w='full' bg='white' p={5} rounded='lg' boxShadow='md'>
-                    <Flex alignItems='center' justifyContent='space-between' mb={4}>
-                        <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide'>
-                            Recent Patient Appointments
-                        </Text>           
-                        <InputGroup size="md" w='40%'>
-                            <InputLeftElement
-                                pointerEvents="none"
-                                children={<BiSearchAlt2 color="gray.500" />}
-                            />
-                            <Input
-                                type="text"
-                                placeholder="Search appointment details..."
-                                value={globalPatientFilterValue}
-                                onChange={onGlobalPatientFilterChange}
-                                size="md"
-                                focusBorderColor="blue.500"
-                                borderRadius="xl"
-                                borderColor="gray.300"
-                                backgroundColor="white"
-                                color="gray.800"
-                            />
-                        </InputGroup>             
-                    </Flex>
-                    <DataTable value={appointments} removableSort stripedRows showGridlines paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} filters={patientFilters} globalFilterFields={['name', 'date' , 'time', 'prescription']}>
-                        <Column field="date" sortable  header="Date"></Column>
-                        <Column field="time" sortable  header="Time"></Column>
-                        <Column field="name" sortable  header="Name"></Column>
-                        <Column field="name" sortable  header="Doctor"></Column>
-                        <Column field="prescription" sortable  header="Prescription"></Column>
-                        <Column field="rating" sortable  header="Rating"></Column>
-                    </DataTable>                        
                 </Box>
                 <Box w='full' bg='white' p={5} rounded='lg' boxShadow='md'>
                     <Flex alignItems='center' justifyContent='space-between' mb={4}>
@@ -765,7 +697,7 @@ function ClinicDashboard() {
                             <TabPanel>        
                                 <Box 
                                     w='full' 
-                                    maxH='full' 
+                                    maxH='1000px' 
                                     overflowY={'scroll'}
                                     overflowX={'hidden'}
                                     sx={{ 
@@ -800,7 +732,7 @@ function ClinicDashboard() {
                             <TabPanel>
                                 <Box
                                     w='full' 
-                                    maxH='full'
+                                    maxH='1000px'
                                     overflowY={'scroll'}
                                     overflowX={'hidden'}
                                     sx={{ 

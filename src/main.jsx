@@ -28,6 +28,7 @@ import UserList from './pages/admin/UserList';
 import AdminRegistry from './pages/admin/AdminRegistry';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import VerificationPending from './pages/clinic/VerificationPending';
+import AppointmentHistory from './pages/clinic/AppointmentHistory';
 
 const DashboardElement = () => {
 	const { user } = useAuth();
@@ -63,6 +64,7 @@ const router = createBrowserRouter(
 			</Route>
 			<Route element={<ClinicLayout/>}>
 				<Route path="requests" element={<PendingPatientRequests/>}/>
+				<Route path="appointments" element={<AppointmentHistory/>}/>
 				<Route path="patients" element={<></>}/>
 				<Route path="patients/:id" element={<></>}/>
 				<Route path="doctors" element={<></>}/>
