@@ -1,4 +1,4 @@
-import {equalTo, get, orderByChild, push, query, ref, set} from "firebase/database";
+import {equalTo, get, orderByChild, push, query, ref, set, update} from "firebase/database";
 import {getDownloadURL, ref as sRef, uploadBytes} from "firebase/storage";
 import {fetchSignInMethodsForEmail} from "firebase/auth";
 import {auth, db, secondaryAuth, storage} from "./firebase";
@@ -101,5 +101,46 @@ export const reject_patient_request = async (id, reason) => {
 		})
 		.catch((error) => {
 			return {success: false, error};
+		});
+}
+
+export const update_clinic = async (id, data) => {
+	const {image} = data;
+	let new_data = {};
+	
+	for (let key in data) {
+		if (key !== "image") {
+			new_data[key] = data[key];
+		}
+	}
+	
+	const clinicRef = ref(db, `clinics/${id}`);
+	
+	return await update(clinicRef, new_data)
+		.then(() => {
+			if (image === null) {
+				return {success: true};
+			}
+			
+			return uploadBytes(sRef(storage, `clinics/${id}`), image)
+				.then((res) => {
+					return getDownloadURL(sRef(storage, `clinics/${id}`));
+				})
+				.then((url) => {
+					return update(ref(db, `clinics/${id}`), {
+						image: url
+					})
+				})
+				.catch((error) => {
+					console.log(error);
+					return {error: error};
+				});
+		})
+		.then(() => {
+			return {success: true};
+		})
+		.catch((error) => {
+			console.log(error);
+			return {error: error};
 		});
 }
