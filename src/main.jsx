@@ -36,6 +36,7 @@ import Profile from "./pages/auth/Profile.jsx";
 import DoctorClinicDetails from './pages/doctor/DoctorClinicDetails';
 import EditDoctor from './pages/clinic/EditDoctor';
 import Clinic from "./pages/clinic/Clinic.jsx";
+import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
 
 const DashboardElement = () => {
 	const { user } = useAuth();
@@ -64,7 +65,7 @@ const router = createBrowserRouter(
 			<Route path="/" element={<DashboardElement/>}/>
 			<Route path="login" element={<Login/>}/>
 			<Route path="register" element={<PatientRegistry/>}/>
-			<Route path="forgot" element={<></>}/>
+			<Route path="forgot" element={<ForgotPassword/>}/>
 			<Route path="register-clinic" element={<ClinicRegistry/>}/>
 			<Route path="profile" element={<Profile/>}/>
 			<Route element={<PatientLayout/>}>

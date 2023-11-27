@@ -26,7 +26,7 @@ const RootLayout = () => {
 			{
 				loading || navigation.state === "loading" ?
 					<GlobalSpinner/> :
-					(location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/register-clinic") ?
+					(location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/register-clinic" || location.pathname === "/forgot") ?
 						!user ?
 							<Box w="100%" h="100%" bg="#f4f4f4" overflow="auto" minH="100vh">
 								<Outlet/>

@@ -160,7 +160,7 @@ function Login() {
 								<Checkbox name="remember" id="remember" mr={2} />
 								<Text htmlFor="remember">Remember me</Text>
 							</Flex>
-							<Text as="a" href="#" textColor="blue.500" fontSize="sm" fontWeight="medium" _hover={{ textDecoration: "underline" }}>
+							<Text as="a" href="/forgot" textColor="blue.500" fontSize="sm" fontWeight="medium" _hover={{ textDecoration: "underline" }}>
 								Forgot password?
 							</Text>
 						</Flex>
