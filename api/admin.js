@@ -1,4 +1,4 @@
-import {db} from "./firebase";
+import {auth, db} from "./firebase";
 import {ref, update} from "firebase/database";
 import {secondaryAuth, storage} from "./firebase.js";
 import {getDownloadURL, ref as sRef, uploadBytes} from "firebase/storage";
@@ -129,7 +129,8 @@ export const delete_user = async (email, password) => {
 			return deleteUser(userCredential.user).then(() => {
 				return update(ref(db, `users/${userCredential.user.uid}`), {
 					deleted_on: new Date(),
-					deleted: true
+					deleted: true,
+					deleted_by: auth.currentUser.uid
 				}).then(() => {
 					return {success: true};
 				}).catch((error) => {
