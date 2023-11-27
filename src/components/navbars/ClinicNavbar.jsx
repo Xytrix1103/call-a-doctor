@@ -2,8 +2,10 @@ import {Avatar, Button, Flex, Link, Menu, MenuButton, MenuDivider, MenuItem, Men
 import {NavLink} from "react-router-dom";
 import {BiChevronDown} from "react-icons/bi";
 import {logout} from "../../../api/auth.js";
+import {useAuth} from "../../components/AuthCtx.jsx";
 
 const ClinicNavbar = () => {
+	const {user} = useAuth();
 	const handleLogout = () => {
 		logout();
 	};
@@ -31,12 +33,24 @@ const ClinicNavbar = () => {
 			</Flex>
 			
 			<Flex alignItems="center">
-				<Link as={NavLink} color="teal.500" to="/" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
-					Home
-				</Link>
-				<Link as={NavLink} color="teal.500" to="/clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
-					Clinic List
-				</Link>
+				{user.clinic && (
+					<Link as={NavLink} color="teal.500" to="/" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }} _hover={{  textDecoration: "none" }}>
+						Home
+					</Link>
+				)
+				}
+				{user.clinic && (
+					<Link as={NavLink} color="teal.500" to="/patient-requests" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }} _hover={{  textDecoration: "none" }}>
+						Requests
+					</Link>
+				)
+				}
+				{user.clinic && (
+					<Link as={NavLink} color="teal.500" to="/appointments" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }} _hover={{  textDecoration: "none" }}>
+						Appointment History
+					</Link>
+				)
+				}
 				<Menu marginRight={6}>
 					<MenuButton as={Link} color="teal.500" display="flex" alignItems="center">
 						<Flex alignItems="center">
@@ -56,14 +70,8 @@ const ClinicNavbar = () => {
 					</MenuButton>
 					
 					<MenuList>
-						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: 'none' }}>
-							Dashboard
-						</MenuItem>
-						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
-							Settings
-						</MenuItem>
-						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
-							Earnings
+						<MenuItem as={NavLink} to="/profile" _focus={{ boxShadow: "none" }}>
+							Profile
 						</MenuItem>
 						<MenuDivider />
 						<MenuItem as={NavLink} onClick={handleLogout} _focus={{ boxShadow: "none" }}>

@@ -22,7 +22,7 @@ import {AiFillStar} from "react-icons/ai";
 import {BiLinkExternal} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
-import {ClinicDoctorList} from "./ClinicDoctorList.jsx";
+import {ClinicDoctorList} from "../patient/ClinicDoctorList.jsx";
 
 function Map({ place_id, onDistanceChange }) {
 	const mapStyle = {
@@ -171,7 +171,7 @@ function Map({ place_id, onDistanceChange }) {
 	);
 }
 
-function ClinicDetails() {
+function DoctorClinicDetails() {
 	const [data, setData] = useState({});
 	const {id} = useParams();
 	console.log(id);
@@ -381,20 +381,6 @@ function ClinicDetails() {
 								pointerEvents={'none'}
 							/>
 						</Box>
-						<Flex w="full">
-							<Box w="full">
-								<NavLink to={`/clinics/${id}/request`}>
-									<Button
-										w={'full'}
-										colorScheme="blue"
-										rounded="xl"
-										mt={14}
-									>
-										Send Doctor Request
-									</Button>
-								</NavLink>                                     
-							</Box>
-						</Flex>
 					</Box>
 					<Box ml={5} my={7} w="full">
 						<Flex direction="column" alignItems="center">
@@ -503,4 +489,4 @@ function ClinicDetails() {
 	);
 }
 
-export default ClinicDetails;
+export default DoctorClinicDetails;

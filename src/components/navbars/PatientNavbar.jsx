@@ -33,10 +33,10 @@ const PatientNavbar = () => {
 			</Flex>
 			
 			<Flex alignItems="center">
-				<Link as={NavLink} color="teal.500" to="/" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
+				<Link as={NavLink} color="teal.500" to="/" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }} _hover={{  textDecoration: "none" }}>
 					Home
 				</Link>
-				<Link as={NavLink} color="teal.500" to="/clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
+				<Link as={NavLink} color="teal.500" to="/clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }} _hover={{  textDecoration: "none" }}>
 					Clinic List
 				</Link>
 				<Menu marginRight={6}>
@@ -58,14 +58,8 @@ const PatientNavbar = () => {
 					</MenuButton>
 					
 					<MenuList>
-						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: 'none' }}>
-							Dashboard
-						</MenuItem>
-						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
-							Settings
-						</MenuItem>
-						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
-							Earnings
+						<MenuItem as={NavLink} to="/profile" _focus={{ boxShadow: "none" }}>
+							Profile
 						</MenuItem>
 						<MenuDivider />
 						<MenuItem as={NavLink} onClick={handleLogout} _focus={{ boxShadow: "none" }}>

@@ -17,7 +17,7 @@ function Profile() {
 				return <DoctorForm user={user} self={true}/>;
 			case 'Patient':
 				return <PatientForm user={user} self={true}/>;
-			case 'Clinic Admin':
+			case 'ClinicAdmin':
 				return <ClinicAdminForm user={user} self={true}/>;
 			default:
 				return null;
