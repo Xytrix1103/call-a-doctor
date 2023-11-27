@@ -69,7 +69,7 @@ const router = createBrowserRouter(
 				<Route path="doctors/:id" element={<></>}/>
 				<Route path="doctors/:id/schedule" element={<></>}/>
 				<Route path="doctors/:id/patients" element={<></>}/>
-				<Route path="patients" element={<Patients/>}/>
+				<Route path="patients" element={<Patients asAdmin={true}/>}/>
 				<Route path="patients/:id" element={<></>}/>
 			</Route>
 		</Route>

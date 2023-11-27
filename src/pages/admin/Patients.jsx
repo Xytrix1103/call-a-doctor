@@ -12,7 +12,7 @@ import '../../../node_modules/primereact/resources/themes/lara-light-blue/theme.
 import {NavLink} from 'react-router-dom';
 import {useAuth} from "../../components/AuthCtx.jsx";
 
-function Patients() {
+function Patients({asAdmin = false}) {
 	const [patients, setPatients] = useState([]);
 	const [filters, setFilters] = useState({
 		global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -25,7 +25,6 @@ function Patients() {
 	const [selectedUsers, setSelectedUsers] = useState(null);
 	const [rowClick, setRowClick] = useState(true);
 	const { user } = useAuth();
-	const asAdmin = user?.role === 'Admin';
 	
 	const onGlobalFilterChange = (e) => {
 		const value = e.target.value;
@@ -157,49 +156,34 @@ function Patients() {
 	};
 	
 	useEffect(() => {
-		onValue(query(ref(db, 'users'), orderByChild('role'), equalTo('Patient')), (snapshot) => {
+		onValue(query(ref(db, 'users'), orderByChild('role'), equalTo('Patient')), async (snapshot) => {
 			let users = [];
 			console.log(snapshot.val());
 			
+			snapshot.forEach((childSnapshot) => {
+				users = [...users, {
+					id: childSnapshot.key,
+					...childSnapshot.val(),
+				}];
+			});
+			
 			if (!asAdmin) {
-				snapshot.forEach((childSnapshot) => {
-					const { name, email, phone, address } = childSnapshot.val();
+				await get(query(ref(db, 'requests'), orderByChild('clinic'), equalTo(user.clinic))).then((requests) => {
+					console.log(requests);
+					let patients = [];
 					
-					get(query(ref(db, 'requests'), orderByChild('uid'), equalTo(childSnapshot.key))).then((s) => {
-						if (s.exists()) {
-							let hasRequest = false;
-							
-							s.forEach((c) => {
-								if (c.child('clinic').val() === user.clinic) {
-									hasRequest = true;
-									console.log("has request", c.val());
-								}
-							});
-							
-							if(hasRequest) {
-								setPatients((prev) => [...prev, {
-									id: childSnapshot.key,
-									name,
-									email,
-									phone,
-									address,
-								}]);
-							}
+					requests.forEach((request) => {
+						if (!patients.includes(request.child('uid').val())) {
+							patients.push(request.child('uid').val());
 						}
+					});
+					
+					users = users.filter((user) => {
+						return patients.includes(user.id);
 					});
 				});
 			} else {
-				snapshot.forEach((childSnapshot) => {
-					const {name, email, phone, address} = childSnapshot.val();
-					
-					setPatients((prev) => [...prev, {
-						id: childSnapshot.key,
-						name,
-						email,
-						phone,
-						address,
-					}]);
-				});
+				console.log("as admin");
 			}
 			
 			setPatients(users);
