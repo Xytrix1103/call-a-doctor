@@ -30,6 +30,7 @@ import {FilterMatchMode} from 'primereact/api';
 import '../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css';
 import {NavLink} from 'react-router-dom';
 import {useAuth} from "../../components/AuthCtx.jsx";
+import {delete_user} from "../../../api/admin.js";
 
 function StaffList() {
 	const [users, setUsers] = useState([]);
@@ -147,6 +148,28 @@ function StaffList() {
 										mr={3}
 										backgroundColor='red'
 										color='white'
+										onClick={() => {
+											delete_user(rowData.email, rowData.password).then(r => {
+												if (r.success) {
+													toast({
+														title: 'User deleted successfully!',
+														status: 'success',
+														duration: 5000,
+														isClosable: true,
+														position: 'top-right'
+													});
+												} else {
+													toast({
+														title: 'Error deleting user!',
+														status: 'error',
+														duration: 5000,
+														isClosable: true,
+														position: 'top-right'
+													});
+												}
+											});
+											onCloseApprove();
+										}}
 									>
 										Delete
 									</Button>
@@ -253,7 +276,7 @@ function StaffList() {
 			let doctorCount = 0;
 			
 			snapshot.forEach((childSnapshot) => {
-				const { name, role, email, phone, image } = childSnapshot.val();
+				const { name, role, email, phone, image, password } = childSnapshot.val();
 				
 				let formattedRole = role.replace(/([a-z])([A-Z])/g, '$1 $2');
 				users.push({
@@ -263,6 +286,7 @@ function StaffList() {
 					email,
 					phone,
 					image,
+					password
 				});
 				
 				switch (role) {
