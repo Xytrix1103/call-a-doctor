@@ -28,6 +28,7 @@ import UserList from './pages/admin/UserList';
 import ManageUser from './pages/admin/ManageUser';
 import Profile from "./pages/auth/Profile.jsx";
 import Clinic from "./pages/clinic/Clinic.jsx";
+import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -35,7 +36,7 @@ const router = createBrowserRouter(
 			<Route path="/" element={<Test/>}/>
 			<Route path="login" element={<Login/>}/>
 			<Route path="register" element={<PatientRegistry/>}/>
-			<Route path="forgot" element={<></>}/>
+			<Route path="forgot" element={<ForgotPassword/>}/>
 			<Route path="register-clinic" element={<ClinicRegistry/>}/>
 			<Route path="profile" element={<Profile/>}/>
 			<Route element={<PatientLayout/>}>
