@@ -17,6 +17,7 @@ import {useRef, useState} from "react";
 const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 	const {
 		register,
+		getValues,
 		formState: {
 			errors
 		}
@@ -26,6 +27,40 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 	
 	const previewImageRef = useRef(null);
 	const previewImageContainerRef = useRef(null);
+
+	const startTimeOptions = [
+		"08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM",
+		"12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM",
+		"04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM",
+		"08:00 PM", "09:00 PM", "10:00 PM", "11:00 PM", "12:00 AM"
+	];
+	
+	const daysOfWeek = [
+		"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+	];
+
+	const [selectedStartTime, setSelectedStartTime] = useState(startTimeOptions[0]);
+	const [selectedEndTime, setSelectedEndTime] = useState(startTimeOptions[1]); // Default value is the next time option
+	const [selectedStartDay, setSelectedStartDay] = useState(daysOfWeek[0]);
+	const [selectedEndDay, setSelectedEndDay] = useState(daysOfWeek[1]); // Default value is the next day
+  
+	const handleStartTimeChange = (value) => {
+		setSelectedStartTime(value);
+		console.log(value);
+		// Logic to set end time to be at least 1 hour more than start time
+		const startTimeIndex = startTimeOptions.indexOf(value);
+		const nextTimeIndex = startTimeIndex + 1;
+		setSelectedEndTime(startTimeOptions[nextTimeIndex]);
+	};
+  
+	const handleStartDayChange = (value) => {
+		setSelectedStartDay(value);
+		console.log(value);
+		// Logic to set end day to be at least 1 day after start day
+		const startDayIndex = daysOfWeek.indexOf(value);
+		const nextDayIndex = startDayIndex + 1;
+		setSelectedEndDay(daysOfWeek[nextDayIndex]);
+	};
 	
 	const handleDragEnter = (e) => {
 		e.preventDefault();
@@ -129,30 +164,15 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 									borderColor="gray.300"
 									color="gray.900"
 									size="md"
+									value={selectedStartTime}
+									onChange={(e) => handleStartTimeChange(e.target.value)}
 									focusBorderColor="blue.500"
-									{
-										...register("start_time", {
-											required: "Start time cannot be empty",
-										})
-									}
 								>
-									<option value="08:00 AM">08:00 AM</option>
-									<option value="09:00 AM">09:00 AM</option>
-									<option value="10:00 AM">10:00 AM</option>
-									<option value="11:00 AM">11:00 AM</option>
-									<option value="12:00 PM">12:00 PM</option>
-									<option value="01:00 PM">01:00 PM</option>
-									<option value="02:00 PM">02:00 PM</option>
-									<option value="03:00 PM">03:00 PM</option>
-									<option value="04:00 PM">04:00 PM</option>
-									<option value="05:00 PM">05:00 PM</option>
-									<option value="06:00 PM">06:00 PM</option>
-									<option value="07:00 PM">07:00 PM</option>
-									<option value="08:00 PM">08:00 PM</option>
-									<option value="09:00 PM">09:00 PM</option>
-									<option value="10:00 PM">10:00 PM</option>
-									<option value="11:00 PM">11:00 PM</option>
-									<option value="12:00 AM">12:00 AM</option>
+									{startTimeOptions.map((time) => (
+										<option key={time} value={time} disabled={time === selectedEndTime}>
+											{time}
+										</option>
+									))}
 								</Select>
 							</FormControl>
 							<Text mx={3} fontSize="md" color="gray.900">
@@ -168,30 +188,15 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 									borderColor="gray.300"
 									color="gray.900"
 									size="md"
+									value={selectedEndTime}
+									onChange={(e) => setSelectedEndTime(e.target.value)}
 									focusBorderColor="blue.500"
-									{
-										...register("end_time", {
-											required: "End time cannot be empty",
-										})
-									}
 								>
-									<option value="08:00 AM">08:00 AM</option>
-									<option value="09:00 AM">09:00 AM</option>
-									<option value="10:00 AM">10:00 AM</option>
-									<option value="11:00 AM">11:00 AM</option>
-									<option value="12:00 PM">12:00 PM</option>
-									<option value="01:00 PM">01:00 PM</option>
-									<option value="02:00 PM">02:00 PM</option>
-									<option value="03:00 PM">03:00 PM</option>
-									<option value="04:00 PM">04:00 PM</option>
-									<option value="05:00 PM">05:00 PM</option>
-									<option value="06:00 PM">06:00 PM</option>
-									<option value="07:00 PM">07:00 PM</option>
-									<option value="08:00 PM">08:00 PM</option>
-									<option value="09:00 PM">09:00 PM</option>
-									<option value="10:00 PM">10:00 PM</option>
-									<option value="11:00 PM">11:00 PM</option>
-									<option value="12:00 AM">12:00 AM</option>
+									{startTimeOptions.map((time) => (
+										<option key={time} value={time} disabled={time === selectedStartTime}>
+											{time}
+										</option>
+									))}
 								</Select>
 							</FormControl>
 						</Flex>
@@ -211,20 +216,15 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 									borderColor="gray.300"
 									color="gray.900"
 									size="md"
+									value={selectedStartDay}
+									onChange={(e) => handleStartDayChange(e.target.value)}
 									focusBorderColor="blue.500"
-									{
-										...register("start_day", {
-											required: "Start day cannot be empty",
-										})
-									}
 								>
-									<option value="Monday">Monday</option>
-									<option value="Tuesday">Tuesday</option>
-									<option value="Wednesday">Wednesday</option>
-									<option value="Thursday">Thurday</option>
-									<option value="Friday">Friday</option>
-									<option value="Saturday">Saturday</option>
-									<option value="Sunday">Sunday</option>
+									{daysOfWeek.map((day) => (
+										<option key={day} value={day} disabled={day === selectedEndDay}>
+											{day}
+										</option>
+									))}
 								</Select>
 							</FormControl>
 							<Text mx={3} fontSize="md" color="gray.900">
@@ -240,20 +240,15 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 									borderColor="gray.300"
 									color="gray.900"
 									size="md"
+									value={selectedEndDay}
+									onChange={(e) => setSelectedEndDay(e.target.value)}
 									focusBorderColor="blue.500"
-									{
-										...register("end_day", {
-											required: "End day cannot be empty",
-										})
-									}
 								>
-									<option value="Monday">Monday</option>
-									<option value="Tuesday">Tuesday</option>
-									<option value="Wednesday">Wednesday</option>
-									<option value="Thursday">Thurday</option>
-									<option value="Friday">Friday</option>
-									<option value="Saturday">Saturday</option>
-									<option value="Sunday">Sunday</option>
+									{daysOfWeek.map((day) => (
+										<option key={day} value={day} disabled={day === selectedStartDay}>
+										{day}
+										</option>
+									))}
 								</Select>
 							</FormControl>
 						</Flex>
@@ -279,8 +274,11 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 							color="gray.900"
 							size="md"
 							focusBorderColor="blue.500"
+							{
+								...register("specialist_clinic")
+							}
 						>
-							<option value="None">None</option>
+							<option value="">General (No Specialization)</option>
 							<option value="Allergy and Clinical Immunology">Allergy and Clinical Immunology</option>
 							<option value="Cardiology">Cardiology</option>
 							<option value="Dermatology">Dermatology</option>

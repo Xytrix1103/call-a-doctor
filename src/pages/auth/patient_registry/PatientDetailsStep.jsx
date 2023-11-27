@@ -260,8 +260,8 @@ const PatientDetailsStep = ({form, place}) => {
 								size="md"
 								focusBorderColor="blue.500"
 							>
-								<option value="male">Male</option>
-								<option value="female">Female</option>
+								<option value="Male">Male</option>
+								<option value="Female">Female</option>
 							</Select>
 						</FormControl>
 					</Box>

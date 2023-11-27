@@ -1,4 +1,4 @@
-import {equalTo, get, orderByChild, push, query, ref, set} from "firebase/database";
+import {equalTo, get, orderByChild, query, ref, set} from "firebase/database";
 import {getDownloadURL, ref as sRef, uploadBytes} from "firebase/storage";
 import {fetchSignInMethodsForEmail} from "firebase/auth";
 import {auth, db, storage} from "./firebase";
@@ -12,9 +12,10 @@ export const register_clinic_request = async (data) => {
 		start_day,
 		end_day,
 		business_reg_num,
+		specialist_clinic,
 		phone,
 		address,
-		placeId,
+		place_id,
 		image,
 		admin_name,
 		email,
@@ -22,12 +23,18 @@ export const register_clinic_request = async (data) => {
 	} = data;
 	
 	const userRef = ref(db, 'users');
-	const clinicRequestRef = ref(db, 'clinic_requests');
 	const clinicRef = ref(db, 'clinics');
-	const newClinicReqRef = push(clinicRequestRef);
-	const storageRef = sRef(storage, `clinics/${newClinicReqRef.key}`);
+	const newClinicReqRef = ref(db, `clinic_requests/${business_reg_num}`);
+	const storageRef = sRef(storage, `clinics/${business_reg_num}`);
 	
-	fetchSignInMethodsForEmail(auth, email)
+	const adminData = {
+		name: admin_name,
+		email: email,
+		password: password,
+		role: "ClinicAdmin"
+	};
+	
+	await fetchSignInMethodsForEmail(auth, email)
 		.then(providers => {
 			if (providers.length > 0) {
 				console.log("User already exists");
@@ -40,6 +47,7 @@ export const register_clinic_request = async (data) => {
 				console.log("User already exists");
 				throw {error: "User already exists in Database"};
 			}
+			
 			return get(query(clinicRef, orderByChild('business_reg_num'), equalTo(business_reg_num)))
 		})
 		.then(existingClinics => {
@@ -47,7 +55,24 @@ export const register_clinic_request = async (data) => {
 				console.log("Clinic already exists");
 				throw {error: "Clinic already exists in Database"};
 			}
-			return set(newClinicReqRef, {
+		})
+		.catch(error => {
+			console.log("Error: " + error);
+			return {error: error};
+		});
+	
+	let uid;
+	
+	return await register_clinic_admin(adminData)
+		.then(async registerUser => {
+			if (registerUser.error) {
+				throw {error: registerUser.error};
+			} else {
+				uid = registerUser.uid;
+			}
+			
+			return await set(newClinicReqRef, {
+				datetime: new Date(),
 				name: clinic_name,
 				start_time: start_time,
 				end_time: end_time,
@@ -55,24 +80,95 @@ export const register_clinic_request = async (data) => {
 				end_day: end_day,
 				contact: phone,
 				address: address,
-				placeId: placeId,
-				admin_name: admin_name,
-				email: email,
-				password: password
-			});
+				specialist_clinic: specialist_clinic,
+				place_id: place_id,
+				admin: uid
+			})
+				.then(async () => {
+					return await uploadBytes(storageRef, image)
+						.then(async snapshot => {
+							console.log('Uploaded image!');
+							return await getDownloadURL(storageRef)
+						.then(async url => {
+							console.log('File available at', url);
+							return await set(ref(db, `clinic_requests/${business_reg_num}/image`), url);
+						})
+						.catch(error => {
+							console.log("Error: " + error);
+							throw {error: error};
+						});
+				})
+				.catch(error => {
+					console.log("Error: " + error);
+					throw {error: error};
+				})
+		})
+		.then(() => {
+			console.log("Clinic request added to database");
+			return {success: true};
+		})
+		.catch(error => {
+			console.log("Error: " + error);
+			return {error: error};
+		});
+	})
+	.catch(error => {
+		console.log("Error: " + error);
+		return {error: error};
+	});
+}
+
+export const register_clinic = async (data) => {
+	const {
+		id,
+		datetime,
+		name,
+		start_time,
+		end_time,
+		start_day,
+		end_day,
+		specialist_clinic,
+		contact,
+		address,
+		place_id,
+		image,
+		admin
+	} = data;
+	
+	const newClinicRef = ref(db, `clinics/${id}`);
+	
+	if (await get(newClinicRef).then(snapshot => snapshot.exists())) {
+		console.log("Clinic already exists");
+		return {error: "Clinic already exists in Database"};
+	}
+	
+	return await set(newClinicRef, {
+			request_datetime: datetime,
+			approved_datetime: new Date(),
+			approved_by: auth.currentUser.uid,
+			name: name,
+			start_time: start_time,
+			end_time: end_time,
+			start_day: start_day,
+			end_day: end_day,
+			contact: contact,
+			address: address,
+			image: image,
+			specialist_clinic: specialist_clinic !== "" ? specialist_clinic : null,
+			place_id: place_id,
+			admins: {
+				[admin]: true
+			}
+		})
+		.then(() => {
+			return set(ref(db, `users/${admin}/clinic`), newClinicRef.key);
+		})
+		.then(() => {
+			//remove
+			return set(ref(db, `clinic_requests/${id}`), null);
 		})
 		.then(() => {
 			console.log("Clinic added to database");
-			return uploadBytes(storageRef, image);
-		})
-		.then(uploadImage => {
-			return getDownloadURL(uploadImage.ref);
-		})
-		.then(imageURL => {
-			return set(ref(db, `clinic_requests/${newClinicReqRef.key}/image`), imageURL);
-		})
-		.then(addImageToDb => {
-			console.log("Clinic created");
 			return {success: true};
 		})
 		.catch(error => {
@@ -81,105 +177,21 @@ export const register_clinic_request = async (data) => {
 		});
 }
 
-export const register_clinic = async (data) => {
-	const {
-		clinic_name,
-		start_time,
-		end_time,
-		start_day,
-		end_day,
-		business_reg_num,
-		phone,
-		address,
-		placeId,
-		image,
-		admin_name,
-		email,
-		password
-	} = data;
+export const reject_clinic_request = async (data) => {
+	const {id, reason} = data;
 	
-	let uid;
+	const clinicRequestRef = ref(db, `clinic_requests/${id}`);
 	
-	const clinicRef = ref(db, 'clinics');
-	const newClinicRef = push(clinicRef);
-	const userRef = ref(db, 'users');
-	const storageRef = sRef(storage, `clinics/${newClinicRef.key}`);
-	
-	const adminData = {
-		name: admin_name,
-		email: email,
-		password: password,
-		clinic: {
-			[newClinicRef.key]: true
-		},
-		role: "ClinicAdmin"
-	};
-	
-	fetchSignInMethodsForEmail(auth, email)
-		.then(providers => {
-			if (providers.length > 0) {
-				console.log("User already exists");
-				throw {error: "User already exists in Authentication"};
-			}
-			return get(query(userRef, orderByChild('email'), equalTo(email)));
+	return await set(ref(db, `clinic_requests/${id}/rejected`), reason)
+		.then(() => {
+			return set(ref(db, `clinic_requests/${id}/rejected_by`), auth.currentUser.uid);
 		})
-		.then(existingDBUsers => {
-			if (existingDBUsers !== null && existingDBUsers.exists()) {
-				console.log("User already exists");
-				throw {error: "User already exists in Database"};
-			}
-			return register_clinic_admin(adminData)
-				.then(registerUser => {
-					if (registerUser.error) {
-						throw {error: registerUser.error};
-					} else {
-						uid = registerUser.uid;
-					}
-					
-					return get(query(clinicRef, orderByChild('business_reg_num'), equalTo(business_reg_num)))
-				})
-				.then(existingClinics => {
-					if (existingClinics !== null && existingClinics.exists()) {
-						console.log("Clinic already exists");
-						throw {error: "Clinic already exists in Database"};
-					}
-					return set(newClinicRef, {
-						name: clinic_name,
-						start_time: start_time,
-						end_time: end_time,
-						start_day: start_day,
-						end_day: end_day,
-						contact: phone,
-						address: address,
-						business_reg_num: business_reg_num,
-						placeId: placeId,
-						admins: {
-							[uid]: true
-						}
-					})
-				})
-				.then(() => {
-					console.log("Clinic added to database");
-					return uploadBytes(storageRef, image);
-				})
-				.then(uploadImage => {
-					return getDownloadURL(uploadImage.ref);
-				})
-				.then(imageURL => {
-					return set(ref(db, `clinics/${newClinicRef.key}/image`), imageURL);
-				})
-				.then(() => {
-					console.log("Clinic created");
-					return set(ref(db, `clinics/${newClinicRef.key}/admins/${uid}`), true);
-				})
-				.then(() => {
-					console.log("Admin user added to clinic");
-					return {success: true};
-				})
-				.catch(error => {
-					console.log("Error: " + error);
-					return {error: error};
-				});
+		.then(() => {
+			return set(ref(db, `clinic_requests/${id}/rejected_datetime`), new Date());
+		})
+		.then(() => {
+			console.log("Clinic request rejected");
+			return {success: true};
 		})
 		.catch(error => {
 			console.log("Error: " + error);

@@ -19,7 +19,7 @@ const ClinicLocationStep = ({place, setPlace}) => {
 	const handlePlaceSelect = () => {
 		if (inputRef.current && inputRef.current.getPlace) {
 			const place = inputRef.current.getPlace();
-			const placeId = place.place_id;
+			const place_id = place.place_id;
 			const { geometry, formatted_address, name, formatted_phone_number } = place;
 			console.log(place);
 			const { location } = geometry;
@@ -29,7 +29,7 @@ const ClinicLocationStep = ({place, setPlace}) => {
 				lng: location.lng(),
 				name: name,
 				address: formatted_address,
-				placeId: placeId,
+				place_id: place_id,
 				contact: formatted_phone_number
 			});
 		}

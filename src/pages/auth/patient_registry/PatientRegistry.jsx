@@ -56,7 +56,7 @@ function PatientRegistry() {
 	const onSubmit = async (data) => {
 		data = {
 			...data,
-			placeId: place.placeId,
+			place_id: place.place_id,
 		}
         const password = data["password"];
         const confirm_password = data["confirm_password"];
@@ -78,7 +78,7 @@ function PatientRegistry() {
 			if (res.error) {
 				toast({
 					title: "Registration failed.",
-					description: res.error,
+					description: "An error has occurred!",
 					status: "error",
 					duration: 3000,
 					isClosable: true,
@@ -90,7 +90,7 @@ function PatientRegistry() {
 		} else {
 			toast({
 				title: "Registration failed.",
-				description: res.error,
+				description: "An error has occurred!",
 				status: "error",
 				duration: 3000,
 				isClosable: true,

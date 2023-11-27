@@ -1,24 +1,31 @@
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
-import {auth, db} from "./firebase.js";
+import {auth, db, secondaryAuth} from "./firebase.js";
 import {ref, set} from "firebase/database";
 
-export const register = async (data) => {
-	const {email, password, name, date_of_birth="", phone = "", address = "", role="Patient", clinic=null} = data;
+export const register = async (data, asAdmin=false) => {
+	const {email, password, name, gender="", date_of_birth="", phone = "", address = "", role="Patient"} = data;
+	const authObj = asAdmin ? secondaryAuth : auth;
 	
-	return await createUserWithEmailAndPassword(auth, email, password).then(async (newUser) => {
+	return await createUserWithEmailAndPassword(authObj, email, password).then(async (newUser) => {
 		if (newUser) {
-			await set(ref(db, `users/${newUser.user.uid}`), {
+			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
+				created_on: new Date(),
 				email: newUser.user.email,
 				password: password,
 				role: role,
 				name: name,
+				gender: gender,
 				dob: date_of_birth,
 				phone: phone,
-				address: address,
-				clinic: clinic
+				address: address
+			})
+			.then(() => {
+				return newUser.user;
+			})
+			.catch((error) => {
+				throw {error: error};
 			});
-			return newUser.user;
 		} else {
 			return {error: "Error creating user"};
 		}
@@ -29,26 +36,88 @@ export const register = async (data) => {
 	});
 }
 
-export const register_clinic_admin = async (data) => {
+export const register_clinic_admin = async (data, asAdmin=false) => {
 	const {email, password, name, role="ClinicAdmin", clinic=null} = data;
+	const authObj = asAdmin ? secondaryAuth : auth;
 	
-	return await createUserWithEmailAndPassword(auth, email, password).then(async (newUser) => {
+	return await createUserWithEmailAndPassword(authObj, email, password).then(async (newUser) => {
 		if (newUser) {
-			await set(ref(db, `users/${newUser.user.uid}`), {
+			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
+				created_on: new Date(),
 				email: newUser.user.email,
 				password: password,
 				role: role,
 				name: name,
 				clinic: clinic
+			}).then(() => {
+				return newUser.user;
+			}).catch((error) => {
+				return {error: error};
 			});
-			return newUser.user;
 		} else {
 			return {error: "Error creating user"};
 		}
 	})
 	.catch((error) => {
-		console.log(error);
+		return {error: error};
+	});
+}
+
+export const register_doctor = async (data, asAdmin = false) => {
+	const {email, password, name, gender="", date_of_birth="", phone = "", role="Doctor"} = data;
+	
+	const authObj = asAdmin ? secondaryAuth : auth;
+	
+	return await createUserWithEmailAndPassword(authObj, email, password).then(async (newUser) => {
+		if (newUser) {
+			return await set(ref(db, `users/${newUser.user.uid}`), {
+				uid: newUser.user.uid,
+				created_on: new Date(),
+				email: newUser.user.email,
+				password: password,
+				role: role,
+				name: name,
+				gender: gender,
+				dob: date_of_birth,
+				phone: phone
+			}).then(() => {
+				return newUser.user;
+			}).catch((error) => {
+				return {error: error};
+			});
+		} else {
+			return {error: "Error creating user"};
+		}
+	})
+	.catch((error) => {
+		return {error: error};
+	});
+}
+
+export const register_admin = async (data) => {
+	const {email, password, name, phone, role="Admin"} = data;
+	
+	return await createUserWithEmailAndPassword(secondaryAuth, email, password).then(async (newUser) => {
+		if (newUser) {
+			return await set(ref(db, `users/${newUser.user.uid}`), {
+				uid: newUser.user.uid,
+				created_on: new Date(),
+				email: newUser.user.email,
+				password: password,
+				phone: phone,
+				role: role,
+				name: name
+			}).then(() => {
+				return newUser.user;
+			}).catch((error) => {
+				return {error: error};
+			});
+		} else {
+			return {error: "Error creating user"};
+		}
+	})
+	.catch((error) => {
 		return {error: error};
 	});
 }
@@ -66,30 +135,6 @@ export const login = async (cred) => {
 export const logout = async () => {
 	signOut(auth).then(() => {
 		console.log("logged out");
-	}).catch((error) => {
-		console.log(error);
-	});
-}
-
-export const resetPassword = async (email) => {
-	auth.sendPasswordResetEmail(email).then(() => {
-		console.log("email sent");
-	}).catch((error) => {
-		console.log(error);
-	});
-}
-
-export const updateEmail = async (email) => {
-	auth.currentUser.updateEmail(email).then(() => {
-		console.log("email updated");
-	}).catch((error) => {
-		console.log(error);
-	});
-}
-
-export const updatePassword = async (password) => {
-	auth.currentUser.updatePassword(password).then(() => {
-		console.log("password updated");
 	}).catch((error) => {
 		console.log(error);
 	});

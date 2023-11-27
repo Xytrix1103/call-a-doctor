@@ -2,7 +2,7 @@ import {Navigate, Outlet, useLocation, useNavigation} from "react-router-dom";
 import React, {useEffect} from "react";
 import {useAuth} from "../AuthCtx.jsx";
 
-const AdminLayout = () => {
+const DoctorLayout = () => {
 	const {user, loading} = useAuth();
 	const location = useLocation();
 	const navigation = useNavigation();
@@ -10,16 +10,16 @@ const AdminLayout = () => {
 	console.log(location.pathname);
 	
 	useEffect(() => {
-		console.log("AdminLayout");
+		console.log("DoctorLayout");
 		console.log(user, loading);
 	}, [user, loading]);
 	
 	return (
 		<>
 			{
-				user.role !== "Admin" ?
+				user.role !== "Doctor" ?
 					(
-						<Navigate to="/admin" />
+						<Navigate to="/" />
 					) :
 					(
 						<Outlet/>
@@ -29,4 +29,4 @@ const AdminLayout = () => {
 	)
 }
 
-export default AdminLayout
+export default DoctorLayout;
