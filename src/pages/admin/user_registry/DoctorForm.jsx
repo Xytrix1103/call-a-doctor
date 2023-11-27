@@ -162,7 +162,7 @@ export const DoctorForm = ({user, self=false}) => {
         console.log("Submitting doctor form", data);
 		
 		if (!user) {
-			await trigger();
+			await trigger(['name', 'phone', 'date_of_birth', 'qualification', 'introduction', 'clinic', 'email', 'password', 'confirm_password']);
 			const password = data["password"];
 			const confirm_password = data["confirm_password"];
 			

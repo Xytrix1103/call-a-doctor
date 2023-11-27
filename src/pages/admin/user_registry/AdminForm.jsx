@@ -49,7 +49,7 @@ export const AdminForm = ({user, self=false}) => {
         console.log("Submitting admin form", data);
         
         if (!user) {
-            await trigger();
+            await trigger(['name', 'phone', 'email', 'password', 'confirm_password']);
             const password = data["password"];
             const confirm_password = data["confirm_password"];
             

@@ -90,7 +90,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
         console.log("Submitting admin form", data);
         
         if (!user) {
-            const valid = await trigger();
+            const valid = await trigger(['name', 'email', 'password', 'confirm_password']);
             const password = data["password"];
             const confirm_password = data["confirm_password"];
             
