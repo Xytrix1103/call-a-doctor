@@ -185,7 +185,6 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
 				return;
 			}
 			
-			
 			data = {
 				...data,
 				image: imageRef.current.files[0],
