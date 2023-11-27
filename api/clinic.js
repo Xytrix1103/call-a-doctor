@@ -1,7 +1,7 @@
 import {equalTo, get, orderByChild, push, query, ref, set} from "firebase/database";
 import {getDownloadURL, ref as sRef, uploadBytes} from "firebase/storage";
 import {fetchSignInMethodsForEmail} from "firebase/auth";
-import {db, secondaryAuth, storage} from "./firebase";
+import {auth, db, secondaryAuth, storage} from "./firebase";
 import {register_doctor} from "./auth";
 
 export const add_doctor = async (data) => {
@@ -63,5 +63,43 @@ export const add_doctor = async (data) => {
 		.catch((error) => {
 			console.log(error);
 			return {error: error};
+		});
+}
+
+export const approve_patient_request = async (id, doctor) => {
+	return await set(ref(db, `requests/${id}/approved`), true)
+		.then(() => {
+			return set(ref(db, `requests/${id}/doctor`), doctor);
+		})
+		.then(() => {
+			return set(ref(db, `requests/${id}/date`), new Date().toISOString());
+		})
+		.then(() => {
+			return set(ref(db, `requests/${id}/approved_by`), auth.currentUser.uid);
+		})
+		.then(() => {
+			return {success: true};
+		})
+		.catch((error) => {
+			return {success: false, error};
+		});
+}
+
+export const reject_patient_request = async (id, reason) => {
+	return await set(ref(db, `requests/${id}/rejected`), true)
+		.then(() => {
+			return set(ref(db, `requests/${id}/reject_reason`), reason);
+		})
+		.then(() => {
+			return set(ref(db, `requests/${id}/date`), new Date().toISOString());
+		})
+		.then(() => {
+			return set(ref(db, `requests/${id}/rejected_by`), auth.currentUser.uid);
+		})
+		.then(() => {
+			return {success: true};
+		})
+		.catch((error) => {
+			return {success: false, error};
 		});
 }

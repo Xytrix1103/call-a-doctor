@@ -4,7 +4,7 @@ import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} fr
 import RootLayout from "./components/layouts/RootLayout.jsx";
 import Login from "./pages/auth/Login.jsx";
 import AddDoctorToList from './pages/clinic/AddDoctorToList.jsx';
-import PendingPatientRequests from './pages/clinic/PendingPatientRequests.jsx';
+import PatientRequests from './pages/clinic/PatientRequests.jsx';
 import DoctorRequestForm from './pages/patient/DoctorRequestForm.jsx';
 import React from "react";
 import App from "./App.jsx";
@@ -25,7 +25,8 @@ import ApprovedClinicDetails from './pages/admin/ApprovedClinicDetails';
 import ApprovedClinicList from './pages/admin/ApprovedClinicList';
 import PendingAppointments from './pages/doctor/PendingAppointments';
 import UserList from './pages/admin/UserList';
-import AdminRegistry from './pages/admin/AdminRegistry';
+import ManageUser from './pages/admin/ManageUser';
+import Profile from "./pages/auth/Profile.jsx";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -35,13 +36,14 @@ const router = createBrowserRouter(
 			<Route path="register" element={<PatientRegistry/>}/>
 			<Route path="forgot" element={<></>}/>
 			<Route path="register-clinic" element={<ClinicRegistry/>}/>
+			<Route path="profile" element={<Profile/>}/>
 			<Route element={<PatientLayout/>}>
 				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="clinics/:id" element={<ClinicDetails/>}/>
 				<Route path="clinics/:id/request" element={<DoctorRequestForm/>}/>
 			</Route>
 			<Route element={<ClinicLayout/>}>
-				<Route path="requests" element={<PendingPatientRequests/>}/>
+				<Route path="patient-requests" element={<PatientRequests/>}/>
 				<Route path="patients" element={<></>}/>
 				<Route path="patients/:id" element={<></>}/>
 				<Route path="doctors" element={<></>}/>
@@ -58,7 +60,8 @@ const router = createBrowserRouter(
 				<Route path="approve-clinics" element={<ClinicRegistryApproval/>}/>
 				<Route path="approve-clinics/:id" element={<ClinicRegistryDetails/>}/>
 				<Route path="users" element={<UserList/>}/>
-				<Route path="users/add" element={<AdminRegistry/>}/>
+				<Route path="users/add" element={<ManageUser/>}/>
+				<Route path="users/edit/:id" element={<ManageUser/>}/>
 				<Route path="doctors" element={<></>}/>
 				<Route path="doctors/:id" element={<></>}/>
 				<Route path="doctors/:id/schedule" element={<></>}/>
