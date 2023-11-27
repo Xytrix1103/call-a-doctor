@@ -40,7 +40,7 @@ function ClinicList() {
             snapshot.forEach((childSnapshot) => {
                 const clinic = {
                 id: childSnapshot.key,
-                ...childSnapshot.val(),
+                    ...childSnapshot.val(),
                 };
                 clinics.push(clinic);
             });

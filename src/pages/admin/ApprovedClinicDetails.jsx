@@ -65,7 +65,7 @@ function Map({ place_id, onDistanceChange }) {
 						const service = new window.google.maps.places.PlacesService(map);
 						service.getDetails(
 							{
-								place_id: place_id,
+								placeId: place_id,
 							},
 							(result, status) => {
 								if (status === window.google.maps.places.PlacesServiceStatus.OK) {
@@ -178,10 +178,14 @@ function ApprovedClinicDetails() {
     
     useEffect(() => {
         onValue(query(ref(db, `clinics/${id}`)), (snapshot) => {
-	        const data = snapshot.val();
+	        let data = snapshot.val();
+			data = {
+				id: snapshot.key,
+				...data,
+			};
 	        setData(data);
         });
-    }, []);
+    }, [id]);
 
 	const [distance, setDistance] = useState(null);
 	const [ratings, setRatings] = useState(0);
@@ -310,7 +314,7 @@ function ApprovedClinicDetails() {
 								pointerEvents="none"
 								tabIndex="-1"
 							>
-								{data.business_reg_num ? data.business_reg_num : 'No business registration number available'}
+								{data.id ? data.id : 'No business registration number available'}
 							</Text>
 						</Box>
 						<Flex alignItems="center" justifyContent="space-between">
