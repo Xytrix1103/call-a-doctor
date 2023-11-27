@@ -249,7 +249,7 @@ export const PatientForm = ({user, self=false}) => {
 		}
 	    
 	    if (!user) {
-		    await trigger();
+		    await trigger(['name', 'email', 'phone', 'address', 'date_of_birth', 'password', 'confirm_password']);
 		    const password = data["password"];
 		    const confirm_password = data["confirm_password"];
 		    
@@ -297,7 +297,7 @@ export const PatientForm = ({user, self=false}) => {
 			    });
 		    });
 	    } else {
-		    await trigger(['name', 'phone', 'address', 'dob']);
+		    await trigger(['name', 'phone', 'address', 'date_of_birth']);
 		    let update = {};
 		    
 		    //loop thru form values
@@ -348,13 +348,13 @@ export const PatientForm = ({user, self=false}) => {
             setValue('email', user?.email);
             setValue('phone', user?.phone);
             setValue('address', user?.address);
-            setValue('dob', user?.dob);
+            setValue('date_of_birth', user?.dob);
         } else {
 			setValue('name', null);
 			setValue('email', null);
 			setValue('phone', null);
 			setValue('address', null);
-			setValue('dob', null);
+			setValue('date_of_birth', null);
 	       
         }
 	}, [user]);
@@ -544,7 +544,7 @@ export const PatientForm = ({user, self=false}) => {
 
                     <Flex alignItems="center" justifyContent="space-between" mt={6}>
                         <Box flex="1" mr={4}>
-                            <FormControl isInvalid={errors.dob}>
+                            <FormControl isInvalid={errors.date_of_birth}>
                                 <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900" >
                                     Date of Birth <Text as="span" color="red.500" fontWeight="bold">*</Text>
                                 </FormLabel>
@@ -555,7 +555,7 @@ export const PatientForm = ({user, self=false}) => {
                                         name="dob"
                                         id="dob"
                                         {
-                                            ...register("dob", {
+                                            ...register("date_of_birth", {
                                                 required: "Date of birth cannot be empty",
                                             })
                                         }
@@ -568,7 +568,7 @@ export const PatientForm = ({user, self=false}) => {
                                     />
                                 </InputGroup>
                                 <FormErrorMessage>
-                                    {errors.dob && errors.dob.message}
+                                    {errors.date_of_birth && errors.date_of_birth.message}
                                 </FormErrorMessage>
                             </FormControl>
                         </Box>
