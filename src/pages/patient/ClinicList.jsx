@@ -46,7 +46,7 @@ function ClinicList() {
             });
         
             // Extract all placeIds from clinics
-            const placeIds = clinics.map((clinic) => clinic.placeId);
+            const placeIds = clinics.map((clinic) => clinic.place_id);
         
             // Fetch ratings for all clinics using Places API
             const service = new window.google.maps.places.PlacesService(document.createElement('div'));

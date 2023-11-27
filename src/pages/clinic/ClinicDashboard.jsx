@@ -375,6 +375,7 @@ function ClinicDashboard() {
                         });
                     }
                 });
+                console.log(doctors);
                 setDoctors(doctors);
                 setDoctorsCount(doctors.length);
             }
@@ -708,16 +709,7 @@ function ClinicDashboard() {
                                                 <Badge borderRadius='full' px='2' colorScheme='blue'>
                                                     Immunology
                                                 </Badge>
-                                                <Box
-                                                    color='gray.500'
-                                                    fontWeight='semibold'
-                                                    letterSpacing='wide'
-                                                    fontSize='xs'
-                                                    textTransform='uppercase'
-                                                    ml='2'
-                                                >
-                                                    3.75 km away
-                                                </Box>
+
                                             </Box>
                                             
                                             <Text fontSize="lg" fontWeight="bold" isTruncated w="full" color='black'>

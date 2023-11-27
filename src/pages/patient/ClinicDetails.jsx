@@ -66,7 +66,7 @@ function Map({ place_id, onDistanceChange }) {
 						const service = new window.google.maps.places.PlacesService(map);
 						service.getDetails(
 							{
-								place_id: place_id,
+								placeId: place_id,
 							},
 							(result, status) => {
 								if (status === window.google.maps.places.PlacesServiceStatus.OK) {

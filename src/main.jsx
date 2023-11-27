@@ -15,6 +15,7 @@ import ClinicRegistry from "./pages/auth/clinic_registry/ClinicRegistry.jsx";
 import PatientRegistry from './pages/auth/patient_registry/PatientRegistry';
 import ClinicList from "./pages/patient/ClinicList.jsx";
 import PatientLayout from "./components/layouts/PatientLayout.jsx";
+import DoctorLayout from './components/layouts/DoctorLayout';
 import ClinicDetails from './pages/patient/ClinicDetails';
 import ClinicLayout from "./components/layouts/ClinicLayout.jsx";
 import AdminLayout from "./components/layouts/AdminLayout.jsx";
@@ -28,6 +29,7 @@ import UserList from './pages/admin/UserList';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import VerificationPending from './pages/clinic/VerificationPending';
 import AppointmentHistory from './pages/clinic/AppointmentHistory';
+import DoctorDashboard from './pages/doctor/DoctorDashboard';
 import ManageUser from './pages/admin/ManageUser';
 import Profile from "./pages/auth/Profile.jsx";
 
@@ -45,6 +47,8 @@ const DashboardElement = () => {
 			}
 		case "Admin":
 			return <AdminDashboard />;
+		case "Doctor":
+			return <DoctorDashboard />;
 		default:
 			return <Test />;
 	}
@@ -63,6 +67,9 @@ const router = createBrowserRouter(
 				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="clinics/:id" element={<ClinicDetails/>}/>
 				<Route path="clinics/:id/request" element={<DoctorRequestForm/>}/>
+			</Route>
+			<Route element={<DoctorLayout/>}>
+				<Route path="patients" element={<></>}/>
 			</Route>
 			<Route element={<ClinicLayout/>}>
 				<Route path="appointments" element={<AppointmentHistory/>}/>
