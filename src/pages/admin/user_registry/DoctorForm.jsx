@@ -145,6 +145,7 @@ export const DoctorForm = ({user, self=false}) => {
 		e.preventDefault();
 		setIsDragActive(false);
 		const file = e.dataTransfer.files[0];
+		imageRef.current.files = e.dataTransfer.files;
 		populatePreviewImage(file);
 	};
 	
