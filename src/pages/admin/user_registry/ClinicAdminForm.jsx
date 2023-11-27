@@ -85,7 +85,8 @@ export const ClinicAdminForm = ({user, self=false}) => {
     }, [user, clinics]);
     
     
-    const onSubmit = async (data) => {
+    const onSubmit = async () => {
+        let data = getValues();
         console.log("Submitting admin form", data);
         
         if (!user) {
@@ -297,7 +298,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
     };
 
     return (
-        <form action="/api/register" method="post" onSubmit={handleSubmit(onSubmit)}>
+        <form action="/api/register" method="post">
             <Flex w='full' h='full' direction='column' justifyContent='center' alignItems='center' px={5}>
                 <FormControl mb={2} fontSize="sm" fontWeight="medium" color="gray.900" id="name" isInvalid={errors.name}>
                     <FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
@@ -664,7 +665,6 @@ export const ClinicAdminForm = ({user, self=false}) => {
                 }
 
                 <Button
-                    type="submit"
                     colorScheme="blue"
                     rounded="xl"
                     px={4}
@@ -672,6 +672,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                     mt={8}
                     mb={4}
                     w="full"
+                    onClick={onSubmit}
                 >
                     {
                         self ? "Save Changes" : (user ? "Edit Clinic Admin" : "Add Clinic Admin")

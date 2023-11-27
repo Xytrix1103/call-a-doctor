@@ -32,7 +32,7 @@ import {memo, useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import {BiLinkExternal, BiSearchAlt2} from "react-icons/bi";
 import {Autocomplete, GoogleMap, InfoWindow, LoadScript, Marker} from "@react-google-maps/api";
-import {update_patient} from "../../../../api/admin.js";
+import {update_email, update_password, update_patient} from "../../../../api/admin.js";
 import {useNavigate} from "react-router-dom";
 import {register as registerUser} from "../../../../api/auth.js";
 
@@ -221,6 +221,7 @@ export const PatientForm = ({user, self=false}) => {
 		handleSubmit,
 		register,
 	    trigger,
+        getValues,
 		formState: {
 			errors
 		}
@@ -231,7 +232,8 @@ export const PatientForm = ({user, self=false}) => {
     const toast = useToast();
 	const navigate = useNavigate();
 
-    const onSubmit = async (data) => {
+    const onSubmit = async () => {
+		let data = getValues();
         console.log('Submitting patient form', data);
 		
 		if (!place) {
@@ -382,21 +384,101 @@ export const PatientForm = ({user, self=false}) => {
     const handleOpenEmailModal = () => {
         onOpenEmailModal();
     };
-
-    const handleEmailSubmit = (data) => {
-        console.log(data);
-        console.log("Submitting email modal")
-
-    };
-
-    const handlePasswordSubmit = (data) => {
-        console.log(data);
-        console.log("Submitting password modal");
-
-    };
+	
+	const handleEmailSubmit = async () => {
+		const valid = await trigger(['new_email']);
+		console.log("Submitting email modal")
+		
+		if(!valid) {
+			alert("Invalid email!");
+			onCloseEmailModal();
+			return;
+		}
+		
+		update_email(user, getValues('new_email')).then((res) => {
+			console.log(res);
+			if (res.error) {
+				toast({
+					title: "Error!",
+					description: res.error,
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
+			} else {
+				toast({
+					title: "Success!",
+					description: "Email has been updated!",
+					status: "success",
+					duration: 5000,
+					isClosable: true,
+				});
+				onCloseEmailModal();
+			}
+		}).catch((err) => {
+			console.log(err);
+			toast({
+				title: "Error!",
+				description: "An error has occurred!",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		});
+		onCloseEmailModal();
+	};
+	
+	const handlePasswordSubmit = async () => {
+		const valid = await trigger(['new_password', 'new_confirm_password']);
+		console.log("Submitting password modal");
+		
+		if(!valid) {
+			alert("Invalid password!");
+			return;
+		}
+		
+		if (getValues('new_password') !== getValues('new_confirm_password')) {
+			alert("Passwords do not match!");
+			onClosePasswordModal();
+			return;
+		}
+		
+		update_password(user, getValues('new_password')).then((res) => {
+			console.log(res);
+			onClosePasswordModal();
+			if (res.error) {
+				toast({
+					title: "Error!",
+					description: res.error,
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
+			} else {
+				toast({
+					title: "Success!",
+					description: "Password has been updated!",
+					status: "success",
+					duration: 5000,
+					isClosable: true,
+				});
+				onClosePasswordModal();
+			}
+		}).catch((err) => {
+			console.log(err);
+			toast({
+				title: "Error!",
+				description: "An error has occurred!",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		});
+		onClosePasswordModal();
+	};
 
     return (
-        <form action="/api/register" method="post" onSubmit={handleSubmit(onSubmit)}>
+        <form action="/api/register" method="post">
             <Grid templateColumns="repeat(2, 1fr)" gap={8} w="full" h="full" px={5}>
                 <Box w="full" h="full">
                     <Box w="full">
@@ -600,7 +682,7 @@ export const PatientForm = ({user, self=false}) => {
 										Edit Email
 									</Button>
 									<Modal isOpen={isEmailModalOpen} onClose={onCloseEmailModal} size='xl' isCentered>
-										<form onSubmit={handleSubmit(handleEmailSubmit)}> 
+										<form>
 											<ModalOverlay 
 												bg='blackAlpha.300'
 												backdropFilter='blur(3px) hue-rotate(90deg)'
@@ -609,7 +691,7 @@ export const PatientForm = ({user, self=false}) => {
 												<ModalHeader>Edit Email</ModalHeader>
 												<ModalCloseButton />
 												<ModalBody>
-													<FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="email" isInvalid={errors.email}>
+													<FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="email" isInvalid={errors.new_email}>
 														<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 															Email <Text as="span" color="red.500" fontWeight="bold">*</Text>
 														</FormLabel>
@@ -628,13 +710,13 @@ export const PatientForm = ({user, self=false}) => {
 															w="full"
 															p={2.5}
 															{
-																...register("email", {
+																...register("new_email", {
 																	required: "Email is required",
 																})
 															}
 														/>
 														<FormErrorMessage>
-															{errors.email && errors.email.message}
+															{errors.new_email && errors.new_email.message}
 														</FormErrorMessage>
 													</FormControl>
 												</ModalBody>
@@ -658,7 +740,7 @@ export const PatientForm = ({user, self=false}) => {
 										Edit Password
 									</Button>
 									<Modal isOpen={isPasswordModalOpen} onClose={onClosePasswordModal} size='xl' isCentered>
-										<form onSubmit={handleSubmit(handlePasswordSubmit)}>
+										<form>
 											<ModalOverlay 
 												bg='blackAlpha.300'
 												backdropFilter='blur(3px) hue-rotate(90deg)'
@@ -667,7 +749,7 @@ export const PatientForm = ({user, self=false}) => {
 												<ModalHeader>Password Modal</ModalHeader>
 												<ModalCloseButton />
 												<ModalBody>
-													<FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="password" isInvalid={errors.password}>
+													<FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="password" isInvalid={errors.new_password}>
 														<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 															Password
 														</FormLabel>
@@ -684,7 +766,7 @@ export const PatientForm = ({user, self=false}) => {
 																size="md"
 																focusBorderColor="blue.500"
 																{
-																	...register("password", {
+																	...register("new_password", {
 																		required: "Password is required",
 																		pattern: {
 																			value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
@@ -709,10 +791,10 @@ export const PatientForm = ({user, self=false}) => {
 															one number and one special character
 														</FormHelperText>
 														<FormErrorMessage>
-															{errors.password && errors.password.message}
+															{errors.new_password && errors.new_password.message}
 														</FormErrorMessage>
 													</FormControl>
-													<FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="confirm_password" isInvalid={errors.confirm_password}>
+													<FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="confirm_password" isInvalid={errors.new_confirm_password}>
 														<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 															Confirm Password
 														</FormLabel>
@@ -729,7 +811,7 @@ export const PatientForm = ({user, self=false}) => {
 																size="md"
 																focusBorderColor="blue.500"
 																{
-																	...register("confirm_password", {
+																	...register("new_confirm_password", {
 																		required: "Confirm password is required",
 																		pattern: {
 																			value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
@@ -750,7 +832,7 @@ export const PatientForm = ({user, self=false}) => {
 															</InputRightElement>
 														</InputGroup>
 														<FormErrorMessage>
-															{errors.confirm_password && errors.confirm_password.message}
+															{errors.new_confirm_password && errors.new_confirm_password.message}
 														</FormErrorMessage>
 													</FormControl>
 												</ModalBody>
