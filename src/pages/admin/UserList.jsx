@@ -128,7 +128,7 @@ function UserList() {
     const actionBodyTemplate = (rowData) => {
         return (
             <Flex justifyContent='center' alignItems='center' gap={2}>
-                <Button bg='transparent' as={NavLink} to={`/admin/view-user-details/${rowData.id}`}><FaEye color='#0078ff'/></Button>
+                <Button bg='transparent' as={NavLink} to={`/admin/users/edit/${rowData.id}`}><FaEye color='#0078ff'/></Button>
                 <Button bg='transparent' _focus={{ boxShadow: 'none', outline: 'none' }} onClick={() => onOpenApprove(rowData.id)}><FaTrash color='#ff0004'/></Button>
 
                 {isOpenApprove && selectedUserId === rowData.id && (
@@ -368,9 +368,9 @@ function UserList() {
                             _active={{ bg: 'blue.600' }}
                             _focus={{ boxShadow: 'none' }}
                             as={NavLink}
-                            to={`/admin/add-new-admin`}
+                            to={`/admin/users/add`}
                         >
-                            Add New Admin
+                            Add New User
                         </Button>
                     </Box>
                 </Flex>

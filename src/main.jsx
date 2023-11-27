@@ -23,7 +23,8 @@ import ClinicRegistryDetails from './pages/admin/ClinicRegistryDetails';
 import ApprovedClinicDetails from './pages/admin/ApprovedClinicDetails';
 import ApprovedClinicList from './pages/admin/ApprovedClinicList';
 import UserList from './pages/admin/UserList';
-import AdminRegistry from './pages/admin/AdminRegistry';
+import ManageUser from './pages/admin/ManageUser';
+import Profile from "./pages/auth/Profile.jsx";
 
 
 const router = createBrowserRouter(
@@ -34,6 +35,7 @@ const router = createBrowserRouter(
 			<Route path="register" element={<PatientRegistry/>}/>
 			<Route path="forgot" element={<></>}/>
 			<Route path="register-clinic" element={<ClinicRegistry/>}/>
+			<Route path="profile" element={<Profile/>}/>
 			<Route element={<PatientLayout/>}>
 				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="clinics/:id" element={<ClinicDetails/>}/>
@@ -54,7 +56,8 @@ const router = createBrowserRouter(
 				<Route path="approve-clinics" element={<ClinicRegistryApproval/>}/>
 				<Route path="approve-clinics/:id" element={<ClinicRegistryDetails/>}/>
 				<Route path="users" element={<UserList/>}/>
-				<Route path="users/add" element={<AdminRegistry/>}/>
+				<Route path="users/add" element={<ManageUser/>}/>
+				<Route path="users/edit/:id" element={<ManageUser/>}/>
 				<Route path="doctors" element={<></>}/>
 				<Route path="doctors/:id" element={<></>}/>
 				<Route path="doctors/:id/schedule" element={<></>}/>
