@@ -1,8 +1,6 @@
-import {Box, Grid} from "@chakra-ui/react";
 import {Navigate, Outlet, useLocation, useNavigation} from "react-router-dom";
 import React, {useEffect} from "react";
 import {useAuth} from "../AuthCtx.jsx";
-import ClinicNavbar from "../navbars/ClinicNavbar.jsx";
 
 const ClinicLayout = () => {
 	const {user, loading} = useAuth();
