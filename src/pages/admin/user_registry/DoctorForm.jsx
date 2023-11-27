@@ -162,9 +162,13 @@ export const DoctorForm = ({user, self=false}) => {
         console.log("Submitting doctor form", data);
 		
 		if (!user) {
-			await trigger(['name', 'phone', 'date_of_birth', 'qualification', 'introduction', 'clinic', 'email', 'password', 'confirm_password']);
+			const valid = await trigger(['name', 'phone', 'date_of_birth', 'qualification', 'introduction', 'clinic', 'email', 'password', 'confirm_password']);
 			const password = data["password"];
 			const confirm_password = data["confirm_password"];
+			
+			if (!valid) {
+				return;
+			}
 			
 			if (password !== confirm_password) {
 				alert("Passwords do not match!");
@@ -215,8 +219,12 @@ export const DoctorForm = ({user, self=false}) => {
 			});
 		} else {
 			console.log("Updating doctor");
-			await trigger(['name', 'phone', 'date_of_birth', 'qualification', 'introduction', 'clinic']);
+			const valid = await trigger(['name', 'phone', 'date_of_birth', 'qualification', 'introduction', 'clinic']);
 			let update = {};
+			
+			if (!valid) {
+				return;
+			}
 			
 			//loop thru form values
 			for (const [key, value] of Object.entries(data)) {
@@ -288,11 +296,9 @@ export const DoctorForm = ({user, self=false}) => {
 	
 	const handleEmailSubmit = async () => {
 		const valid = await trigger(['new_email']);
-		console.log("Submitting email modal")
+		console.log("Submitting email modal");
 		
-		if(!valid) {
-			alert("Invalid email!");
-			onCloseEmailModal();
+		if (!valid) {
 			return;
 		}
 		
@@ -333,8 +339,7 @@ export const DoctorForm = ({user, self=false}) => {
 		const valid = await trigger(['new_password', 'new_confirm_password']);
 		console.log("Submitting password modal");
 		
-		if(!valid) {
-			alert("Invalid password!");
+		if (!valid) {
 			return;
 		}
 		
@@ -380,8 +385,7 @@ export const DoctorForm = ({user, self=false}) => {
 	
 	
 	return (
-        <form action="/api/add-doctor-to-list" method="post"
-        encType="multipart/form-data">
+        <form action="/api/add-doctor-to-list" method="post" encType="multipart/form-data">
             <Flex px={5} gap={8}>
                 <Box mb={4} w="full">
                     <Box>
@@ -670,6 +674,51 @@ export const DoctorForm = ({user, self=false}) => {
 										</FormHelperText>
 										<FormErrorMessage>
 											{errors.password && errors.password.message}
+										</FormErrorMessage>
+									</FormControl>
+									
+									<FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900"  id="confirm_password" isInvalid={errors.name}>
+										<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
+											Confirm Password <Text as="span" color="red.500" fontWeight="bold">*</Text>
+										</FormLabel>
+										<InputGroup>
+											<Input
+												type={showConfirmPassword ? 'text' : 'password'}
+												name="confirm_password"
+												id="confirm_password"
+												variant="filled"
+												placeholder="•••••••••"
+												rounded="xl"
+												borderWidth="1px"
+												borderColor="gray.300"
+												color="gray.900"
+												size="md"
+												focusBorderColor="blue.500"
+												w="full"
+												p={2.5}
+												{
+													...register("confirm_password", {
+														required: "Confirm Password is required",
+														pattern: {
+															value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%#*?&])[A-Za-z\d@$!%#*?&]{8,}$/,
+															message: "Invalid password format",
+														},
+													})
+												}
+											/>
+											<InputRightElement>
+												<IconButton aria-label="Show password" size="lg" variant="ghost"
+												            icon={showConfirmPassword ? <IoMdEyeOff/> : <IoMdEye/>}
+												            _focus={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+												            _hover={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+												            _active={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+												            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+												            tabIndex="-1"
+												/>
+											</InputRightElement>
+										</InputGroup>
+										<FormErrorMessage>
+											{errors.confirm_password && errors.confirm_password.message}
 										</FormErrorMessage>
 									</FormControl>
 								</Box>

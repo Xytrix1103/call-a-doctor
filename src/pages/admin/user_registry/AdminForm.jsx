@@ -39,6 +39,7 @@ export const AdminForm = ({user, self=false}) => {
 			errors
 		}
 	} = useForm();
+    
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const toast = useToast();
@@ -49,9 +50,13 @@ export const AdminForm = ({user, self=false}) => {
         console.log("Submitting admin form", data);
         
         if (!user) {
-            await trigger(['name', 'phone', 'email', 'password', 'confirm_password']);
+            const valid = await trigger(['name', 'phone', 'email', 'password', 'confirm_password']);
             const password = data["password"];
             const confirm_password = data["confirm_password"];
+            
+            if (!valid) {
+                return;
+            }
             
             if (password !== confirm_password) {
                 alert("Passwords do not match!");
@@ -89,8 +94,12 @@ export const AdminForm = ({user, self=false}) => {
                 });
             });
         } else {
-            await trigger(['name', 'phone']);
+            const valid = await trigger(['name', 'phone']);
             let update = {};
+            
+            if (!valid) {
+                return;
+            }
             
             //loop thru form values
             for (const [key, value] of Object.entries(data)) {
@@ -168,11 +177,9 @@ export const AdminForm = ({user, self=false}) => {
     
     const handleEmailSubmit = async () => {
         const valid = await trigger(['new_email']);
-        console.log("Submitting email modal")
+        console.log("Submitting email modal");
         
-        if(!valid) {
-            alert("Invalid email!");
-            onCloseEmailModal();
+        if (!valid) {
             return;
         }
         
@@ -213,8 +220,7 @@ export const AdminForm = ({user, self=false}) => {
         const valid = await trigger(['new_password', 'new_confirm_password']);
         console.log("Submitting password modal");
         
-        if(!valid) {
-            alert("Invalid password!");
+        if (!valid) {
             return;
         }
         

@@ -95,7 +95,6 @@ export const ClinicAdminForm = ({user, self=false}) => {
             const confirm_password = data["confirm_password"];
             
             if(!valid) {
-                alert("Invalid entry!");
                 return;
             }
             
@@ -139,7 +138,6 @@ export const ClinicAdminForm = ({user, self=false}) => {
             let update = {};
             
             if(!valid) {
-                alert("Invalid entry!");
                 return;
             }
             
@@ -210,7 +208,6 @@ export const ClinicAdminForm = ({user, self=false}) => {
         console.log("Submitting email modal")
         
         if(!valid) {
-            alert("Invalid email!");
             onCloseEmailModal();
             return;
         }
@@ -253,7 +250,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
         console.log("Submitting password modal");
         
         if(!valid) {
-            alert("Invalid password!");
+            onClosePasswordModal();
             return;
         }
         
