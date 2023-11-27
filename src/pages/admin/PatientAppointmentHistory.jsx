@@ -1,44 +1,15 @@
-import {
-	Box,
-	Flex,
-	Image,
-    Link,
-	Input,
-	InputGroup,
-	Text,
-    Avatar,
-    InputLeftElement,
-    Badge,
-    VStack,
-    Button,
-    IconButton,
-    Tabs, 
-    TabList, 
-    TabPanels, 
-    Tab, 
-    TabPanel,
-    Divider,
-    Center,
-    Spinner,
-    useToast,
-    useDisclosure,
-} from '@chakra-ui/react';
-import {useState, useEffect} from "react";
-import {onValue, get, query, ref, orderByChild, equalTo} from "firebase/database";
+import {Box, Center, Flex, Text,} from '@chakra-ui/react';
+import {useEffect, useState} from "react";
+import {equalTo, get, onValue, orderByChild, query, ref} from "firebase/database";
 import {db} from "../../../api/firebase.js";
 import {useAuth} from "../../components/AuthCtx.jsx";
-import {BiLinkExternal, BiSolidPhone} from "react-icons/bi";
-import {BsCalendarDayFill, BsGenderFemale, BsGenderMale} from "react-icons/bs";
-import {FaCar, FaMapLocationDot, FaPlus, FaTrash, FaUser, FaX, FaStethoscope } from "react-icons/fa6";
-import { IoIosCheckmarkCircle } from "react-icons/io";
-import {GiMedicines, GiSandsOfTime} from "react-icons/gi";
-import { MdEmail } from "react-icons/md";
+import {BiSolidPhone} from "react-icons/bi";
+import {BsGenderFemale, BsGenderMale} from "react-icons/bs";
+import {FaMapLocationDot, FaUser} from "react-icons/fa6";
+import {GiSandsOfTime} from "react-icons/gi";
 import {GoDotFill} from "react-icons/go";
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import {useNavigate, useParams} from "react-router-dom";
-import { FilterMatchMode } from 'primereact/api';
-import { PatientAppointmentCard } from './PatientAppointmentCard.jsx';
+import {useParams} from "react-router-dom";
+import {PatientAppointmentCard} from './PatientAppointmentCard.jsx';
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
 
 function PatientAppointmentHistory() {
@@ -69,21 +40,21 @@ function PatientAppointmentHistory() {
         });
     }
 
-    useEffect(() => {    
+    useEffect(() => {
         onValue(
             query(
                 ref(db, 'requests'),
                 orderByChild('uid'),
                 equalTo(id)
             ),
-            (snapshot) => {
-                const appointments = [];
+            async (snapshot) => {
+                const app = [];
                 const data = snapshot.val();
                 for (let id in data) {
                     if (data[id].completed) {
                         if (data[id].patient == null) {
-                            get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
-                                fetchDoctorData(data[id].doctor).then((doctorData) => {
+                            await get(ref(db, `users/${data[id].uid}`)).then(async (userSnapshot) => {
+                                await fetchDoctorData(data[id].doctor).then((doctorData) => {
                                     data[id] = {
                                         id: id,
                                         ...data[id],
@@ -92,11 +63,11 @@ function PatientAppointmentHistory() {
                                         date: formatDate(data[id].date),
                                         doctor: doctorData,
                                     };
-                                    appointments.push(data[id]);
+                                    app.push(data[id]);
                                 });
                             });
                         } else {
-                            fetchDoctorData(data[id].doctor).then((doctorData) => {
+                            await fetchDoctorData(data[id].doctor).then((doctorData) => {
                                 data[id] = {
                                     id: id,
                                     ...data[id],
@@ -105,13 +76,13 @@ function PatientAppointmentHistory() {
                                     date: formatDate(data[id].date),
                                     doctor: doctorData,
                                 };
-                                appointments.push(data[id]);
+                                app.push(data[id]);
                             });
-                        }            
-                    }          
+                        }
+                    }
                 }
-                console.log(appointments);
-                setAppointments(appointments);     
+                console.log(app);
+                setAppointments(app);
             }
         );
 
