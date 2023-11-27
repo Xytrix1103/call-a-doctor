@@ -70,16 +70,10 @@ const ClinicNavbar = () => {
 					</MenuButton>
 					
 					<MenuList>
-						{/* <MenuItem as={NavLink} to="/" _focus={{ boxShadow: 'none' }}>
-							Dashboard
+						<MenuItem as={NavLink} to="/profile" _focus={{ boxShadow: "none" }}>
+							Profile
 						</MenuItem>
-						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
-							Settings
-						</MenuItem>
-						<MenuItem as={NavLink} to="/" _focus={{ boxShadow: "none" }}>
-							Earnings
-						</MenuItem>
-						<MenuDivider /> */}
+						<MenuDivider />
 						<MenuItem as={NavLink} onClick={handleLogout} _focus={{ boxShadow: "none" }}>
 							Sign out
 						</MenuItem>

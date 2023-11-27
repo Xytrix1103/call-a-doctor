@@ -53,12 +53,9 @@ function PatientDashboard() {
             return doctorSnapshot.val();
         });
     }
-
-    // filter appointments to return only date, time, clinic, approval, doctor
-
     
     useEffect(() => {
-        onValue(query(ref(db, "requests"), limitToFirst(1)), (snapshot) => {
+        onValue(query(ref(db, "requests"), orderByChild("uid"), equalTo(user.uid), limitToFirst(1)), (snapshot) => {
             snapshot.forEach((childSnapshot) => {
                 const clinicId = childSnapshot.val().clinic;
                 const clinicRef = ref(db, `clinics/${clinicId}`);
@@ -94,7 +91,6 @@ function PatientDashboard() {
         onValue(query(ref(db, "requests"), orderByChild("uid"), equalTo(user.uid)), (snapshot) => {
             const requests = [];
             const appointments = [];
-            const allRequests = [];
             const promises = [];
             const data = snapshot.val();
             for (let id in data) {

@@ -19,7 +19,6 @@ import DoctorLayout from './components/layouts/DoctorLayout';
 import ClinicDetails from './pages/patient/ClinicDetails';
 import ClinicLayout from "./components/layouts/ClinicLayout.jsx";
 import AdminLayout from "./components/layouts/AdminLayout.jsx";
-import DoctorLayout from "./components/layouts/DoctorLayout.jsx";
 import ClinicRegistryApproval from "./pages/admin/ClinicRegistryApproval.jsx";
 import ClinicRegistryDetails from './pages/admin/ClinicRegistryDetails';
 import ApprovedClinicDetails from './pages/admin/ApprovedClinicDetails';
@@ -34,6 +33,7 @@ import AppointmentHistory from './pages/clinic/AppointmentHistory';
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
 import ManageUser from './pages/admin/ManageUser';
 import Profile from "./pages/auth/Profile.jsx";
+import DoctorClinicDetails from './pages/doctor/DoctorClinicDetails';
 
 const DashboardElement = () => {
 	const { user } = useAuth();
@@ -71,7 +71,8 @@ const router = createBrowserRouter(
 				<Route path="clinics/:id/request" element={<DoctorRequestForm/>}/>
 			</Route>
 			<Route element={<DoctorLayout/>}>
-				<Route path="patients" element={<></>}/>
+				<Route path="doctor-clinic/:id" element={<DoctorClinicDetails/>}/>
+				<Route path="your-appointments" element={<PendingAppointments/>}/>
 			</Route>
 			<Route element={<ClinicLayout/>}>
 				<Route path="appointments" element={<AppointmentHistory/>}/>
@@ -80,9 +81,6 @@ const router = createBrowserRouter(
 				<Route path="patients/:id" element={<></>}/>
 				<Route path="doctors" element={<></>}/>
 				<Route path="doctors/add" element={<AddDoctorToList/>}/>
-			</Route>
-			<Route element={<DoctorLayout/>}>
-				<Route path="appointments" element={<PendingAppointments/>}/>
 			</Route>
 			<Route path='/admin' element={<AdminLayout/>}>
 				<Route path="clinics" element={<ApprovedClinicList/>}/>
