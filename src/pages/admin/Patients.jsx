@@ -74,7 +74,7 @@ function Patients() {
 	const actionBodyTemplate = (rowData) => {
 		return (
 			<Flex justifyContent='center' alignItems='center' gap={2}>
-				<Button bg='transparent' as={NavLink} to={`/admin/users/edit/${rowData.id}`}><FaEye color='#0078ff'/></Button>
+				<Button bg='transparent' as={NavLink} to={`/patients/${rowData.id}`}><FaEye color='#0078ff'/></Button>
 			</Flex>
 		);
 	};
