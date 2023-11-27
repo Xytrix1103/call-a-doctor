@@ -28,6 +28,7 @@ import UserList from './pages/admin/UserList';
 import ManageUser from './pages/admin/ManageUser';
 import Profile from "./pages/auth/Profile.jsx";
 import Clinic from "./pages/clinic/Clinic.jsx";
+import Patients from "./pages/admin/Patients.jsx";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -46,7 +47,7 @@ const router = createBrowserRouter(
 			<Route element={<ClinicLayout/>}>
 				<Route path="clinic" element={<Clinic/>}/>
 				<Route path="patient-requests" element={<PatientRequests/>}/>
-				<Route path="patients" element={<></>}/>
+				<Route path="patients" element={<Patients/>}/>
 				<Route path="patients/:id" element={<></>}/>
 				<Route path="doctors" element={<></>}/>
 				<Route path="doctors/add" element={<AddDoctorToList/>}/>
@@ -68,7 +69,7 @@ const router = createBrowserRouter(
 				<Route path="doctors/:id" element={<></>}/>
 				<Route path="doctors/:id/schedule" element={<></>}/>
 				<Route path="doctors/:id/patients" element={<></>}/>
-				<Route path="patients" element={<></>}/>
+				<Route path="patients" element={<Patients/>}/>
 				<Route path="patients/:id" element={<></>}/>
 			</Route>
 		</Route>

@@ -1,0 +1,245 @@
+import {Avatar, Box, Button, Center, Divider, Flex, Input, InputGroup, InputLeftElement, Text,} from '@chakra-ui/react'
+import {useEffect, useState} from "react";
+import {db} from "../../../api/firebase.js";
+import {equalTo, get, onValue, orderByChild, query, ref} from "firebase/database";
+import {BiSearchAlt2} from 'react-icons/bi';
+import {FaEye, FaUser} from 'react-icons/fa';
+import {DataTable} from 'primereact/datatable';
+import {Column} from 'primereact/column';
+import {InputText} from 'primereact/inputtext';
+import {FilterMatchMode} from 'primereact/api';
+import '../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css';
+import {NavLink} from 'react-router-dom';
+import {useAuth} from "../../components/AuthCtx.jsx";
+
+function Patients() {
+	const [patients, setPatients] = useState([]);
+	const [filters, setFilters] = useState({
+		global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+		name: { value: null, matchMode: FilterMatchMode.CONTAINS },
+		email: { value: null, matchMode: FilterMatchMode.CONTAINS },
+		phone: { value: null, matchMode: FilterMatchMode.CONTAINS },
+		address: { value: null, matchMode: FilterMatchMode.CONTAINS },
+	});
+	const [globalFilterValue, setGlobalFilterValue] = useState('');
+	const [selectedUsers, setSelectedUsers] = useState(null);
+	const [rowClick, setRowClick] = useState(true);
+	const { user } = useAuth();
+	const asAdmin = user?.role === 'Admin';
+	
+	const onGlobalFilterChange = (e) => {
+		const value = e.target.value;
+		let _filters = { ...filters };
+		
+		_filters['global'].value = value;
+		
+		setFilters(_filters);
+		setGlobalFilterValue(value);
+	};
+	
+	const phoneBodyTemplate = (rowData) => {
+		return (
+			<Box display='flex' alignItems='center' gap={1}>
+				{rowData.phone}
+			</Box>
+		);
+	};
+	
+	const nameBodyTemplate = (rowData) => {
+		return (
+			<Box display='flex' alignItems='center' gap={3}>
+				{rowData.image ? (
+					<Avatar src={rowData.image} alt={rowData.name} size='sm'/>
+				) : (
+					<Avatar icon={<FaUser />} size='sm'/>
+				)}
+				{rowData.name}
+			</Box>
+		);
+	};
+	
+	const [isOpenApprove, setIsOpenApprove] = useState(false);
+	const [selectedUserId, setSelectedUserId] = useState(null);
+	
+	const onOpenApprove = (userId) => {
+		setSelectedUserId(userId);
+		setIsOpenApprove(true);
+	};
+	
+	const onCloseApprove = () => {
+		setSelectedUserId(null);
+		setIsOpenApprove(false);
+	};
+	
+	const actionBodyTemplate = (rowData) => {
+		return (
+			<Flex justifyContent='center' alignItems='center' gap={2}>
+				<Button bg='transparent' as={NavLink} to={`/admin/users/edit/${rowData.id}`}><FaEye color='#0078ff'/></Button>
+			</Flex>
+		);
+	};
+	
+	const nameRowFilterTemplate = (options) => {
+		return (
+			<InputText
+				value={options.value}
+				onChange={(e) => options.filterApplyCallback(e.target.value, filters['name'].matchMode)}
+				placeholder="Search by name"
+				style={{ width: '100%', padding: '0.5rem' }}
+			/>
+		);
+	};
+	
+	const addressRowFilterTemplate = (options) => {
+		return (
+			<InputText
+				value={options.value}
+				onChange={(e) => options.filterApplyCallback(e.target.value, filters['address'].matchMode)}
+				placeholder="Search by address"
+				style={{ width: '100%', padding: '0.5rem' }}
+			/>
+		);
+	};
+	
+	const phoneRowFilterTemplate = (options) => {
+		return (
+			<InputText
+				value={options.value}
+				onChange={(e) => options.filterApplyCallback(e.target.value, filters['phone'].matchMode)}
+				placeholder="Search by phone number"
+				style={{ width: '100%', padding: '0.5rem' }}
+			/>
+		);
+	};
+	
+	const emailRowFilterTemplate = (options) => {
+		return (
+			<InputText
+				value={options.value}
+				onChange={(e) => options.filterApplyCallback(e.target.value, filters['email'].matchMode)}
+				placeholder="Search by email"
+				style={{ width: '100%', padding: '0.5rem' }}
+			/>
+		);
+	};
+	
+	const renderHeader = () => {
+		return (
+			<Box>
+				<Flex justifyContent='space-between' alignItems='center'>
+					<Box>
+						<Text fontSize='2xl' fontWeight='semibold'>List of Users</Text>
+					</Box>
+					<Box>
+						<InputGroup>
+							<InputLeftElement
+								pointerEvents="none"
+								children={<BiSearchAlt2 color="gray.300" />}
+							/>
+							<Input
+								w="full"
+								placeholder="Search"
+								size="md"
+								focusBorderColor="blue.500"
+								borderRadius="lg"
+								borderColor="gray.300"
+								backgroundColor="white"
+								color="gray.800"
+								value={globalFilterValue}
+								onChange={onGlobalFilterChange}
+							/>
+						</InputGroup>
+					</Box>
+				</Flex>
+				<Divider mt={5} borderColor="blackAlpha.300" borderWidth="1px" rounded="lg" />
+			</Box>
+		);
+	};
+	
+	useEffect(() => {
+		onValue(query(ref(db, 'users'), orderByChild('role'), equalTo('Patient')), (snapshot) => {
+			let users = [];
+			console.log(snapshot.val());
+			
+			if (!asAdmin) {
+				snapshot.forEach((childSnapshot) => {
+					const { name, email, phone, address } = childSnapshot.val();
+					
+					get(query(ref(db, 'requests'), orderByChild('uid'), equalTo(childSnapshot.key))).then((s) => {
+						if (s.exists()) {
+							let hasRequest = false;
+							
+							s.forEach((c) => {
+								if (c.child('clinic').val() === user.clinic) {
+									hasRequest = true;
+									console.log("has request", c.val());
+								}
+							});
+							
+							if(hasRequest) {
+								setPatients((prev) => [...prev, {
+									id: childSnapshot.key,
+									name,
+									email,
+									phone,
+									address,
+								}]);
+							}
+						}
+					});
+				});
+			} else {
+				snapshot.forEach((childSnapshot) => {
+					const {name, email, phone, address} = childSnapshot.val();
+					
+					setPatients((prev) => [...prev, {
+						id: childSnapshot.key,
+						name,
+						email,
+						phone,
+						address,
+					}]);
+				});
+			}
+			
+			setPatients(users);
+		});
+	}, []);
+	
+	useEffect(() => {
+		console.log("patients", patients);
+	}, [patients]);
+	
+	const header = renderHeader();
+	
+	return (
+		<Center h="auto" bg="#f4f4f4">
+			<Flex direction='column' w='full' justifyContent='center' alignItems='center'>
+				<Box
+					w="95%"
+					h="full"
+					bg="white"
+					boxShadow="lg"
+					rounded="lg"
+					p={3}
+				>
+					<DataTable value={patients} header={header} stripedRows showGridlines paginator rows={10}
+					           removableSort rowsPerPageOptions={[10, 25, 50]} tableStyle={{ minWidth: '50rem' }}
+					           filters={filters} filterDisplay="row" globalFilterFields={['name', 'role', 'email', 'phone']}
+					           selectionMode={rowClick ? null : 'checkbox'} selection={selectedUsers}
+					           onSelectionChange={(e) => setSelectedUsers(e.value)} dataKey="id"
+					>
+						<Column field="name" header="Name" sortable filter filterElement={nameRowFilterTemplate} body={nameBodyTemplate} style={{ width:"15%" }}></Column>
+						<Column field="email" header="Email" sortable filter filterElement={emailRowFilterTemplate} style={{ width:"15%" }}></Column>
+						<Column field="address" header="Address" sortable filter filterElement={addressRowFilterTemplate} style={{ width:"30%" }}></Column>
+						<Column field="phone" header="Phone Number" sortable filter filterElement={phoneRowFilterTemplate} body={phoneBodyTemplate} style={{ width:"15%" }}></Column>
+						<Column field="action" header="Action" body={actionBodyTemplate} style={{ width:"10%" }}></Column>
+					</DataTable>
+				</Box>
+			
+			</Flex>
+		</Center>
+	);
+}
+
+export default Patients;
