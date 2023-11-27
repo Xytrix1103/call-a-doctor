@@ -53,10 +53,10 @@ export const register_clinic_admin = async (data, asAdmin=false) => {
 			}).then(() => {
 				return newUser.user;
 			}).catch((error) => {
-				throw {error: error};
+				return {error: error};
 			});
 		} else {
-			throw {error: "Error creating user"};
+			return {error: "Error creating user"};
 		}
 	})
 	.catch((error) => {
@@ -84,10 +84,10 @@ export const register_doctor = async (data, asAdmin = false) => {
 			}).then(() => {
 				return newUser.user;
 			}).catch((error) => {
-				throw {error: error};
+				return {error: error};
 			});
 		} else {
-			throw {error: "Error creating user"};
+			return {error: "Error creating user"};
 		}
 	})
 	.catch((error) => {
@@ -111,10 +111,10 @@ export const register_admin = async (data) => {
 			}).then(() => {
 				return newUser.user;
 			}).catch((error) => {
-				throw {error: error};
+				return {error: error};
 			});
 		} else {
-			throw {error: "Error creating user"};
+			return {error: "Error creating user"};
 		}
 	})
 	.catch((error) => {

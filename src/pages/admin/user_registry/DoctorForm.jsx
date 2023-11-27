@@ -31,7 +31,7 @@ import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 import {db} from "../../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
 import {register_doctor} from "../../../../api/auth.js";
-import {update_doctor} from "../../../../api/admin.js";
+import {update_doctor, update_email, update_password} from "../../../../api/admin.js";
 import {useNavigate} from "react-router-dom";
 
 export const DoctorForm = ({user, self=false}) => {
@@ -145,6 +145,7 @@ export const DoctorForm = ({user, self=false}) => {
 		e.preventDefault();
 		setIsDragActive(false);
 		const file = e.dataTransfer.files[0];
+		imageRef.current.files = e.dataTransfer.files;
 		populatePreviewImage(file);
 	};
 	
@@ -157,23 +158,31 @@ export const DoctorForm = ({user, self=false}) => {
 		return file.type.startsWith("image/");
 	};
 	
-	const onSubmit = async (data) => {
+	const onSubmit = async () => {
+		let data = getValues();
         console.log("Submitting doctor form", data);
 		
 		if (!user) {
-			await trigger();
+			const valid = await trigger(['name', 'phone', 'date_of_birth', 'qualification', 'introduction', 'clinic', 'email', 'password', 'confirm_password']);
 			const password = data["password"];
 			const confirm_password = data["confirm_password"];
+			
+			if (!valid) {
+				return;
+			}
 			
 			if (password !== confirm_password) {
 				alert("Passwords do not match!");
 				return;
 			}
 			
+			console.log(imageRef.current.files)
+			
 			if (imageRef.current.files.length === 0) {
 				alert("Please upload an image");
 				return;
 			}
+			
 			
 			data = {
 				...data,
@@ -182,15 +191,16 @@ export const DoctorForm = ({user, self=false}) => {
 			
 			console.log(data);
 			
-			register_doctor(data).then((res) => {
+			register_doctor(data, true).then((res) => {
 				console.log(res);
 				if (res.error) {
 					toast({
 						title: "Error!",
-						description: res.error,
+						description: "An error has occurred!",
 						status: "error",
 						duration: 5000,
 						isClosable: true,
+						position: "top"
 					});
 				} else {
 					toast({
@@ -199,6 +209,7 @@ export const DoctorForm = ({user, self=false}) => {
 						status: "success",
 						duration: 5000,
 						isClosable: true,
+						position: "top"
 					});
 					navigate('/admin/users');
 				}
@@ -210,11 +221,17 @@ export const DoctorForm = ({user, self=false}) => {
 					status: "error",
 					duration: 5000,
 					isClosable: true,
+					position: "top"
 				});
 			});
 		} else {
-			await trigger(['name', 'phone', 'date_of_birth', 'qualification', 'introduction', 'clinic']);
+			console.log("Updating doctor");
+			const valid = await trigger(['name', 'phone', 'date_of_birth', 'qualification', 'introduction', 'clinic']);
 			let update = {};
+			
+			if (!valid) {
+				return;
+			}
 			
 			//loop thru form values
 			for (const [key, value] of Object.entries(data)) {
@@ -235,10 +252,11 @@ export const DoctorForm = ({user, self=false}) => {
 					if (res.error) {
 						toast({
 							title: "Error!",
-							description: res.error,
+							description: "An error has occurred!",
 							status: "error",
 							duration: 5000,
 							isClosable: true,
+							position: "top"
 						});
 					} else {
 						toast({
@@ -247,6 +265,7 @@ export const DoctorForm = ({user, self=false}) => {
 							status: "success",
 							duration: 5000,
 							isClosable: true,
+							position: "top"
 						});
 						navigate('/admin/users');
 					}
@@ -258,6 +277,7 @@ export const DoctorForm = ({user, self=false}) => {
 						status: "error",
 						duration: 5000,
 						isClosable: true,
+						position: "top"
 					});
 				});
 			}
@@ -283,22 +303,105 @@ export const DoctorForm = ({user, self=false}) => {
     const handleOpenEmailModal = () => {
         onOpenEmailModal();
     };
-
-    const handleEmailSubmit = (data) => {
-        console.log(data);
-        console.log("Submitting email modal")
-
-    };
-
-    const handlePasswordSubmit = (data) => {
-        console.log(data);
-        console.log("Submitting password modal");
-
-    };
-
-    return (
-        <form action="/api/add-doctor-to-list" method="post" onSubmit={handleSubmit(onSubmit)}
-        encType="multipart/form-data">
+	
+	const handleEmailSubmit = async () => {
+		const valid = await trigger(['new_email']);
+		console.log("Submitting email modal");
+		
+		if (!valid) {
+			return;
+		}
+		
+		update_email(user, getValues('new_email')).then((res) => {
+			console.log(res);
+			if (res.error) {
+				toast({
+					title: "Error!",
+					description: "An error has occurred!",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+					position: "top"
+				});
+			} else {
+				toast({
+					title: "Success!",
+					description: "Email has been updated!",
+					status: "success",
+					duration: 5000,
+					isClosable: true,
+					position: "top"
+				});
+				onCloseEmailModal();
+			}
+		}).catch((err) => {
+			console.log(err);
+			toast({
+				title: "Error!",
+				description: "An error has occurred!",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+				position: "top"
+			});
+		});
+		onCloseEmailModal();
+	};
+	
+	const handlePasswordSubmit = async () => {
+		const valid = await trigger(['new_password', 'new_confirm_password']);
+		console.log("Submitting password modal");
+		
+		if (!valid) {
+			return;
+		}
+		
+		if (getValues('new_password') !== getValues('new_confirm_password')) {
+			alert("Passwords do not match!");
+			onClosePasswordModal();
+			return;
+		}
+		
+		update_password(user, getValues('new_password')).then((res) => {
+			console.log(res);
+			onClosePasswordModal();
+			if (res.error) {
+				toast({
+					title: "Error!",
+					description: "An error has occurred!",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+					position: "top"
+				});
+			} else {
+				toast({
+					title: "Success!",
+					description: "Password has been updated!",
+					status: "success",
+					duration: 5000,
+					isClosable: true,
+					position: "top"
+				});
+				onClosePasswordModal();
+			}
+		}).catch((err) => {
+			console.log(err);
+			toast({
+				title: "Error!",
+				description: "An error has occurred!",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+				position: "top"
+			});
+		});
+		onClosePasswordModal();
+	};
+	
+	
+	return (
+        <form action="/api/add-doctor-to-list" method="post" encType="multipart/form-data">
             <Flex px={5} gap={8}>
                 <Box mb={4} w="full">
                     <Box>
@@ -589,6 +692,51 @@ export const DoctorForm = ({user, self=false}) => {
 											{errors.password && errors.password.message}
 										</FormErrorMessage>
 									</FormControl>
+									
+									<FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900"  id="confirm_password" isInvalid={errors.name}>
+										<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
+											Confirm Password <Text as="span" color="red.500" fontWeight="bold">*</Text>
+										</FormLabel>
+										<InputGroup>
+											<Input
+												type={showConfirmPassword ? 'text' : 'password'}
+												name="confirm_password"
+												id="confirm_password"
+												variant="filled"
+												placeholder="•••••••••"
+												rounded="xl"
+												borderWidth="1px"
+												borderColor="gray.300"
+												color="gray.900"
+												size="md"
+												focusBorderColor="blue.500"
+												w="full"
+												p={2.5}
+												{
+													...register("confirm_password", {
+														required: "Confirm Password is required",
+														pattern: {
+															value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%#*?&])[A-Za-z\d@$!%#*?&]{8,}$/,
+															message: "Invalid password format",
+														},
+													})
+												}
+											/>
+											<InputRightElement>
+												<IconButton aria-label="Show password" size="lg" variant="ghost"
+												            icon={showConfirmPassword ? <IoMdEyeOff/> : <IoMdEye/>}
+												            _focus={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+												            _hover={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+												            _active={{bg: "transparent", borderColor: "transparent", outline: "none"}}
+												            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+												            tabIndex="-1"
+												/>
+											</InputRightElement>
+										</InputGroup>
+										<FormErrorMessage>
+											{errors.confirm_password && errors.confirm_password.message}
+										</FormErrorMessage>
+									</FormControl>
 								</Box>
 							</>
                         )
@@ -686,7 +834,7 @@ export const DoctorForm = ({user, self=false}) => {
                                             Edit Email
                                         </Button>
                                         <Modal isOpen={isEmailModalOpen} onClose={onCloseEmailModal} size='xl' isCentered>
-                                            <form onSubmit={handleSubmit(handleEmailSubmit)}> 
+                                            <form>
                                                 <ModalOverlay 
                                                     bg='blackAlpha.300'
                                                     backdropFilter='blur(3px) hue-rotate(90deg)'
@@ -695,7 +843,7 @@ export const DoctorForm = ({user, self=false}) => {
                                                     <ModalHeader>Edit Email</ModalHeader>
                                                     <ModalCloseButton />
                                                     <ModalBody>
-                                                        <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="email" isInvalid={errors.email}>
+                                                        <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="email" isInvalid={errors.new_email}>
                                                             <FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
                                                                 Email <Text as="span" color="red.500" fontWeight="bold">*</Text>
                                                             </FormLabel>
@@ -714,13 +862,13 @@ export const DoctorForm = ({user, self=false}) => {
                                                                 w="full"
                                                                 p={2.5}
                                                                 {
-                                                                    ...register("email", {
+                                                                    ...register("new_email", {
                                                                         required: "Email is required",
                                                                     })
                                                                 }
                                                             />
                                                             <FormErrorMessage>
-                                                                {errors.email && errors.email.message}
+                                                                {errors.new_email && errors.new_email.message}
                                                             </FormErrorMessage>
                                                         </FormControl>
                                                     </ModalBody>
@@ -744,7 +892,7 @@ export const DoctorForm = ({user, self=false}) => {
                                             Edit Password
                                         </Button>
                                         <Modal isOpen={isPasswordModalOpen} onClose={onClosePasswordModal} size='xl' isCentered>
-                                            <form onSubmit={handleSubmit(handlePasswordSubmit)}>
+                                            <form>
                                                 <ModalOverlay 
                                                     bg='blackAlpha.300'
                                                     backdropFilter='blur(3px) hue-rotate(90deg)'
@@ -753,7 +901,7 @@ export const DoctorForm = ({user, self=false}) => {
                                                     <ModalHeader>Password Modal</ModalHeader>
                                                     <ModalCloseButton />
                                                     <ModalBody>
-                                                        <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="password" isInvalid={errors.password}>
+                                                        <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="password" isInvalid={errors.new_password}>
                                                             <FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
                                                                 Password
                                                             </FormLabel>
@@ -770,7 +918,7 @@ export const DoctorForm = ({user, self=false}) => {
                                                                     size="md"
                                                                     focusBorderColor="blue.500"
                                                                     {
-                                                                        ...register("password", {
+                                                                        ...register("new_password", {
                                                                             required: "Password is required",
                                                                             pattern: {
                                                                                 value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
@@ -795,10 +943,10 @@ export const DoctorForm = ({user, self=false}) => {
                                                                 one number and one special character
                                                             </FormHelperText>
                                                             <FormErrorMessage>
-                                                                {errors.password && errors.password.message}
+                                                                {errors.new_password && errors.new_password.message}
                                                             </FormErrorMessage>
                                                         </FormControl>
-                                                        <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="confirm_password" isInvalid={errors.confirm_password}>
+                                                        <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="confirm_password" isInvalid={errors.new_confirm_password}>
                                                             <FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
                                                                 Confirm Password
                                                             </FormLabel>
@@ -815,7 +963,7 @@ export const DoctorForm = ({user, self=false}) => {
                                                                     size="md"
                                                                     focusBorderColor="blue.500"
                                                                     {
-                                                                        ...register("confirm_password", {
+                                                                        ...register("new_confirm_password", {
                                                                             required: "Confirm password is required",
                                                                             pattern: {
                                                                                 value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
@@ -836,7 +984,7 @@ export const DoctorForm = ({user, self=false}) => {
                                                                 </InputRightElement>
                                                             </InputGroup>
                                                             <FormErrorMessage>
-                                                                {errors.confirm_password && errors.confirm_password.message}
+                                                                {errors.new_confirm_password && errors.new_confirm_password.message}
                                                             </FormErrorMessage>
                                                         </FormControl>
                                                     </ModalBody>
@@ -855,7 +1003,7 @@ export const DoctorForm = ({user, self=false}) => {
 
                         <Box>
                             <Button
-                                type="submit"
+	                            onClick={onSubmit}
                                 colorScheme="blue"
                                 rounded="xl"
                                 px={4}

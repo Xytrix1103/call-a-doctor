@@ -78,7 +78,7 @@ function PatientRegistry() {
 			if (res.error) {
 				toast({
 					title: "Registration failed.",
-					description: res.error,
+					description: "An error has occurred!",
 					status: "error",
 					duration: 3000,
 					isClosable: true,
@@ -90,7 +90,7 @@ function PatientRegistry() {
 		} else {
 			toast({
 				title: "Registration failed.",
-				description: res.error,
+				description: "An error has occurred!",
 				status: "error",
 				duration: 3000,
 				isClosable: true,
