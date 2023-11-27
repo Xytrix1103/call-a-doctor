@@ -31,11 +31,13 @@ import { BiSearchAlt2 } from "react-icons/bi";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { FilterMatchMode } from 'primereact/api';
+import { AppointmentHistoryCard } from './AppointmentHistoryCard.jsx';
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
 
 function AppointmentHistory() {
     const {user} = useAuth();
     const clinicId = user.clinic;
+    const [clinic, setClinic] = useState({});
     const [appointments, setAppointments] = useState([]);
 
     function formatDate(isoDate) {
@@ -52,6 +54,13 @@ function AppointmentHistory() {
         return age;
     }
 
+    function fetchDoctorData(doctorId) {
+        const doctorRef = ref(db, `users/${doctorId}`);
+        return get(doctorRef).then((doctorSnapshot) => {
+            return doctorSnapshot.val();
+        });
+    }
+
     useEffect(() => {    
         onValue(
             query(
@@ -66,25 +75,31 @@ function AppointmentHistory() {
                     if (data[id].completed) {
                         if (data[id].patient == null) {
                             get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
+                                fetchDoctorData(data[id].doctor).then((doctorData) => {
+                                    data[id] = {
+                                        id: id,
+                                        ...data[id],
+                                        ...userSnapshot.val(),
+                                        age: formatAge(userSnapshot.val().dob),
+                                        date: formatDate(data[id].date),
+                                        doctor: doctorData,
+                                    };
+                                    appointments.push(data[id]);
+                                });
+                            });
+                        } else {
+                            fetchDoctorData(data[id].doctor).then((doctorData) => {
                                 data[id] = {
                                     id: id,
                                     ...data[id],
-                                    ...userSnapshot.val(),
-                                    age: formatAge(userSnapshot.val().dob),
+                                    ...data[id].patient,
+                                    age: formatAge(data[id].patient.dob),
                                     date: formatDate(data[id].date),
-                                }
+                                    doctor: doctorData,
+                                };
                                 appointments.push(data[id]);
                             });
-                        } else {
-                            data[id] = {
-                                id: id,
-                                ...data[id],
-                                ...data[id].patient,
-                                age: formatAge(data[id].patient.dob),
-                                date: formatDate(data[id].date),
-                            }
-                            appointments.push(data[id]);
-                        }            
+                        }     
                         console.log(data[id])            
                     }          
                 }
@@ -92,12 +107,22 @@ function AppointmentHistory() {
             }
         );
 
+        onValue(query(ref(db, `clinics/${clinicId}`)), (snapshot) => {
+            const data = snapshot.val();
+            console.log(data);
+            setClinic(data);
+        });
+
     }, [clinicId]);
     
     return (
         <Center h="auto" bg="#f4f4f4">
             <Flex direction='column' w='full' justifyContent='center' alignItems='center'>
-
+                {
+                    appointments.map((appointment) => (
+                        <AppointmentHistoryCard key={appointment.id} appointment={appointment} clinic={clinic} />
+                    ))    
+                }
             </Flex>
         </Center>
     );
