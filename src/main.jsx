@@ -27,6 +27,7 @@ import PendingAppointments from './pages/doctor/PendingAppointments';
 import UserList from './pages/admin/UserList';
 import ManageUser from './pages/admin/ManageUser';
 import Profile from "./pages/auth/Profile.jsx";
+import Clinic from "./pages/clinic/Clinic.jsx";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -43,6 +44,7 @@ const router = createBrowserRouter(
 				<Route path="clinics/:id/request" element={<DoctorRequestForm/>}/>
 			</Route>
 			<Route element={<ClinicLayout/>}>
+				<Route path="clinic" element={<Clinic/>}/>
 				<Route path="patient-requests" element={<PatientRequests/>}/>
 				<Route path="patients" element={<></>}/>
 				<Route path="patients/:id" element={<></>}/>
