@@ -25,7 +25,6 @@ import ApprovedClinicList from './pages/admin/ApprovedClinicList';
 import PatientDashboard from './pages/patient/PatientDashboard';
 import ClinicDashboard from './pages/clinic/ClinicDashboard';
 import UserList from './pages/admin/UserList';
-import AdminRegistry from './pages/admin/AdminRegistry';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import VerificationPending from './pages/clinic/VerificationPending';
 import AppointmentHistory from './pages/clinic/AppointmentHistory';
