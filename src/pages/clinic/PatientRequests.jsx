@@ -280,7 +280,7 @@ function PatientRequests() {
 				if(res.error) {
 					toast({
 						title: 'Rejection failed.',
-						description: res.error,
+						description: "An error has occurred!",
 						position: 'top',
 						status: 'error',
 						duration: 5000,
@@ -322,7 +322,7 @@ function PatientRequests() {
 			if(res.error) {
 				toast({
 					title: 'Approval failed.',
-					description: res.error,
+					description: "An error has occurred!",
 					position: 'top',
 					status: 'error',
 					duration: 5000,

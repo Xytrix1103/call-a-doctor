@@ -175,10 +175,13 @@ export const DoctorForm = ({user, self=false}) => {
 				return;
 			}
 			
+			console.log(imageRef.current.files)
+			
 			if (imageRef.current.files.length === 0) {
 				alert("Please upload an image");
 				return;
 			}
+			
 			
 			data = {
 				...data,
@@ -192,10 +195,11 @@ export const DoctorForm = ({user, self=false}) => {
 				if (res.error) {
 					toast({
 						title: "Error!",
-						description: res.error,
+						description: "An error has occurred!",
 						status: "error",
 						duration: 5000,
 						isClosable: true,
+						position: "top"
 					});
 				} else {
 					toast({
@@ -204,6 +208,7 @@ export const DoctorForm = ({user, self=false}) => {
 						status: "success",
 						duration: 5000,
 						isClosable: true,
+						position: "top"
 					});
 					navigate('/admin/users');
 				}
@@ -215,6 +220,7 @@ export const DoctorForm = ({user, self=false}) => {
 					status: "error",
 					duration: 5000,
 					isClosable: true,
+					position: "top"
 				});
 			});
 		} else {
@@ -245,10 +251,11 @@ export const DoctorForm = ({user, self=false}) => {
 					if (res.error) {
 						toast({
 							title: "Error!",
-							description: res.error,
+							description: "An error has occurred!",
 							status: "error",
 							duration: 5000,
 							isClosable: true,
+							position: "top"
 						});
 					} else {
 						toast({
@@ -257,6 +264,7 @@ export const DoctorForm = ({user, self=false}) => {
 							status: "success",
 							duration: 5000,
 							isClosable: true,
+							position: "top"
 						});
 						navigate('/admin/users');
 					}
@@ -268,6 +276,7 @@ export const DoctorForm = ({user, self=false}) => {
 						status: "error",
 						duration: 5000,
 						isClosable: true,
+						position: "top"
 					});
 				});
 			}
@@ -307,10 +316,11 @@ export const DoctorForm = ({user, self=false}) => {
 			if (res.error) {
 				toast({
 					title: "Error!",
-					description: res.error,
+					description: "An error has occurred!",
 					status: "error",
 					duration: 5000,
 					isClosable: true,
+					position: "top"
 				});
 			} else {
 				toast({
@@ -319,6 +329,7 @@ export const DoctorForm = ({user, self=false}) => {
 					status: "success",
 					duration: 5000,
 					isClosable: true,
+					position: "top"
 				});
 				onCloseEmailModal();
 			}
@@ -330,6 +341,7 @@ export const DoctorForm = ({user, self=false}) => {
 				status: "error",
 				duration: 5000,
 				isClosable: true,
+				position: "top"
 			});
 		});
 		onCloseEmailModal();
@@ -355,10 +367,11 @@ export const DoctorForm = ({user, self=false}) => {
 			if (res.error) {
 				toast({
 					title: "Error!",
-					description: res.error,
+					description: "An error has occurred!",
 					status: "error",
 					duration: 5000,
 					isClosable: true,
+					position: "top"
 				});
 			} else {
 				toast({
@@ -367,6 +380,7 @@ export const DoctorForm = ({user, self=false}) => {
 					status: "success",
 					duration: 5000,
 					isClosable: true,
+					position: "top"
 				});
 				onClosePasswordModal();
 			}
@@ -378,6 +392,7 @@ export const DoctorForm = ({user, self=false}) => {
 				status: "error",
 				duration: 5000,
 				isClosable: true,
+				position: "top"
 			});
 		});
 		onClosePasswordModal();

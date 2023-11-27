@@ -108,10 +108,11 @@ export const ClinicAdminForm = ({user, self=false}) => {
                 if (res.error) {
                     toast({
                         title: "Error!",
-                        description: res.error,
+                        description: "An error has occurred!",
                         status: "error",
                         duration: 5000,
                         isClosable: true,
+                        position: "top"
                     });
                 } else {
                     toast({
@@ -120,6 +121,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                         status: "success",
                         duration: 5000,
                         isClosable: true,
+                        position: "top"
                     });
                     navigate('/admin/users');
                 }
@@ -131,6 +133,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                     status: "error",
                     duration: 5000,
                     isClosable: true,
+                    position: "top"
                 });
             });
         } else {
@@ -154,10 +157,11 @@ export const ClinicAdminForm = ({user, self=false}) => {
                     if (res.error) {
                         toast({
                             title: "Error!",
-                            description: res.error,
+                            description: "An error has occurred!",
                             status: "error",
                             duration: 5000,
                             isClosable: true,
+                            position: "top"
                         });
                     } else {
                         toast({
@@ -166,6 +170,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                             status: "success",
                             duration: 5000,
                             isClosable: true,
+                            position: "top"
                         });
                         navigate('/admin/users');
                     }
@@ -177,6 +182,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                         status: "error",
                         duration: 5000,
                         isClosable: true,
+                        position: "top"
                     });
                 });
             }
@@ -217,10 +223,11 @@ export const ClinicAdminForm = ({user, self=false}) => {
             if (res.error) {
                 toast({
                     title: "Error!",
-                    description: res.error,
+                    description: "An error has occurred!",
                     status: "error",
                     duration: 5000,
                     isClosable: true,
+                    position: "top"
                 });
             } else {
                 toast({
@@ -229,6 +236,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                     status: "success",
                     duration: 5000,
                     isClosable: true,
+                    position: "top"
                 });
                 onCloseEmailModal();
             }
@@ -240,6 +248,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                 status: "error",
                 duration: 5000,
                 isClosable: true,
+                position: "top"
             });
         });
         onCloseEmailModal();
@@ -266,10 +275,11 @@ export const ClinicAdminForm = ({user, self=false}) => {
             if (res.error) {
                 toast({
                     title: "Error!",
-                    description: res.error,
+                    description: "An error has occurred!",
                     status: "error",
                     duration: 5000,
                     isClosable: true,
+                    position: "top"
                 });
             } else {
                 toast({
@@ -278,6 +288,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                     status: "success",
                     duration: 5000,
                     isClosable: true,
+                    position: "top"
                 });
                 onClosePasswordModal();
             }
@@ -289,6 +300,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                 status: "error",
                 duration: 5000,
                 isClosable: true,
+                position: "top"
             });
         });
         onClosePasswordModal();

@@ -68,7 +68,8 @@ export const AdminForm = ({user, self=false}) => {
                 if (res.error) {
                     toast({
                         title: "Error!",
-                        description: res.error,
+                        description: "An error has occurred!",
+                        position: "top",
                         status: "error",
                         duration: 5000,
                         isClosable: true,
@@ -80,6 +81,7 @@ export const AdminForm = ({user, self=false}) => {
                         status: "success",
                         duration: 5000,
                         isClosable: true,
+                        position: "top"
                     });
                     navigate('/admin/users');
                 }
@@ -91,6 +93,7 @@ export const AdminForm = ({user, self=false}) => {
                     status: "error",
                     duration: 5000,
                     isClosable: true,
+                    position: "top"
                 });
             });
         } else {
@@ -114,10 +117,11 @@ export const AdminForm = ({user, self=false}) => {
                     if (res.error) {
                         toast({
                             title: "Error!",
-                            description: res.error,
+                            description: "An error has occurred!",
                             status: "error",
                             duration: 5000,
                             isClosable: true,
+                            position: "top"
                         });
                     } else {
                         toast({
@@ -126,6 +130,7 @@ export const AdminForm = ({user, self=false}) => {
                             status: "success",
                             duration: 5000,
                             isClosable: true,
+                            position: "top"
                         });
                         navigate('/admin/users');
                     }
@@ -137,6 +142,7 @@ export const AdminForm = ({user, self=false}) => {
                         status: "error",
                         duration: 5000,
                         isClosable: true,
+                        position: "top"
                     });
                 });
             }
@@ -188,10 +194,11 @@ export const AdminForm = ({user, self=false}) => {
             if (res.error) {
                 toast({
                     title: "Error!",
-                    description: res.error,
+                    description: "An error has occurred!",
                     status: "error",
                     duration: 5000,
                     isClosable: true,
+                    position: "top"
                 });
             } else {
                 toast({
@@ -200,6 +207,7 @@ export const AdminForm = ({user, self=false}) => {
                     status: "success",
                     duration: 5000,
                     isClosable: true,
+                    position: "top"
                 });
                 onCloseEmailModal();
             }
@@ -211,6 +219,7 @@ export const AdminForm = ({user, self=false}) => {
                 status: "error",
                 duration: 5000,
                 isClosable: true,
+                position: "top"
             });
         });
         onCloseEmailModal();
@@ -236,10 +245,11 @@ export const AdminForm = ({user, self=false}) => {
             if (res.error) {
                 toast({
                     title: "Error!",
-                    description: res.error,
+                    description: "An error has occurred!",
                     status: "error",
                     duration: 5000,
                     isClosable: true,
+                    position: "top"
                 });
             } else {
                 toast({
@@ -248,6 +258,7 @@ export const AdminForm = ({user, self=false}) => {
                     status: "success",
                     duration: 5000,
                     isClosable: true,
+                    position: "top"
                 });
                 onClosePasswordModal();
             }
@@ -259,6 +270,7 @@ export const AdminForm = ({user, self=false}) => {
                 status: "error",
                 duration: 5000,
                 isClosable: true,
+                position: "top"
             });
         });
         onClosePasswordModal();
