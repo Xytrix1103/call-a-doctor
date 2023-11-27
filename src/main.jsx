@@ -18,14 +18,15 @@ import PatientLayout from "./components/layouts/PatientLayout.jsx";
 import ClinicDetails from './pages/patient/ClinicDetails';
 import ClinicLayout from "./components/layouts/ClinicLayout.jsx";
 import AdminLayout from "./components/layouts/AdminLayout.jsx";
+import DoctorLayout from "./components/layouts/DoctorLayout.jsx";
 import ClinicRegistryApproval from "./pages/admin/ClinicRegistryApproval.jsx";
 import ClinicRegistryDetails from './pages/admin/ClinicRegistryDetails';
 import ApprovedClinicDetails from './pages/admin/ApprovedClinicDetails';
 import ApprovedClinicList from './pages/admin/ApprovedClinicList';
+import PendingAppointments from './pages/doctor/PendingAppointments';
 import UserList from './pages/admin/UserList';
 import ManageUser from './pages/admin/ManageUser';
 import Profile from "./pages/auth/Profile.jsx";
-
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -47,6 +48,9 @@ const router = createBrowserRouter(
 				<Route path="patients/:id" element={<></>}/>
 				<Route path="doctors" element={<></>}/>
 				<Route path="doctors/add" element={<AddDoctorToList/>}/>
+			</Route>
+			<Route element={<DoctorLayout/>}>
+				<Route path="appointments" element={<PendingAppointments/>}/>
 			</Route>
 			<Route path='/admin' element={<AdminLayout/>}>
 				<Route path="clinics" element={<ApprovedClinicList/>}/>

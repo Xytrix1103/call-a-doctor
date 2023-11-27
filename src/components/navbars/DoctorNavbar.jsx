@@ -1,4 +1,4 @@
-import {Avatar, Button, Flex, Link, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text} from "@chakra-ui/react";
+import {Avatar, Flex, Link, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, Button} from "@chakra-ui/react";
 import {NavLink, useLocation} from "react-router-dom";
 import {BiChevronDown} from "react-icons/bi";
 import {logout} from "../../../api/auth.js";
@@ -36,8 +36,8 @@ const DoctorNavbar = () => {
 				<Link as={NavLink} color="teal.500" to="/" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
 					Home
 				</Link>
-				<Link as={NavLink} color="teal.500" to="/clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
-					Clinic List
+				<Link as={NavLink} color="teal.500" to="/appointments" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
+					Appointments
 				</Link>
 				<Menu marginRight={6}>
 					<MenuButton as={Link} color="teal.500" display="flex" alignItems="center">
