@@ -57,6 +57,9 @@ const router = createBrowserRouter(
 			</Route>
 			<Route element={<DoctorLayout/>}>
 				<Route path="appointments" element={<PendingAppointments/>}/>
+				<Route path="patients" element={<Patients/>}/>
+				<Route path="patients/:id" element={<PatientAppointmentHistory/>}/>
+				<Route path="patient-request/:id" element={<PatientAppointmentCard/>}/>
 			</Route>
 			<Route path='/admin' element={<AdminLayout/>}>
 				<Route path="clinics" element={<ApprovedClinicList/>}/>
@@ -73,7 +76,7 @@ const router = createBrowserRouter(
 				<Route path="doctors/:id/schedule" element={<></>}/>
 				<Route path="doctors/:id/patients" element={<></>}/>
 				<Route path="patients" element={<Patients asAdmin={true}/>}/>
-				<Route path="patients/:id" element={<PatientAppointmentHistory/>}/>
+				<Route path="patients/:id" element={<PatientAppointmentHistory asAdmin={true}/>}/>
 				<Route path="patient-request/:id" element={<PatientAppointmentCard/>}/>
 			</Route>
 		</Route>
