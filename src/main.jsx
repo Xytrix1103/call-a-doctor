@@ -4,7 +4,7 @@ import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} fr
 import RootLayout from "./components/layouts/RootLayout.jsx";
 import Login from "./pages/auth/Login.jsx";
 import AddDoctorToList from './pages/clinic/AddDoctorToList.jsx';
-import PendingPatientRequests from './pages/clinic/PendingPatientRequests.jsx';
+import PatientRequests from './pages/clinic/PatientRequests.jsx';
 import DoctorRequestForm from './pages/patient/DoctorRequestForm.jsx';
 import React from "react";
 import App from "./App.jsx";
@@ -42,7 +42,7 @@ const router = createBrowserRouter(
 				<Route path="clinics/:id/request" element={<DoctorRequestForm/>}/>
 			</Route>
 			<Route element={<ClinicLayout/>}>
-				<Route path="requests" element={<PendingPatientRequests/>}/>
+				<Route path="patient-requests" element={<PatientRequests/>}/>
 				<Route path="patients" element={<></>}/>
 				<Route path="patients/:id" element={<></>}/>
 				<Route path="doctors" element={<></>}/>
