@@ -30,6 +30,7 @@ import Profile from "./pages/auth/Profile.jsx";
 import Clinic from "./pages/clinic/Clinic.jsx";
 import Patients from "./pages/admin/Patients.jsx";
 import PatientAppointmentHistory from './pages/admin/PatientAppointmentHistory';
+import PatientAppointmentCard from './pages/admin/PatientAppointmentCard';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -50,6 +51,7 @@ const router = createBrowserRouter(
 				<Route path="patient-requests" element={<PatientRequests/>}/>
 				<Route path="patients" element={<Patients/>}/>
 				<Route path="patients/:id" element={<PatientAppointmentHistory/>}/>
+				<Route path="patient-request/:id" element={<PatientAppointmentCard/>}/>
 				<Route path="doctors" element={<></>}/>
 				<Route path="doctors/add" element={<AddDoctorToList/>}/>
 			</Route>
@@ -72,6 +74,7 @@ const router = createBrowserRouter(
 				<Route path="doctors/:id/patients" element={<></>}/>
 				<Route path="patients" element={<Patients asAdmin={true}/>}/>
 				<Route path="patients/:id" element={<PatientAppointmentHistory/>}/>
+				<Route path="patient-request/:id" element={<PatientAppointmentCard/>}/>
 			</Route>
 		</Route>
 	)
