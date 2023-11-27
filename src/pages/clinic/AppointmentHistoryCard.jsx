@@ -1,4 +1,5 @@
 import {
+    Avatar,
 	Box,
 	Button,
 	Divider,
@@ -20,16 +21,17 @@ import {
 } from '@chakra-ui/react'
 import {BiLinkExternal, BiSolidPhone} from "react-icons/bi";
 import {BsCalendarDayFill, BsGenderFemale, BsGenderMale} from "react-icons/bs";
-import {FaCar, FaMapLocationDot, FaPlus, FaTrash, FaUser, FaX} from "react-icons/fa6";
+import {FaCar, FaMapLocationDot, FaPlus, FaTrash, FaUser, FaX, FaStethoscope } from "react-icons/fa6";
+import { IoIosCheckmarkCircle } from "react-icons/io";
 import {GiMedicines, GiSandsOfTime} from "react-icons/gi";
+import { MdEmail } from "react-icons/md";
 import {GoDotFill} from "react-icons/go";
 import {useState} from 'react';
 import {DirectionsRenderer, GoogleMap, InfoWindow, Marker, useLoadScript} from '@react-google-maps/api';
-import {mark_arrived, prescribe} from "../../../api/doctor.js";
 
 function Map({place_id, onDistanceChange, clinic_place_id}) {
 	const mapStyle = {
-		height: '350px',
+		height: '450px',
 		width: '350px',
 	};
 	const [libs] = useState(['places']);
@@ -188,253 +190,86 @@ function Map({place_id, onDistanceChange, clinic_place_id}) {
 	);
 }
 
-const PrescriptionModal = ({isOpen, onClose, handleSubmitPrescription}) => {
-	const [prescriptions, setPrescriptions] = useState([0]);
-	
-	const addRow = () => {
-		setPrescriptions((prevPrescriptions) => [...prevPrescriptions, prevPrescriptions.length]);
-	};
-	
-	const deleteRow = (id) => {
-		setPrescriptions((prevPrescriptions) => prevPrescriptions.filter((prescription) => prescription !== id));
-	};
-	
+const PrescriptionModal = ({isOpen, onClose, prescriptions}) => {
 	return (
-			<Modal size="6xl" isCentered isOpen={isOpen} onClose={onClose}>
-				<form onSubmit={handleSubmitPrescription}>
-					<ModalOverlay bg="blackAlpha.300" backdropFilter="blur(3px) hue-rotate(90deg)"/>
-					<ModalContent>
-						<ModalHeader>
-							Add Prescription
-						</ModalHeader>
-						<ModalCloseButton _focus={{boxShadow: 'none', outline: 'none'}}/>
-						<Divider mb={2} borderWidth="1px" borderColor="blackAlpha.300"/>
-						<ModalBody>
-							<Flex w='full' alignItems='center' justifyContent='space-between' mb={4}>
-								<Text fontSize='sm' fontWeight='light' letterSpacing='wide' mb={3}>Adding a prescription will
-									mark the appointment as completed.</Text>
-							</Flex>
-							{prescriptions.map((prescription, index) => (
-								<Flex key={prescription} mb={4} alignItems="center">
-									<Input
-										flex="1"
-										placeholder="Medicine"
-										name={`medicine_${prescription}`}
-									/>
-									<Box mx={2}>
-										<FaX size={10} color='grey'/>
-									</Box>
-									<Input
-										flex="0.5"
-										placeholder="Qty"
-										name={`qty_${prescription}`}
-									/>
-									<Box mx={2}>
-										<FaX size={10} color='grey'/>
-									</Box>
-									<Input
-										flex="0.5"
-										placeholder="Unit"
-										name={`unit_${prescription}`}
-									/>
-									<Box mx={2}>
-										<FaX size={10} color='grey'/>
-									</Box>
-									<Input
-										flex="1"
-										placeholder="Dosage"
-										name={`dosage_${prescription}`}
-									/>
-									<Box mx={2}>
-										<FaX size={10} color='grey'/>
-									</Box>
-									<Input
-										flex="2"
-										placeholder="Instructions"
-										name={`instructions_${prescription}`}
-									/>
-									{
-										index === 0 ? (
-											<IconButton aria-label="Add row" icon={<FaPlus/>} colorScheme="green" onClick={addRow}
-											            ml={3}/>
-										) : (
-											<IconButton aria-label="Delete row" icon={<FaTrash/>} colorScheme="red"
-											            onClick={() => deleteRow(prescription)} ml={3}/>
-										)
-									}
-								</Flex>
-							))}
-						</ModalBody>
-						<ModalFooter mt={4}>
-							<Box display="flex">
-								<Button mr={3} backgroundColor="green" color="white" type="submit">
-									Submit
-								</Button>
-								<Button backgroundColor="blue.400" color="white" onClick={onClose}>
-									Close
-								</Button>
-							</Box>
-						</ModalFooter>
-					</ModalContent>
-				</form>
-			</Modal>
+        <Modal size="6xl" isCentered isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(3px) hue-rotate(90deg)"/>
+            <ModalContent>
+                <ModalHeader>
+                    Prescription List
+                </ModalHeader>
+                <ModalCloseButton _focus={{boxShadow: 'none', outline: 'none'}}/>
+                <Divider mb={2} borderWidth="1px" borderColor="blackAlpha.300"/>
+                <ModalBody>
+                    {prescriptions.map((prescription, index) => (
+                        <Flex key={prescription} mb={4} alignItems="center">
+                            <Text w='10%'>{index+=1}</Text>
+                            <Box border={'1px'} p={3} w='full' rounded={'md'} ml={3} borderColor={'gray.400'}>
+                                <Flex alignItems='center' gap={2}>
+                                    <GiMedicines size={20} />
+                                    {prescription.medicine ? prescription.medicine : "N/A"}
+                                </Flex>
+                            </Box>
+                            <Box mx={2}>
+                                <FaX size={10} color='grey'/>
+                            </Box>
+                            <Box border={'1px'} rounded={'md'} p={3} w='50%' borderColor={'gray.400'}>
+                                <Flex alignItems='center' gap={2}>
+                                    <Text fontWeight='bold' letterSpacing='wide'>Quantity: </Text>
+                                    {prescription.qty ? prescription.qty : "N/A"}
+                                </Flex>
+                            </Box>
+                            <Box mx={2}>
+                                <FaX size={10} color='grey'/>
+                            </Box>
+                            <Box border={'1px'} rounded={'md'} p={3} w='50%' borderColor={'gray.400'}>
+                                <Flex alignItems='center' gap={2}>
+                                    <Text fontWeight='bold' letterSpacing='wide'>Unit: </Text>
+                                    {prescription.unit ? prescription.unit : "N/A"}
+                                </Flex>
+                            </Box>
+                            <Box mx={2}>
+                                <FaX size={10} color='grey'/>
+                            </Box>
+                            <Box border={'1px'} rounded={'md'} p={3} w='50%' borderColor={'gray.400'}>
+                                <Flex alignItems='center' gap={2}>
+                                    <Text fontWeight='bold' letterSpacing='wide'>Dosage: </Text>
+                                    {prescription.dosage ? prescription.dosage : "N/A"}
+                                </Flex>
+                            </Box>
+                            <Box mx={2}>
+                                <FaX size={10} color='grey'/>
+                            </Box>
+                            <Box border={'1px'} rounded={'md'} p={3} w='full' borderColor={'gray.400'}>
+                                <Flex alignItems='center' gap={2}>
+                                    <Text fontWeight='bold' letterSpacing='wide'>Instructions: </Text>
+                                    {prescription.instructions ? prescription.instructions : "N/A"}
+                                </Flex>
+                            </Box>
+                        </Flex>
+                    ))}
+                </ModalBody>
+                <ModalFooter mt={4}>
+                    <Box display="flex">
+                        <Button backgroundColor="blue.400" color="white" onClick={onClose}>
+                            Close
+                        </Button>
+                    </Box>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
 	);
 };
 
-const ArrivalStatusModal = ({isOpen, onClose, handleSubmitArrivalStatus}) => {
-	return (
-		<Modal size="lg" isCentered isOpen={isOpen} onClose={onClose}>
-			<ModalOverlay bg="blackAlpha.300" backdropFilter="blur(3px) hue-rotate(90deg)"/>
-			<ModalContent>
-				<ModalHeader>Change Arrival Status</ModalHeader>
-				<ModalCloseButton _focus={{boxShadow: 'none', outline: 'none'}}/>
-				<Divider mb={2} borderWidth="1px" borderColor="blackAlpha.300"/>
-				<ModalBody>
-					<Text fontSize='md' fontWeight='medium' letterSpacing='wide' mb={3}>Confirm change of arrival
-						status?</Text>
-					<Text fontSize='sm' fontWeight='light' letterSpacing='wide' mt={6}>This action cannot be
-						undone.</Text>
-				</ModalBody>
-				<ModalFooter>
-					<Box display="flex">
-						<Button mr={3} backgroundColor="green" color="white" type="submit"
-						        onClick={handleSubmitArrivalStatus}>
-							Submit
-						</Button>
-						<Button backgroundColor="blue.400" color="white" onClick={onClose}>
-							Close
-						</Button>
-					</Box>
-				</ModalFooter>
-			</ModalContent>
-		</Modal>
-	);
-};
-
-export const PendingAppointmentsCard = ({clinic, appointment, form}) => {
+export const AppointmentHistoryCard = ({clinic, appointment}) => {
 	const [distance, setDistance] = useState(null);
 	const [duration, setDuration] = useState(null);
-	const {isOpen: isOpenArrivalStatus, onOpen: onOpenArrivalStatus, onClose: onCloseArrivalStatus} = useDisclosure();
 	const {isOpen, onOpen, onClose} = useDisclosure();
-	const {
-		handleSubmit,
-		formState: {
-			errors
-		},
-		register
-	} = form;
 	
 	const handleDistance = (distance, duration) => {
 		setDistance(distance);
 		setDuration(duration);
 	};
-	
-	const toast = useToast();
-	
-	const handleSubmitPrescription = (e) => {
-		console.log(e);
-		e.preventDefault();
-		let data = new FormData(e.target);
-		let req = [];
-		data = Object.fromEntries(data.entries());
-		
-		for (const [key, value] of Object.entries(data)) {
-			const [field, id] = key.split('_');
-			
-			if(field !== 'instructions' && value === '') {
-				console.log(field, id);
-				toast({
-					title: "Error",
-					description: "Please fill in all fields.",
-					position: "top",
-					status: "error",
-					duration: 3000,
-					isClosable: true,
-				});
-				return;
-			}
-			
-			if (!req[id]) {
-				req[id] = {};
-			}
-			req[id][field] = value;
-		}
-		
-		console.log(req);
-		
-		prescribe(appointment.id, req).then((res) => {
-			if (res.success) {
-				toast({
-					title: "Success",
-					description: "Prescription added.",
-					position: "top",
-					status: "success",
-					duration: 3000,
-					isClosable: true,
-				});
-				onClose();
-			} else {
-				toast({
-					title: "Error",
-					description: "Unable to add prescription.",
-					position: "top",
-					status: "error",
-					duration: 3000,
-					isClosable: true,
-				});
-			}
-		}).catch((err) => {
-			toast({
-				title: "Error",
-				description: "Unable to add prescription.",
-				position: "top",
-				status: "error",
-				duration: 3000,
-				isClosable: true,
-			});
-			
-			console.log(err);
-		});
-	}
-	
-	const handleSubmitArrivalStatus = (data) => {
-		console.log(data);
-		
-		mark_arrived(appointment.id).then((res) => {
-			if (res.success) {
-				toast({
-					title: "Success",
-					description: "Arrival status changed.",
-					position: "top",
-					status: "success",
-					duration: 3000,
-					isClosable: true,
-				});
-				onCloseArrivalStatus();
-			} else {
-				toast({
-					title: "Error",
-					description: "Unable to change arrival status.",
-					position: "top",
-					status: "error",
-					duration: 3000,
-					isClosable: true,
-				});
-			}
-		}).catch((err) => {
-			toast({
-				title: "Error",
-				description: "Unable to change arrival status.",
-				position: "top",
-				status: "error",
-				duration: 3000,
-				isClosable: true,
-			});
-			
-			console.log(err);
-		});
-	}
-	
 	
 	return (
 		<Flex
@@ -448,14 +283,14 @@ export const PendingAppointmentsCard = ({clinic, appointment, form}) => {
 			<Box
 				w="350px"
 				rounded={'lg'}
-				h="350px"
+				h="450px"
 			>
 				<Map place_id={appointment.patient.place_id} onDistanceChange={handleDistance}
 				     clinic_place_id={clinic.place_id}/>
 			</Box>
 			<Box
 				w='full'
-				h='64'
+				h='450px'
 				rounded='md'
 				gridGap={4}
 				gridTemplateColumns="1fr 1fr"
@@ -529,16 +364,18 @@ export const PendingAppointmentsCard = ({clinic, appointment, form}) => {
 						</Flex>
 						
 						<Flex alignItems='center' mb={2}>
-							<Box mb={2} w='33.3%'>
+							<Box mb={2} w='full'>
 								<Flex alignItems='center' mx={3}>
 									<BsCalendarDayFill size={20}/>
 									<Text fontSize='sm' letterSpacing='wide' ml={4}>
 										<Text fontWeight='medium' color='grey'>Appointment Time</Text>
+                                        <Text>{appointment.date}</Text>
 										<Text>{appointment.appointment_time}</Text>
 									</Text>
 								</Flex>
 							</Box>
-							<Box mb={2} w='33.3%'>
+                            <GoDotFill size={40} color='black'/>
+							<Box mb={2} w='full'>
 								<Flex alignItems='center' justifyContent='center' mx={3}>
 									<FaCar size={20}/>
 									<Text fontSize='sm' letterSpacing='wide' ml={4}>
@@ -547,44 +384,67 @@ export const PendingAppointmentsCard = ({clinic, appointment, form}) => {
 									</Text>
 								</Flex>
 							</Box>
+                            <GoDotFill size={40} color='black'/>
+                            <Box mb={2} w='full'>
+								<Flex alignItems='center' justifyContent='center' mx={3}>
+									<IoIosCheckmarkCircle size={25}/>
+									<Text fontSize='sm' letterSpacing='wide' ml={4}>
+										<Text fontWeight='medium' color='grey'>Completion
+											Status</Text> {appointment.completed ? "Completed" : "Ongoing"}
+									</Text>
+								</Flex>
+							</Box>
+						</Flex>
+
+                        <Flex alignItems='center' mb={2}>
+							<Box mb={2} w='full'>
+								<Flex alignItems='center' mx={3}>
+									<Avatar size='xs' name={appointment.doctor.name} src={appointment.doctor.image}/>
+									<Text fontSize='sm' letterSpacing='wide' ml={3}>
+										<Text fontWeight='medium' color='grey'>Doctor Name</Text>
+                                        <Text>{appointment.doctor.name}</Text>
+									</Text>
+								</Flex>
+							</Box>
+                            <GoDotFill size={40} color='black'/>
+							<Box mb={2} w='full'>
+								<Flex alignItems='center' justifyContent='center' mx={3}>
+									<MdEmail size={20}/>
+									<Text fontSize='sm' letterSpacing='wide' ml={4}>
+										<Text fontWeight='medium' color='grey'>Doctor Email</Text> 
+                                        {appointment.doctor.email}
+									</Text>
+								</Flex>
+							</Box>
+                            <GoDotFill size={40} color='black'/>
+                            <Box mb={2} w='full'>
+								<Flex alignItems='center' justifyContent='center' mx={3}>
+                                <BiSolidPhone size={20} color='#3d98ff'/>
+									<Text fontSize='sm' letterSpacing='wide' ml={4}>
+										<Text fontWeight='medium' color='grey'>Doctor's
+											Contact</Text> {appointment.doctor.phone}
+									</Text>
+								</Flex>
+							</Box>
 						</Flex>
 						
 						<Flex position='absolute' bottom={4} right={4}>
-							{
-								appointment.arrived ?
-									<IconButton
-										aria-label="Add Prescription"
-										icon={<GiMedicines size={30}/>}
-										color='white'
-										variant="solid"
-										bgColor='blue.500'
-										size="lg"
-										_hover={{transform: 'scale(1.1)'}}
-										_focus={{boxShadow: 'none', outline: 'none'}}
-										onClick={(e) => {
-											onOpen();
-										}}
-									/>
-									:
-									<IconButton
-										aria-label="Change Arrival Status"
-										icon={<FaCar size={30}/>}
-										color='white'
-										variant="solid"
-										bgColor='blue.500'
-										size="lg"
-										_hover={{transform: 'scale(1.1)'}}
-										_focus={{boxShadow: 'none', outline: 'none'}}
-										onClick={(e) => {
-											onOpenArrivalStatus();
-										}}
-									/>
-							}
-						
+                            <IconButton
+                                aria-label="Add Prescription"
+                                icon={<GiMedicines size={30}/>}
+                                color='white'
+                                variant="solid"
+                                bgColor='blue.500'
+                                size="lg"
+                                _hover={{transform: 'scale(1.1)'}}
+                                _focus={{boxShadow: 'none', outline: 'none'}}
+                                onClick={(e) => {
+                                    onOpen();
+                                }}
+                            />
 						</Flex>
 						
-						<PrescriptionModal isOpen={isOpen} onClose={onClose} handleSubmitPrescription={handleSubmitPrescription}/>
-						<ArrivalStatusModal isOpen={isOpenArrivalStatus} onClose={onCloseArrivalStatus} handleSubmitArrivalStatus={handleSubmitArrivalStatus}/>
+						<PrescriptionModal isOpen={isOpen} onClose={onClose} prescriptions={appointment.prescriptions}/>
 					</Flex>
 				</Flex>
 			</Box>
