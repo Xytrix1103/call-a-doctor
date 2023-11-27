@@ -34,6 +34,7 @@ import DoctorDashboard from './pages/doctor/DoctorDashboard';
 import ManageUser from './pages/admin/ManageUser';
 import Profile from "./pages/auth/Profile.jsx";
 import DoctorClinicDetails from './pages/doctor/DoctorClinicDetails';
+import EditDoctor from './pages/clinic/EditDoctor';
 
 const DashboardElement = () => {
 	const { user } = useAuth();
@@ -77,9 +78,7 @@ const router = createBrowserRouter(
 			<Route element={<ClinicLayout/>}>
 				<Route path="appointments" element={<AppointmentHistory/>}/>
 				<Route path="patient-requests" element={<PatientRequests/>}/>
-				<Route path="patients" element={<></>}/>
-				<Route path="patients/:id" element={<></>}/>
-				<Route path="doctors" element={<></>}/>
+				<Route path="doctor/:id" element={<EditDoctor/>}/>
 				<Route path="doctors/add" element={<AddDoctorToList/>}/>
 			</Route>
 			<Route path='/admin' element={<AdminLayout/>}>

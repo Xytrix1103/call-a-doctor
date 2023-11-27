@@ -34,7 +34,9 @@ import {register_doctor} from "../../../../api/auth.js";
 import {update_doctor, update_email, update_password} from "../../../../api/admin.js";
 import {useNavigate} from "react-router-dom";
 
-export const DoctorForm = ({user, self=false}) => {
+export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
+    console.log("self?", self);
+    console.log("clinic_admin?", clinic_admin);
     console.log("DoctorForm");
     const {
         setValue,
@@ -211,7 +213,7 @@ export const DoctorForm = ({user, self=false}) => {
 						isClosable: true,
 						position: "top"
 					});
-					navigate('/admin/users');
+                    {self ? navigate('/profile') : (clinic_admin ? navigate('/profile') : navigate('/admin/users'))}
 				}
 			}).catch((err) => {
 				console.log(err);
@@ -267,7 +269,7 @@ export const DoctorForm = ({user, self=false}) => {
 							isClosable: true,
 							position: "top"
 						});
-						navigate('/admin/users');
+                        {self ? navigate('/profile') : (clinic_admin ? navigate('/profile') : navigate('/admin/users'))}
 					}
 				}).catch((err) => {
 					console.log(err);

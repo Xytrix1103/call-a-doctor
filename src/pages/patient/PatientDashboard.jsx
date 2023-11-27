@@ -19,6 +19,44 @@ import { Column } from 'primereact/column';
 import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
 
+const PatientRequests = ({ request }) => {
+    return (
+        <Box w='20rem' h='9rem' border='2px' rounded='lg' borderColor='pink.200' p={2} justifyContent='center' alignItems='center'>
+            <Box w='19rem' h='6rem'>
+                <Flex alignItems='center' w='full'>
+                    <Box w='full'>
+                        <Flex alignItems='center' justifyContent='space-between'>
+                            <Box w='full'>
+                                <Flex alignItems='center' gap={1}>
+                                    {request.patient ? request.patient.gender === "Male" ? <BsGenderMale size={15} color='blue'/> : <BsGenderFemale size={15} color='pink'/> : request.gender === "Male" ? <BsGenderMale size={15} color='blue'/> : <BsGenderFemale size={15} color='pink'/>}
+                                    <Text fontSize="sm" fontWeight="semibold" isTruncated>
+                                        {request.patient ? request.patient.name : request.name}
+                                    </Text>       
+                                    <GoDotFill size='7' color='gray'/>
+                                    <Text fontSize="2xs" fontWeight='medium' color="gray.700">
+                                        {request.date}
+                                    </Text>         
+                                    <GoDotFill size='7' color='gray'/>
+                                    <Text fontSize="2xs" fontWeight='medium' color="gray.700">
+                                        {request.appointment_time}
+                                    </Text>                                                                           
+                                </Flex>
+                                <Text fontSize="xs" fontWeight='medium' color="gray.700" maxW='95%' isTruncated>
+                                    {request.patient ? request.patient.address : request.address}
+                                </Text>                          
+                            </Box>
+                        </Flex>
+                    </Box>                    
+                </Flex>    
+                <Divider my={1} w='full' />
+                <Text fontSize='xs' fontWeight='medium' maxW='full' noOfLines={4}>
+                    {request.illness_description}
+                </Text>                                                                        
+            </Box>
+        </Box>
+    )
+};
+
 function PatientDashboard() {
     const {user} = useAuth();
     const [clinic, setClinic] = useState([]);
@@ -155,46 +193,25 @@ function PatientDashboard() {
             }
             Promise.all(promises)
             .then(() => {
-                // Now all appointments are processed
                 const clinicPromises = appointments.map((appointment) => {
-                    // Query for clinic object using appointment.clinic
                     return get(ref(db, `clinics/${appointment.clinic}`))
                         .then((clinicSnapshot) => {
-                            return clinicSnapshot.val().name; // Assuming 'name' is the field containing the clinic name
+                            return clinicSnapshot.val().name;
                         });
                 });
-    
-                // Wait for all clinic queries to complete
+
                 return Promise.all(clinicPromises);
             })
             .then((clinicNames) => {
-                // Assign clinic names to the appointments
-                appointments.forEach((appointment, index) => {
-                    appointment.clinicName = clinicNames[index];
-                });
-    
-                // Continue with the rest of your code
                 appointments.sort((a, b) => new Date(a.date) - new Date(b.date));
-    
-                appointments.forEach((appointment) => {
-                    const filteredAppointment = {
-                        date: appointment.date,
-                        appointment_time: appointment.appointment_time,
-                        clinic: appointment.clinicName, // Use the clinic name obtained from the additional query
-                        approval: appointment.approved ? 'Approved' : 'Pending',
-                        doctor: appointment.doctor.name,
-                    };
-                    filteredAppointments.push(filteredAppointment);
-                });
-    
-                console.log("Filtered Appointments: ", filteredAppointments);
+
                 console.log("Appointments: ", appointments);
+                console.log("Requests: ", requests);
                 setFilteredAppointments(filteredAppointments);
                 setRequests(requests);
                 setAppointments(appointments);
             })
             .catch((error) => {
-                // Handle errors from the promises
                 console.error("Error processing appointments:", error);
             });
         });
@@ -234,16 +251,31 @@ function PatientDashboard() {
                     </Flex>
                 </Box>
                 <Box w='full' bg='white' p={5} rounded='lg' boxShadow='lg'>
-                    <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide' mb={4}>
-                        Appointment Requests
-                    </Text>
-                    <DataTable value={filteredAppointments} removableSort stripedRows showGridlines paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]}>
-                        <Column field="date" sortable header="Date" ></Column>
-                        <Column field="appointment_time" sortable header="Time" ></Column>
-                        <Column field="clinic" sortable header="Clinic" ></Column>
-                        <Column field="approval" sortable header="Approval" ></Column>
-                        <Column field="doctor" sortable header="Doctor" ></Column>
-                    </DataTable>
+                    <Flex w='full' direction='column' p={4} maxH={'full'}>
+                        <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide' mb={5}>
+                            Your appointment timeline
+                        </Text>
+                        <Box 
+                            w='full'
+                            maxH={'full'}
+                            overflowY={'scroll'}
+                            overflowX={'hidden'}
+                            sx={{ 
+                                '&::-webkit-scrollbar': {
+                                width: '4px',
+                                },
+                                '&::-webkit-scrollbar-thumb': {
+                                    backgroundColor: '#c1c9c3',
+                                    borderRadius: '8px',
+                                },
+                                '&::-webkit-scrollbar-track': {
+                                    backgroundColor: '#f1f1f1',
+                                },
+                            }}
+                        >
+                            <AppointmentTimelineChart appointments={appointments} />
+                        </Box>
+                    </Flex>
                 </Box>             
             </Flex>
             <Flex
@@ -310,11 +342,11 @@ function PatientDashboard() {
                 </Box>
                 <Flex w='full' direction='column' p={4} maxH={'800px'}>
                     <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide' mb={3}>
-                        Your appointment timeline
+                        Your requests
                     </Text>
                     <Box 
                         w='full'
-                        maxH={'500px'}
+                        maxH={'800px'}
                         overflowY={'scroll'}
                         overflowX={'hidden'}
                         sx={{ 
@@ -330,7 +362,16 @@ function PatientDashboard() {
                             },
                         }}
                     >
-                        <AppointmentTimelineChart appointments={appointments} />
+                        {
+                            requests.length === 0 ? (
+                                <Text>No requests available.</Text>
+                            ) : 
+                            (
+                                requests.map((request) => (
+                                    <PatientRequests key={request.id} request={request} />
+                                ))
+                            )
+                        }
                     </Box>
                 </Flex>
             </Flex>

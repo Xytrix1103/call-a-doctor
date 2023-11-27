@@ -443,11 +443,6 @@ export const PendingAppointmentsCard = ({clinic, appointment, form}) => {
 			my={8}
 			position='relative'
 			boxShadow="lg"
-			transition="box-shadow 0.3s, transform 0.3s"
-			_hover={{
-				boxShadow: 'xl',
-				transform: 'scale(1.02)',
-			}}
 			bg='white'
 		>
 			<Box
