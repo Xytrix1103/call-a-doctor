@@ -11,7 +11,14 @@ import {
     Badge,
     VStack,
     Button,
-    IconButton,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    useDisclosure,
     Tabs, 
     TabList, 
     TabPanels, 
@@ -24,7 +31,7 @@ import {onValue, get, query, ref, orderByChild, equalTo} from "firebase/database
 import {db} from "../../../api/firebase.js";
 import {useAuth} from "../../components/AuthCtx.jsx";
 import {NavLink} from "react-router-dom";
-import { FaUser, FaStethoscope, FaStar, FaStarHalf } from "react-icons/fa";
+import { FaUser, FaStethoscope, FaStar, FaStarHalf, FaEye, FaTrash } from "react-icons/fa";
 import { BiSearchAlt2 } from "react-icons/bi";
 import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
 import { GiMedicines } from "react-icons/gi";
@@ -272,6 +279,8 @@ function ClinicDashboard() {
     const [patientCount, setPatientCount] = useState(0);
     const [appointmentCount, setAppointmentCount] = useState(0);
     const [doctorAppointments, setDoctorAppointments] = useState([]);
+    const [isOpenApprove, setIsOpenApprove] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState(null);
 
     const libs = ['places'];
     const { isLoaded, loadError } = useLoadScript({
@@ -464,6 +473,65 @@ function ClinicDashboard() {
             </Flex>
         );
     }
+  
+    const onOpenApprove = (userId) => {
+        setSelectedUserId(userId);
+        setIsOpenApprove(true);
+    };
+  
+    const onCloseApprove = () => {
+        setSelectedUserId(null);
+        setIsOpenApprove(false);
+    };
+
+    const actionBodyTemplate = (rowData) => {
+        return (
+            <Flex justifyContent='center' alignItems='center' >
+                <Button bg='transparent' as={NavLink} to={`/doctor/${rowData.id}`}><FaEye color='#0078ff'/></Button>
+                <Button bg='transparent' _focus={{ boxShadow: 'none', outline: 'none' }} onClick={() => onOpenApprove(rowData.id)}><FaTrash color='#ff0004'/></Button>
+
+                {isOpenApprove && selectedUserId === rowData.id && (
+                    <Modal size='xl' isCentered isOpen={isOpenApprove} onClose={onCloseApprove}>
+                        <ModalOverlay
+                            bg='blackAlpha.300'
+                            backdropFilter='blur(3px) hue-rotate(90deg)'
+                        />
+                        <ModalContent>
+                            <ModalHeader>Confirm Delete Doctor</ModalHeader>
+                            <ModalCloseButton _focus={{ boxShadow: 'none', outline: 'none' }} />
+                            <Divider mb={2} borderWidth='1px' borderColor="blackAlpha.300" />
+                            <ModalBody>
+                                <Text fontSize='md' letterSpacing='wide' fontWeight='bold' mb={2}>
+                                    Are you sure you want to delete {rowData.name}?
+                                </Text>
+                                <Text mb={2}>
+                                    Deleting {rowData.name} will permanently remove their account.
+                                </Text>
+                                <Text fontSize='sm' fontWeight='light' letterSpacing='wide'>
+                                    This action cannot be undone.
+                                </Text>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Box display='flex'>
+                                    <Button 
+                                        mr={3} 
+                                        backgroundColor='red' 
+                                        color='white'
+                                    >
+                                        Delete
+                                    </Button>
+                                    <Button backgroundColor='blue.400' color='white' onClick={onCloseApprove}>
+                                        Close
+                                    </Button>
+                                </Box>
+                            </ModalFooter>
+                        </ModalContent>
+
+                    </Modal>                    
+                )}
+            </Flex>
+        );
+    };
 
     return (
         <Flex w='full' h='auto' p={4} gap={8} bg="#f4f4f4">
@@ -606,10 +674,10 @@ function ClinicDashboard() {
                                                     
                     <DataTable value={doctors} removableSort stripedRows showGridlines paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} filters={doctorFilters} globalFilterFields={['name', 'email' , 'dob', 'phone', 'qualification']}>
                         <Column field="name" sortable header="Name" body={nameBodyTemplate}></Column>
-                        <Column field="email" sortable header="Email"></Column>
-                        <Column field="phone" sortable header="Phone"></Column>
-                        <Column field="dob" sortable header="Date Of Birth"></Column>
-                        <Column field="qualification" sortable header="Qualification"></Column>
+                        <Column field="email" sortable header="Email" ></Column>
+                        <Column field="phone" sortable header="Phone" ></Column>
+                        <Column field="qualification" sortable header="Qualification" ></Column>
+                        <Column field="action" header="Action" body={actionBodyTemplate} ></Column>
                     </DataTable>                        
                 </Box>
             </Flex>
