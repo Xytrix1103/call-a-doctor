@@ -816,7 +816,7 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
                                 display={imageSrc ? "block" : "none"}
                                 ref={previewImageRef}
                                 w="full"
-                                h="64"
+                                h="auto"
                                 objectFit="cover"
                             />
                         </Box>
