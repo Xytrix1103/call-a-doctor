@@ -190,7 +190,7 @@ export const DoctorForm = ({user, self=false}) => {
 			
 			console.log(data);
 			
-			register_doctor(data).then((res) => {
+			register_doctor(data, true).then((res) => {
 				console.log(res);
 				if (res.error) {
 					toast({
