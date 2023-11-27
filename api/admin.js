@@ -2,7 +2,7 @@ import {db} from "./firebase";
 import {ref, update} from "firebase/database";
 import {secondaryAuth, storage} from "./firebase.js";
 import {getDownloadURL, ref as sRef, uploadBytes} from "firebase/storage";
-import {signInWithEmailAndPassword, updateEmail, updatePassword} from "firebase/auth";
+import {deleteUser, signInWithEmailAndPassword, updateEmail, updatePassword} from "firebase/auth";
 
 export const update_admin = async (uid, data) => {
 	let new_data = {};
@@ -121,4 +121,24 @@ export const update_password = async (data, new_password) => {
 	}).catch((error) => {
 		throw {error: error};
 	});
+}
+
+export const delete_user = async (email, password) => {
+	return await signInWithEmailAndPassword(secondaryAuth, email, password)
+		.then((userCredential) => {
+			return deleteUser(userCredential.user).then(() => {
+				return update(ref(db, `users/${userCredential.user.uid}`), {
+					deleted_on: new Date(),
+					deleted: true
+				}).then(() => {
+					return {success: true};
+				}).catch((error) => {
+					return {error: error};
+				});
+			}).catch((error) => {
+				return {error: error};
+			});
+		}).catch((error) => {
+			return {error: error};
+		});
 }

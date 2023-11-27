@@ -1,38 +1,36 @@
 import {
+    Avatar,
     Box,
+    Button,
     Center,
+    Divider,
+    Flex,
+    Input,
     InputGroup,
     InputLeftElement,
-    Input,
-    Flex,
-    Text,
-    Avatar,
-    Button,
-    Select,
-    Divider,
     Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
     ModalBody,
     ModalCloseButton,
-    useDisclosure,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Select,
+    Text,
+    useToast,
 } from '@chakra-ui/react'
-import {useState, useEffect} from "react";
+import {useEffect, useState} from "react";
 import {db} from "../../../api/firebase.js";
-import {onValue, query, ref} from "firebase/database";
-import { BiSearchAlt2 } from 'react-icons/bi';
-import { FaUser, FaStethoscope, FaHospitalUser, FaUserShield, FaPhoneAlt, FaEye, FaTrash } from 'react-icons/fa';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { classNames } from 'primereact/utils';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { MultiSelect } from 'primereact/multiselect';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import {equalTo, onValue, orderByChild, query, ref} from "firebase/database";
+import {BiSearchAlt2} from 'react-icons/bi';
+import {FaEye, FaHospitalUser, FaStethoscope, FaTrash, FaUser, FaUserShield} from 'react-icons/fa';
+import {DataTable} from 'primereact/datatable';
+import {Column} from 'primereact/column';
+import {InputText} from 'primereact/inputtext';
+import {FilterMatchMode} from 'primereact/api';
 import '../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css';
-import { NavLink } from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
+import {delete_user} from "../../../api/admin.js";
 
 function UserList() {
     const [users, setUsers] = useState([]);
@@ -52,6 +50,7 @@ function UserList() {
     const [clinicAdminCount, setClinicAdminCount] = useState(0);
     const [doctorCount, setDoctorCount] = useState(0);
     const [patientCount, setPatientCount] = useState(0);
+    const toast = useToast();
 
     const onGlobalFilterChange = (e) => {
         const value = e.target.value;
@@ -158,6 +157,28 @@ function UserList() {
                                         mr={3} 
                                         backgroundColor='red' 
                                         color='white'
+                                        onClick={() => {
+                                            delete_user(rowData.email, rowData.password).then(r => {
+                                                if (r.success) {
+                                                    toast({
+                                                        title: 'User deleted successfully!',
+                                                        status: 'success',
+                                                        duration: 5000,
+                                                        isClosable: true,
+                                                        position: 'top-right'
+                                                    });
+                                                } else {
+                                                    toast({
+                                                        title: 'Error deleting user!',
+                                                        status: 'error',
+                                                        duration: 5000,
+                                                        isClosable: true,
+                                                        position: 'top-right'
+                                                    });
+                                                }
+                                            });
+                                            onCloseApprove();
+                                        }}
                                     >
                                         Delete
                                     </Button>
@@ -269,7 +290,7 @@ function UserList() {
     };
 
     useEffect(() => {
-        onValue(query(ref(db, 'users')), (snapshot) => {
+        onValue(query(ref(db, 'users'), orderByChild("deleted"), equalTo(null)), (snapshot) => {
             const users = [];
             let adminCount = 0;
             let clinicAdminCount = 0;
@@ -277,7 +298,7 @@ function UserList() {
             let patientCount = 0;
         
             snapshot.forEach((childSnapshot) => {
-                const { name, role, email, phone, image, address } = childSnapshot.val();
+                const { name, role, email, phone, image, address, password } = childSnapshot.val();
         
                 let formattedRole = role.replace(/([a-z])([A-Z])/g, '$1 $2');
                 users.push({
@@ -288,6 +309,7 @@ function UserList() {
                     phone,
                     image,
                     address,
+                    password
                 });
 
                 switch (role) {
