@@ -977,7 +977,7 @@ export const PatientForm = ({user, self=false}) => {
 	                }
 					<Box>
 						<Button
-							type="submit"
+							onClick={onSubmit}
 							colorScheme="blue"
 							rounded="xl"
 							px={4}

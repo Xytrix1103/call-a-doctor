@@ -636,7 +636,7 @@ export const AdminForm = ({user, self=false}) => {
                     mt={8}
                     mb={4}
                     w="full"
-                    type="submit"
+                    onClick={onSubmit}
                 >
                     {
                         self ? "Save Changes" : (user ? "Edit Admin" : "Add Admin")
