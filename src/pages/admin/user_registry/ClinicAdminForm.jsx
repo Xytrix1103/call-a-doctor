@@ -85,16 +85,16 @@ export const ClinicAdminForm = ({user, self=false}) => {
     }, [user, clinics]);
     
     
-    const onSubmit = async (data) => {
+    const onSubmit = async () => {
+        let data = getValues();
         console.log("Submitting admin form", data);
         
         if (!user) {
-            const valid = await trigger();
+            const valid = await trigger(['name', 'email', 'password', 'confirm_password']);
             const password = data["password"];
             const confirm_password = data["confirm_password"];
             
             if(!valid) {
-                alert("Invalid entry!");
                 return;
             }
             
@@ -108,10 +108,11 @@ export const ClinicAdminForm = ({user, self=false}) => {
                 if (res.error) {
                     toast({
                         title: "Error!",
-                        description: res.error,
+                        description: "An error has occurred!",
                         status: "error",
                         duration: 5000,
                         isClosable: true,
+                        position: "top"
                     });
                 } else {
                     toast({
@@ -120,6 +121,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                         status: "success",
                         duration: 5000,
                         isClosable: true,
+                        position: "top"
                     });
                     navigate('/admin/users');
                 }
@@ -131,6 +133,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                     status: "error",
                     duration: 5000,
                     isClosable: true,
+                    position: "top"
                 });
             });
         } else {
@@ -138,7 +141,6 @@ export const ClinicAdminForm = ({user, self=false}) => {
             let update = {};
             
             if(!valid) {
-                alert("Invalid entry!");
                 return;
             }
             
@@ -155,10 +157,11 @@ export const ClinicAdminForm = ({user, self=false}) => {
                     if (res.error) {
                         toast({
                             title: "Error!",
-                            description: res.error,
+                            description: "An error has occurred!",
                             status: "error",
                             duration: 5000,
                             isClosable: true,
+                            position: "top"
                         });
                     } else {
                         toast({
@@ -167,6 +170,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                             status: "success",
                             duration: 5000,
                             isClosable: true,
+                            position: "top"
                         });
                         navigate('/admin/users');
                     }
@@ -178,6 +182,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                         status: "error",
                         duration: 5000,
                         isClosable: true,
+                        position: "top"
                     });
                 });
             }
@@ -209,7 +214,6 @@ export const ClinicAdminForm = ({user, self=false}) => {
         console.log("Submitting email modal")
         
         if(!valid) {
-            alert("Invalid email!");
             onCloseEmailModal();
             return;
         }
@@ -219,10 +223,11 @@ export const ClinicAdminForm = ({user, self=false}) => {
             if (res.error) {
                 toast({
                     title: "Error!",
-                    description: res.error,
+                    description: "An error has occurred!",
                     status: "error",
                     duration: 5000,
                     isClosable: true,
+                    position: "top"
                 });
             } else {
                 toast({
@@ -231,6 +236,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                     status: "success",
                     duration: 5000,
                     isClosable: true,
+                    position: "top"
                 });
                 onCloseEmailModal();
             }
@@ -242,6 +248,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                 status: "error",
                 duration: 5000,
                 isClosable: true,
+                position: "top"
             });
         });
         onCloseEmailModal();
@@ -252,7 +259,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
         console.log("Submitting password modal");
         
         if(!valid) {
-            alert("Invalid password!");
+            onClosePasswordModal();
             return;
         }
         
@@ -268,10 +275,11 @@ export const ClinicAdminForm = ({user, self=false}) => {
             if (res.error) {
                 toast({
                     title: "Error!",
-                    description: res.error,
+                    description: "An error has occurred!",
                     status: "error",
                     duration: 5000,
                     isClosable: true,
+                    position: "top"
                 });
             } else {
                 toast({
@@ -280,6 +288,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                     status: "success",
                     duration: 5000,
                     isClosable: true,
+                    position: "top"
                 });
                 onClosePasswordModal();
             }
@@ -291,13 +300,14 @@ export const ClinicAdminForm = ({user, self=false}) => {
                 status: "error",
                 duration: 5000,
                 isClosable: true,
+                position: "top"
             });
         });
         onClosePasswordModal();
     };
 
     return (
-        <form action="/api/register" method="post" onSubmit={handleSubmit(onSubmit)}>
+        <form action="/api/register" method="post">
             <Flex w='full' h='full' direction='column' justifyContent='center' alignItems='center' px={5}>
                 <FormControl mb={2} fontSize="sm" fontWeight="medium" color="gray.900" id="name" isInvalid={errors.name}>
                     <FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
@@ -664,7 +674,6 @@ export const ClinicAdminForm = ({user, self=false}) => {
                 }
 
                 <Button
-                    type="submit"
                     colorScheme="blue"
                     rounded="xl"
                     px={4}
@@ -672,6 +681,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                     mt={8}
                     mb={4}
                     w="full"
+                    onClick={onSubmit}
                 >
                     {
                         self ? "Save Changes" : (user ? "Edit Clinic Admin" : "Add Clinic Admin")
