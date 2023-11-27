@@ -73,7 +73,13 @@ function Patients({asAdmin = false}) {
 	const actionBodyTemplate = (rowData) => {
 		return (
 			<Flex justifyContent='center' alignItems='center' gap={2}>
-				<Button bg='transparent' as={NavLink} to={`/patients/${rowData.id}`}><FaEye color='#0078ff'/></Button>
+				{
+					asAdmin ? 
+					(
+						<Button bg='transparent' as={NavLink} to={`/admin/patients/${rowData.id}`}><FaEye color='#0078ff'/></Button>
+					) : 
+						<Button bg='transparent' as={NavLink} to={`/patients/${rowData.id}`}><FaEye color='#0078ff'/></Button>
+				}
 			</Flex>
 		);
 	};

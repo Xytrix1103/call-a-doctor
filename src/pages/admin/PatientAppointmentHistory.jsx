@@ -23,7 +23,7 @@ import {GoDotFill} from "react-icons/go";
 import {useParams, NavLink} from "react-router-dom";
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
 
-function PatientAppointmentHistory() {
+function PatientAppointmentHistory({ asAdmin=false }) {
     const {user} = useAuth();
     const {id} = useParams();
     const [clinic, setClinic] = useState({});
@@ -207,7 +207,12 @@ function PatientAppointmentHistory() {
                                                     </Flex>
                                                 </Box>                                
                                             </Box>
-                                            <Button bg='transparent' as={NavLink} to={`/patient-request/${appointment.id}`}><GiMedicines size={40} color='#0078ff'/></Button>
+                                            {
+                                                asAdmin ?
+                                                    <Button bg='transparent' as={NavLink} to={`/admin/patient-request/${appointment.id}`}><GiMedicines size={40} color='#0078ff'/></Button>
+                                                    :
+                                                    <Button bg='transparent' as={NavLink} to={`/patient-request/${appointment.id}`}><GiMedicines size={40} color='#0078ff'/></Button>
+                                            }
                                         </Flex>
                                     ))    
                                 }                                         
