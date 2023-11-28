@@ -16,7 +16,7 @@ export const register = async (data, asAdmin=false) => {
 		if (newUser) {
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
-				created_on: new Date(),
+				created_on: new Date().toISOString(),
 				created_by: asAdmin ? auth.currentUser.uid : newUser.user.uid,
 				email: newUser.user.email,
 				password: password,
@@ -85,7 +85,7 @@ export const register_doctor = async (data, asAdmin = false) => {
 			uid = newUser.user.uid;
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
-				created_on: new Date(),
+				created_on: new Date().toISOString(),
 				created_by: asAdmin ? auth.currentUser.uid : newUser.user.uid,
 				email: newUser.user.email,
 				password: password,
@@ -138,7 +138,7 @@ export const register_admin = async (data) => {
 		if (newUser) {
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
-				created_on: new Date(),
+				created_on: new Date().toISOString(),
 				created_by: newUser.user.uid,
 				email: newUser.user.email,
 				password: password,
