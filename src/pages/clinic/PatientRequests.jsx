@@ -175,7 +175,7 @@ const PatientRequest = ({toast, patientRequest, doctors, handleAssignDoctor, set
                                             console.log(e.target.value);
                                             handleAssignDoctor(patientRequest.id, e.target.value)
                                         }} w='200px'>
-                                            {doctors.map((doctor) => (
+                                            {doctors.filter((doctor) => !doctor.busy_times.includes(patientRequest.appointment_time)).map((doctor) => (
                                                 <option key={doctor.id} value={doctor.id}>
                                                     {doctor.name}
                                                 </option>
@@ -353,7 +353,7 @@ function PatientRequests() {
 
                         for (let requestId in snapshot.val()) {
                             const today = new Date();
-                            const requestDate = new Date(snapshot.val()[requestId].date);
+                            const requestDate = new Date(snapshot.val()[requestId].requested_on);
                             const requestTime = snapshot.val()[requestId].appointment_time;
                             const requestTime24HourFormat = requestTime.slice(-2) === 'AM' ?
                                 parseInt(requestTime.slice(0, 2)) :
