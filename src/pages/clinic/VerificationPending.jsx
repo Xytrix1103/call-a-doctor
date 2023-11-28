@@ -132,7 +132,7 @@ const VerificationPending = () => {
 								position="absolute"
 								bottom="100px"
 							>
-								{clinic.rejected}
+								{clinic.reject_reason}
 							</Text>
 						</>
 					) : (
