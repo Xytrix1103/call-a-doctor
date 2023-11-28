@@ -64,6 +64,9 @@ export const update_patient = async (uid, data) => {
 	
 	for (let key in data) {
 		if (key !== "email" && key !== "password" && key !== "image" && key !== "confirm_password") {
+			if(key === "date_of_birth") {
+				new_data["dob"] = data[key];
+			}
 			new_data[key] = data[key];
 		}
 	}

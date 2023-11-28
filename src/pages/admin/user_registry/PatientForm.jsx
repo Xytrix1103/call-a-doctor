@@ -247,7 +247,6 @@ export const PatientForm = ({user, self=false}) => {
 			});
 			return;
 		}
-	    return
 	    
 	    if (!user) {
 		    const valid = await trigger(['name', 'email', 'phone', 'address', 'date_of_birth', 'password', 'confirm_password']);
