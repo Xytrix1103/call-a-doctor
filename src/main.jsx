@@ -44,6 +44,7 @@ import DoctorClinicLayout from "./components/layouts/DoctorClinicLayout.jsx";
 import PatientHistory from './pages/doctor/PatientHistory.jsx';
 import PatientPrescription from './pages/doctor/PatientPrescription.jsx';
 import PatientSchedule from './pages/doctor/PatientSchedule.jsx';
+import DoctorApointmentTable from './pages/doctor/DoctorApointmentTable.jsx';
 
 const DashboardElement = () => {
 	const { user } = useAuth();
@@ -94,6 +95,7 @@ const router = createBrowserRouter(
 				<Route path="my-clinic/:id/patients" element={<PatientHistory/>}/>
 				<Route path="my-clinic/:id/patients/:id" element={<PatientPrescription/>}/>
 				<Route path="my-clinic/:id/patients/:id/requests" element={<PatientSchedule/>}/>
+				<Route path="my-clinic/:id/patients/:id/requests/:id" element={<DoctorApointmentTable/>}/>
 			</Route>
 			<Route element={<ClinicLayout/>}>
 				<Route path="clinic" element={<Clinic/>}/>

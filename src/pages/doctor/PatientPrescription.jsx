@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import VideoConference from 'react-video-conference'; // Import the video conference component
 
 const PatientPrescription = ({ patientId }) => {
   const [patientData, setPatientData] = useState(null);
   const [prescriptions, setPrescriptions] = useState([]);
-  const [isVideoConferenceOpen, setVideoConferenceOpen] = useState(false);
 
   useEffect(() => {
     // Fetch patient's details from an API or database
@@ -35,14 +33,6 @@ const PatientPrescription = ({ patientId }) => {
     fetchPatientPrescriptions();
   }, [patientId]);
 
-  const handleOpenVideoConference = () => {
-    setVideoConferenceOpen(true);
-  };
-
-  const handleCloseVideoConference = () => {
-    setVideoConferenceOpen(false);
-  };
-
   return (
     <div>
       {patientData && (
@@ -65,17 +55,6 @@ const PatientPrescription = ({ patientId }) => {
           {/* Add more prescription details as needed */}
         </div>
       ))}
-
-      {/* Button to Open Video Conference */}
-      <button onClick={handleOpenVideoConference}>Start Video Consultation</button>
-
-      {/* Video Conference Component */}
-      {isVideoConferenceOpen && (
-        <VideoConference
-          onClose={handleCloseVideoConference}
-          // Additional props based on the telemedicine library you use
-        />
-      )}
     </div>
   );
 };
