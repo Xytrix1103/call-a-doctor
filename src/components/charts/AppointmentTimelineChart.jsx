@@ -32,17 +32,22 @@ const TimelineItem = ({ appointment }) => (
                             </Flex>
                             <Divider my={1} w='95%' />
                             <Flex maxW='95%' alignItems='center' justifyContent='space-between' mb={2}>
-                                <Flex alignItems='center' gap={2}>
-                                    {appointment.patient ? appointment.patient.gender === "Male" ? <BsGenderMale size={25} color='blue'/> : <BsGenderFemale size={25} color='pink'/> : appointment.gender === "Male" ? <BsGenderMale size={25} color='blue'/> : <BsGenderFemale size={25} color='pink'/>}
-                                    <Box>
-                                        <Text fontSize="xs" fontWeight="medium" color="gray.500">
-                                            Name
-                                        </Text>
-                                        <Text fontSize="xs" fontWeight="semibold" color="gray.700">
-                                            {appointment.patient ? appointment.patient.name : appointment.name}
-                                        </Text>
-                                    </Box>
-                                </Flex>
+                                {
+                                    appointment?.rejected ? <Text fontSize="xs" fontWeight="semibold" color="red.500"> {appointment?.reject_reason} </Text>
+                                    :
+                                    <Flex alignItems='center' gap={2}>
+                                        {appointment.patient ? appointment.patient.gender === "Male" ? <BsGenderMale size={25} color='blue'/> : <BsGenderFemale size={25} color='pink'/> : appointment.gender === "Male" ? <BsGenderMale size={25} color='blue'/> : <BsGenderFemale size={25} color='pink'/>}
+                                        <Box>
+                                            <Text fontSize="xs" fontWeight="medium" color="gray.500">
+                                                Name
+                                            </Text>
+                                            <Text fontSize="xs" fontWeight="semibold" color="gray.700">
+                                                {appointment.patient ? appointment.patient.name : appointment.name}
+                                            </Text>
+                                        </Box>
+                                    </Flex>                                    
+                                }
+
                                 <Box>
                                     <Text fontSize="xs" fontWeight="medium" color="gray.500">
                                         Contact
@@ -57,6 +62,14 @@ const TimelineItem = ({ appointment }) => (
                                     </Text>
                                     <Text fontSize="xs" fontWeight="semibold" color="gray.700">
                                         {appointment.age}
+                                    </Text>
+                                </Box>
+                                <Box>
+                                    <Text fontSize="xs" fontWeight="medium" color="gray.500">
+                                        Approval Status
+                                    </Text>
+                                    <Text fontSize="xs" fontWeight="semibold" color="gray.700">
+                                        {appointment.rejected ? "Rejected" : "Approved"}
                                     </Text>
                                 </Box>
                             </Flex>
