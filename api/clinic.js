@@ -24,19 +24,19 @@ export const add_doctor = async (data) => {
 		.then(providers => {
 			if (providers.length > 0) {
 				console.log("User already exists");
-				throw {error: "User already exists in Authentication"};
+				return {error: "User already exists in Authentication"};
 			}
 			return get(query(userRef, orderByChild('email'), equalTo(email)));
 		})
 		.then(existingDBUsers => {
 			if (existingDBUsers !== null && existingDBUsers.exists()) {
 				console.log("User already exists");
-				throw {error: "User already exists in Database"};
+				return {error: "User already exists in Database"};
 			}
 			return register_doctor(data)
 				.then((registerUser) => {
 					if (registerUser.error) {
-						throw {error: registerUser.error};
+						return {error: registerUser.error};
 					} else {
 						uid = registerUser.uid;
 						storageRef = sRef(storage, `doctors/${uid}`);

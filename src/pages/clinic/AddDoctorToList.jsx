@@ -21,7 +21,7 @@ import {BsFillCloudArrowDownFill} from "react-icons/bs";
 import {useForm} from "react-hook-form";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 import {useAuth} from "../../components/AuthCtx.jsx";
-import {add_doctor} from "../../../api/clinic.js";
+import {register_doctor} from "../../../api/auth.js";
 
 function AddDoctorToList() {
     const {
@@ -96,7 +96,7 @@ function AddDoctorToList() {
 			clinic: Object.keys(user.clinic)[0],
 		}
 		
-		await add_doctor(data);
+		await register_doctor(data);
 	}
 	
 	return (
