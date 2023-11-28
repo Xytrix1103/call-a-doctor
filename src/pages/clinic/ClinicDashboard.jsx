@@ -650,9 +650,12 @@ function ClinicDashboard() {
                 </Box>
                 <Box w='full' bg='white' p={5} rounded='lg' boxShadow='md'>
                     <Flex alignItems='center' justifyContent='space-between' mb={4}>
-                        <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide'>
-                            List of Doctors
-                        </Text>           
+                        <Flex w='full' alignItems='center' justifyContent='space-between' mr={2}>
+                            <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide'>
+                                List of Doctors
+                            </Text>
+                            <Button ml={3} colorScheme='blue' as={NavLink} to='/doctors/add'>Add Doctor</Button>                              
+                        </Flex>
                         <InputGroup size="md" w='40%'>
                             <InputLeftElement
                                 pointerEvents="none"
@@ -694,7 +697,7 @@ function ClinicDashboard() {
                     <Flex w='full' direction='column'>
                         <Box w='full' bg='white' rounded='lg'>
                             <Flex bg="white" h="full" shadow="lg" borderRadius="lg" transition="transform 0.3s" _hover={{ transform: 'scale(1.02)', shadow: 'xl' }}>
-                                <Link as={NavLink} to={`/clinics/${clinicId}`} key={clinicId} style={{ textDecoration: 'none' }} w="full" h="full">
+                                <Link as={NavLink} to={`/clinic`} key={clinicId} style={{ textDecoration: 'none' }} w="full" h="full">
                                     <VStack w="full" h="full">
                                         <Image
                                             w="full"

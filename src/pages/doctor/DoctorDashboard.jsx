@@ -366,7 +366,7 @@ function DoctorDashboard() {
                     <Flex w='full' direction='column'>
                         <Box w='full' bg='white' rounded='lg'>
                             <Flex bg="white" h="full" shadow="lg" borderRadius="lg" transition="transform 0.3s" _hover={{ transform: 'scale(1.02)', shadow: 'xl' }}>
-                                <Link as={NavLink} to={`/doctor-clinic/${clinic.id}`} key={clinic.id} style={{ textDecoration: 'none' }} w="full" h="full">
+                                <Link as={NavLink} to={`/my-clinic`} key={clinic.id} style={{ textDecoration: 'none' }} w="full" h="full">
                                     <VStack w="full" h="full">
                                         <Image
                                             w="full"

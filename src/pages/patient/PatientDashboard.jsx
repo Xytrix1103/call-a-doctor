@@ -5,6 +5,7 @@ import {
 	Text,
     Badge,
     Link,
+    Divider,
     VStack,
 } from '@chakra-ui/react';
 import {useState, useEffect} from "react";
@@ -13,6 +14,8 @@ import {db} from "../../../api/firebase.js";
 import {useAuth} from "../../components/AuthCtx.jsx";
 import {NavLink} from "react-router-dom";
 import {AiFillStar} from "react-icons/ai";
+import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
+import { GoDotFill } from "react-icons/go";
 import {AppointmentTimelineChart} from "../../components/charts/AppointmentTimelineChart.jsx"
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';

@@ -209,9 +209,9 @@ function PatientAppointmentHistory({ asAdmin=false }) {
                                             </Box>
                                             {
                                                 asAdmin ?
-                                                    <Button bg='transparent' as={NavLink} to={`/admin/patient-request/${appointment.id}`}><GiMedicines size={40} color='#0078ff'/></Button>
+                                                    <Button bg='transparent' as={NavLink} to={`/admin/patients/${appointment.id}/requests`}><GiMedicines size={40} color='#0078ff'/></Button>
                                                     :
-                                                    <Button bg='transparent' as={NavLink} to={`/patient-request/${appointment.id}`}><GiMedicines size={40} color='#0078ff'/></Button>
+                                                    <Button bg='transparent' as={NavLink} to={`/patients/${appointment.id}/requests`}><GiMedicines size={40} color='#0078ff'/></Button>
                                             }
                                         </Flex>
                                     ))    

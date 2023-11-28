@@ -31,166 +31,166 @@ import {equalTo, get, onValue, orderByChild, query, ref} from "firebase/database
 import {db} from "../../../api/firebase.js";
 import {DirectionsRenderer, GoogleMap, InfoWindow, Marker, useLoadScript} from '@react-google-maps/api';
 
-function Map({place_id, onDistanceChange, clinic_place_id}) {
-	const mapStyle = {
-		height: '450px',
-		width: '350px',
-	};
-	const [libs] = useState(['places']);
-	const [mapRef, setMapRef] = useState(null);
-	const [center, setCenter] = useState({
-		lat: 5.4164,
-		lng: 100.3327,
-	});
-	const [place, setPlace] = useState(null);
-	const [name, setName] = useState('');
-	const [formattedAddress, setFormattedAddress] = useState('');
-	const [destinationCoordinates, setDestinationCoordinates] = useState(null);
-	const [distance, setDistance] = useState(null);
-	const [directions, setDirections] = useState(null);
+// function Map({place_id, onDistanceChange, clinic_place_id}) {
+// 	const mapStyle = {
+// 		height: '450px',
+// 		width: '350px',
+// 	};
+// 	const [libs] = useState(['places']);
+// 	const [mapRef, setMapRef] = useState(null);
+// 	const [center, setCenter] = useState({
+// 		lat: 5.4164,
+// 		lng: 100.3327,
+// 	});
+// 	const [place, setPlace] = useState(null);
+// 	const [name, setName] = useState('');
+// 	const [formattedAddress, setFormattedAddress] = useState('');
+// 	const [destinationCoordinates, setDestinationCoordinates] = useState(null);
+// 	const [distance, setDistance] = useState(null);
+// 	const [directions, setDirections] = useState(null);
 	
-	const {isLoaded, loadError} = useLoadScript({
-		googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
-		libraries: libs,
-	});
+// 	const {isLoaded, loadError} = useLoadScript({
+// 		googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
+// 		libraries: libs,
+// 	});
 	
-	const getMapsLink = () => {
-		if (place) {
-			const {name} = place;
-			return `https://www.google.com/maps/search/?api=1&query=${name}`;
-		}
-	};
+// 	const getMapsLink = () => {
+// 		if (place) {
+// 			const {name} = place;
+// 			return `https://www.google.com/maps/search/?api=1&query=${name}`;
+// 		}
+// 	};
 	
-	if (loadError) return "Error loading maps";
-	if (!isLoaded) return "Loading maps";
+// 	if (loadError) return "Error loading maps";
+// 	if (!isLoaded) return "Loading maps";
 	
-	return (
-		<Box>
-			<GoogleMap
-				onLoad={(map) => {
-					setMapRef(map);
-					if (place_id && window.google && window.google.maps) {
-						console.log("setting place");
-						const service = new window.google.maps.places.PlacesService(map);
-						service.getDetails(
-							{
-								placeId: place_id,
-							},
-							(result, status) => {
-								if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-									console.log("setting patient place");
-									const {name, formatted_address, geometry} = result;
+// 	return (
+// 		<Box>
+// 			<GoogleMap
+// 				onLoad={(map) => {
+// 					setMapRef(map);
+// 					if (place_id && window.google && window.google.maps) {
+// 						console.log("setting place");
+// 						const service = new window.google.maps.places.PlacesService(map);
+// 						service.getDetails(
+// 							{
+// 								placeId: place_id,
+// 							},
+// 							(result, status) => {
+// 								if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+// 									console.log("setting patient place");
+// 									const {name, formatted_address, geometry} = result;
 									
-									setPlace(result);
-									console.log(result);
-									setName(name);
-									setFormattedAddress(formatted_address);
-									setDestinationCoordinates({
-										lat: result.geometry.location.lat(),
-										lng: result.geometry.location.lng(),
-									});
+// 									setPlace(result);
+// 									console.log(result);
+// 									setName(name);
+// 									setFormattedAddress(formatted_address);
+// 									setDestinationCoordinates({
+// 										lat: result.geometry.location.lat(),
+// 										lng: result.geometry.location.lng(),
+// 									});
 									
-									setCenter({
-										lat: result.geometry.location.lat(),
-										lng: result.geometry.location.lng(),
-									});
-									const service = new window.google.maps.places.PlacesService(map);
-									service.getDetails(
-										{
-											placeId: clinic_place_id,
-										},
-										(result, status) => {
-											if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-												const clinicLocation = new window.google.maps.LatLng(
-													result.geometry.location.lat(),
-													result.geometry.location.lng()
-												);
-												const patientLocation = new window.google.maps.LatLng(
-													geometry.location.lat(),
-													geometry.location.lng()
-												);
-												const directionsService = new window.google.maps.DirectionsService();
-												directionsService.route(
-													{
-														origin: clinicLocation,
-														destination: patientLocation,
-														travelMode: window.google.maps.TravelMode.DRIVING,
-													},
-													(result, status) => {
-														if (status === window.google.maps.DirectionsStatus.OK) {
-															const leg = result.routes[0].legs[0];
-															const distance = leg.distance.value;
-															const duration = leg.duration.text;
-															const distanceInKilometers = distance / 1000;
+// 									setCenter({
+// 										lat: result.geometry.location.lat(),
+// 										lng: result.geometry.location.lng(),
+// 									});
+// 									const service = new window.google.maps.places.PlacesService(map);
+// 									service.getDetails(
+// 										{
+// 											placeId: clinic_place_id,
+// 										},
+// 										(result, status) => {
+// 											if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+// 												const clinicLocation = new window.google.maps.LatLng(
+// 													result.geometry.location.lat(),
+// 													result.geometry.location.lng()
+// 												);
+// 												const patientLocation = new window.google.maps.LatLng(
+// 													geometry.location.lat(),
+// 													geometry.location.lng()
+// 												);
+// 												const directionsService = new window.google.maps.DirectionsService();
+// 												directionsService.route(
+// 													{
+// 														origin: clinicLocation,
+// 														destination: patientLocation,
+// 														travelMode: window.google.maps.TravelMode.DRIVING,
+// 													},
+// 													(result, status) => {
+// 														if (status === window.google.maps.DirectionsStatus.OK) {
+// 															const leg = result.routes[0].legs[0];
+// 															const distance = leg.distance.value;
+// 															const duration = leg.duration.text;
+// 															const distanceInKilometers = distance / 1000;
 															
-															setDirections(result);
-															onDistanceChange(distanceInKilometers, duration);
-															setDistance(distance);
-															console.log(distance);
-														} else {
-															console.error(`Error retrieving directions: Status - ${status}`);
-														}
-													}
-												);
-											}
-										}
-									);
+// 															setDirections(result);
+// 															onDistanceChange(distanceInKilometers, duration);
+// 															setDistance(distance);
+// 															console.log(distance);
+// 														} else {
+// 															console.error(`Error retrieving directions: Status - ${status}`);
+// 														}
+// 													}
+// 												);
+// 											}
+// 										}
+// 									);
 									
-								} else {
-									console.error(`Error retrieving place details: Status - ${status}`);
-								}
-							}
-						);
-					} else {
-						if (navigator.geolocation) {
-							navigator.geolocation.getCurrentPosition((position) => {
-								setCenter({
-									lat: position.coords.latitude,
-									lng: position.coords.longitude,
-								});
-							});
-						}
-					}
+// 								} else {
+// 									console.error(`Error retrieving place details: Status - ${status}`);
+// 								}
+// 							}
+// 						);
+// 					} else {
+// 						if (navigator.geolocation) {
+// 							navigator.geolocation.getCurrentPosition((position) => {
+// 								setCenter({
+// 									lat: position.coords.latitude,
+// 									lng: position.coords.longitude,
+// 								});
+// 							});
+// 						}
+// 					}
 					
-				}}
-				center={center}
-				zoom={15}
-				mapContainerStyle={mapStyle}
-				options={
-					{
-						mapTypeControl: false,
-					}
-				}
-			>
-				{place && (
-					<Marker position={{lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}}/>
-				)}
-				{place && (
-					<InfoWindow
-						position={{lat: place.geometry.location.lat() + 0.0015, lng: place.geometry.location.lng()}}>
-						<Box p={1} maxW="sm">
-							<Text fontSize="sm" fontWeight="medium">
-								{name}
-							</Text>
-							<Text fontSize="xs" fontWeight="medium" color="gray.500" mt={1} mb={2}>
-								{formattedAddress}
-							</Text>
-							<Link href={getMapsLink()} isExternal target="_blank" rel="noreferrer"
-							      _hover={{textDecoration: "none"}} textDecoration="none"
-							      onClick={(e) => e.stopPropagation()}>
-								<HStack spacing={1} fontSize="xs" fontWeight="medium" color="blue.500">
-									<Text outline="none">View on Google Maps</Text>
-									<BiLinkExternal/>
-								</HStack>
-							</Link>
-						</Box>
-					</InfoWindow>
-				)}
-				{directions && <DirectionsRenderer directions={directions}/>}
-			</GoogleMap>
-		</Box>
-	);
-}
+// 				}}
+// 				center={center}
+// 				zoom={15}
+// 				mapContainerStyle={mapStyle}
+// 				options={
+// 					{
+// 						mapTypeControl: false,
+// 					}
+// 				}
+// 			>
+// 				{place && (
+// 					<Marker position={{lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}}/>
+// 				)}
+// 				{place && (
+// 					<InfoWindow
+// 						position={{lat: place.geometry.location.lat() + 0.0015, lng: place.geometry.location.lng()}}>
+// 						<Box p={1} maxW="sm">
+// 							<Text fontSize="sm" fontWeight="medium">
+// 								{name}
+// 							</Text>
+// 							<Text fontSize="xs" fontWeight="medium" color="gray.500" mt={1} mb={2}>
+// 								{formattedAddress}
+// 							</Text>
+// 							<Link href={getMapsLink()} isExternal target="_blank" rel="noreferrer"
+// 							      _hover={{textDecoration: "none"}} textDecoration="none"
+// 							      onClick={(e) => e.stopPropagation()}>
+// 								<HStack spacing={1} fontSize="xs" fontWeight="medium" color="blue.500">
+// 									<Text outline="none">View on Google Maps</Text>
+// 									<BiLinkExternal/>
+// 								</HStack>
+// 							</Link>
+// 						</Box>
+// 					</InfoWindow>
+// 				)}
+// 				{directions && <DirectionsRenderer directions={directions}/>}
+// 			</GoogleMap>
+// 		</Box>
+// 	);
+// }
 
 const PrescriptionModal = ({isOpen, onClose, prescriptions}) => {
 	return (

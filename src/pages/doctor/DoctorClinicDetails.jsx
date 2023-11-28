@@ -173,7 +173,7 @@ function Map({ place_id, onDistanceChange }) {
 function DoctorClinicDetails() {
 	const [data, setData] = useState({});
 	const {user} = useAuth();
-	const {id} = user;
+	const id = user.clinic;
 	console.log(id);
     
     useEffect(() => {
