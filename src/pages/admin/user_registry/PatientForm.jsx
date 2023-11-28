@@ -247,6 +247,7 @@ export const PatientForm = ({user, self=false}) => {
 			});
 			return;
 		}
+	    return
 	    
 	    if (!user) {
 		    const valid = await trigger(['name', 'email', 'phone', 'address', 'date_of_birth', 'password', 'confirm_password']);
@@ -606,6 +607,9 @@ export const PatientForm = ({user, self=false}) => {
                                     size="md"
                                     focusBorderColor="blue.500"
                                     defaultValue="Male"
+                                    {
+										...register("gender")
+                                    }
                                 >
                                     <option value="Male" selected={user?.gender === "Male"}>Male</option>
                                     <option value="Female" selected={user?.gender === "Female"}>Female</option>
