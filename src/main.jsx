@@ -76,7 +76,7 @@ const router = createBrowserRouter(
 				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="clinics/:id" element={<ClinicDetails/>}/>
 				<Route path="requests" element={<PatientAppointmentHistory asPatient={true}/>}/>
-				<Route path="request/:id" element={<PatientAppointmentCard/>}/>
+				<Route path="requests/:id" element={<PatientAppointmentCard/>}/>
 				<Route path="clinics/:id/request" element={<DoctorRequestForm/>}/>
 			</Route>
 			<Route element={<DoctorClinicLayout/>}>
