@@ -343,7 +343,7 @@ function PatientDashboard() {
                         </Box>
                     </Flex>
                 </Box>
-                <Flex w='full' direction='column' p={4} maxH={'800px'}>
+                <Flex w='full' direction='column' alignItems='center' justifyContent='center' p={4} bg='white' roundedBottom='lg'>
                     <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide' mb={3}>
                         Your requests
                     </Text>
@@ -365,16 +365,25 @@ function PatientDashboard() {
                             },
                         }}
                     >
-                        {
-                            requests.length === 0 ? (
-                                <Text>No requests available.</Text>
-                            ) : 
-                            (
-                                requests.map((request) => (
-                                    <PatientRequests key={request.id} request={request} />
-                                ))
-                            )
-                        }
+                        <Flex 
+                            w='full' 
+                            h='full'
+                            direction='column' 
+                            alignItems='center' 
+                            justifyContent='center' 
+                            gap={6}
+                        >
+                            {
+                                requests.length === 0 ? (
+                                    <Text>No requests available.</Text>
+                                ) : 
+                                (
+                                    requests.map((request) => (
+                                        <PatientRequests key={request.id} request={request} />
+                                    ))
+                                )
+                            }                            
+                        </Flex>
                     </Box>
                 </Flex>
             </Flex>

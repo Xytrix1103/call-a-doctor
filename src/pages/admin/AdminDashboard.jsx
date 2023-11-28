@@ -265,7 +265,7 @@ function AdminDashboard() {
                                 ...data,
                                 ...userSnapshot.val(),
                                 age: formatAge(userSnapshot.val().dob),
-                                date: formatDate(data.date),
+                                date: formatDate(data.requested_on),
                             }
                             approvedAppointments.push(data);
                         });
@@ -276,7 +276,7 @@ function AdminDashboard() {
                             ...data,
                             ...data.patient,
                             age: formatAge(data.patient.dob),
-                            date: formatDate(data.date),
+                            date: formatDate(data.requested_on),
                         }
                         approvedAppointments.push(data);
                         appointmentCount++;
