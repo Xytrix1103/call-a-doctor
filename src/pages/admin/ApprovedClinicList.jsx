@@ -111,7 +111,7 @@ function ApprovedClinicList() {
     }, []);
 
     const filteredClinics = clinics.filter((clinic) =>
-        clinic.name.toLowerCase().includes(searchQuery.toLowerCase())
+        clinic?.name?.toLowerCase().includes(searchQuery.toLowerCase())
     );
     
     

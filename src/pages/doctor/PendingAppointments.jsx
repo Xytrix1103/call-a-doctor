@@ -54,46 +54,48 @@ function PendingAppointments() {
 			const userPromises = [];
 		
 			snapshot.forEach((reqSnapshot) => {
-				const { date, appointment_time, ...rest } = reqSnapshot.val();
-		
-				const formattedDate = new Date(date).toLocaleDateString('en-GB', {
-					day: 'numeric',
-					month: 'long',
-					year: 'numeric',
-				});
-		
-				const [startTime, endTime] = appointment_time.split('-');
-				const formattedAppointmentTime = `${startTime.trim()} to ${endTime.trim()}`;
-		
-				if (reqSnapshot.val().patient == null) {
-					const userPromise = get(ref(db, `users/${reqSnapshot.val().uid}`))
-						.then((snapshot) => {
-							// get patient data
-							const patient = snapshot.val();
-							const birthDate = new Date(patient.dob);
-							const currentDate = new Date();
-							const age = currentDate.getFullYear() - birthDate.getFullYear() - (currentDate.getMonth() < birthDate.getMonth() || (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate()) ? 1 : 0);
-							requests.push({
-								id: reqSnapshot.key,
-								date: formattedDate,
-								appointment_time: formattedAppointmentTime,
-								patient: patient,
-								age: age,
-								...rest,
-							});
-						});
-					userPromises.push(userPromise);
-				} else {
-					const birthDate = new Date(reqSnapshot.val().patient.dob);
-					const currentDate = new Date();
-					const age = currentDate.getFullYear() - birthDate.getFullYear() - (currentDate.getMonth() < birthDate.getMonth() || (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate()) ? 1 : 0);
-					requests.push({
-						id: reqSnapshot.key,
-						date: formattedDate,
-						appointment_time: formattedAppointmentTime,
-						age: age,
-						...rest,
+				if (!reqSnapshot.val().completed) {
+					const { date, appointment_time, ...rest } = reqSnapshot.val();
+			
+					const formattedDate = new Date(date).toLocaleDateString('en-GB', {
+						day: 'numeric',
+						month: 'long',
+						year: 'numeric',
 					});
+			
+					const [startTime, endTime] = appointment_time.split('-');
+					const formattedAppointmentTime = `${startTime.trim()} to ${endTime.trim()}`;
+			
+					if (reqSnapshot.val().patient == null) {
+						const userPromise = get(ref(db, `users/${reqSnapshot.val().uid}`))
+							.then((snapshot) => {
+								// get patient data
+								const patient = snapshot.val();
+								const birthDate = new Date(patient.dob);
+								const currentDate = new Date();
+								const age = currentDate.getFullYear() - birthDate.getFullYear() - (currentDate.getMonth() < birthDate.getMonth() || (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate()) ? 1 : 0);
+								requests.push({
+									id: reqSnapshot.key,
+									date: formattedDate,
+									appointment_time: formattedAppointmentTime,
+									patient: patient,
+									age: age,
+									...rest,
+								});
+							});
+						userPromises.push(userPromise);
+					} else {
+						const birthDate = new Date(reqSnapshot.val().patient.dob);
+						const currentDate = new Date();
+						const age = currentDate.getFullYear() - birthDate.getFullYear() - (currentDate.getMonth() < birthDate.getMonth() || (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate()) ? 1 : 0);
+						requests.push({
+							id: reqSnapshot.key,
+							date: formattedDate,
+							appointment_time: formattedAppointmentTime,
+							age: age,
+							...rest,
+						});
+					}					
 				}
 			});
 		
