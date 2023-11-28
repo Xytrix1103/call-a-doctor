@@ -158,7 +158,7 @@ function UserList() {
                                         backgroundColor='red' 
                                         color='white'
                                         onClick={() => {
-                                            delete_user(rowData.email, rowData.password).then(r => {
+                                            delete_user(rowData).then(r => {
                                                 if (r.success) {
                                                     toast({
                                                         title: 'User deleted successfully!',
@@ -298,7 +298,7 @@ function UserList() {
             let patientCount = 0;
         
             snapshot.forEach((childSnapshot) => {
-                const { name, role, email, contact, image, address, password } = childSnapshot.val();
+                const { name, role, email, contact, image, address, password, clinic=null } = childSnapshot.val();
         
                 let formattedRole = role.replace(/([a-z])([A-Z])/g, '$1 $2');
                 users.push({
@@ -309,7 +309,8 @@ function UserList() {
                     contact,
                     image,
                     address,
-                    password
+                    password,
+                    clinic
                 });
 
                 switch (role) {

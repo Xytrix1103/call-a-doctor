@@ -519,7 +519,7 @@ function ClinicDashboard() {
                                         backgroundColor='red' 
                                         color='white'
                                         onClick={() => {
-                                            delete_user(rowData.email, rowData.password);
+                                            delete_user(rowData);
                                             onCloseApprove();
                                         }}
                                     >

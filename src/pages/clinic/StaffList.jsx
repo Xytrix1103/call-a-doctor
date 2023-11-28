@@ -1,22 +1,22 @@
 import {
-	Avatar,
-	Box,
-	Button,
-	Center,
-	Divider,
-	Flex,
-	Input,
-	InputGroup,
-	InputLeftElement,
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	ModalOverlay,
-	Select,
-	Text,
+    Avatar,
+    Box,
+    Button,
+    Center,
+    Divider,
+    Flex,
+    Input,
+    InputGroup,
+    InputLeftElement,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Select,
+    Text,
 } from '@chakra-ui/react'
 import {useEffect, useState} from "react";
 import {db} from "../../../api/firebase.js";
@@ -149,7 +149,7 @@ function StaffList() {
 										backgroundColor='red'
 										color='white'
 										onClick={() => {
-											delete_user(rowData.email, rowData.password).then(r => {
+											delete_user(rowData).then(r => {
 												if (r.success) {
 													toast({
 														title: 'User deleted successfully!',
@@ -276,7 +276,7 @@ function StaffList() {
 			let doctorCount = 0;
 			
 			snapshot.forEach((childSnapshot) => {
-				const { name, role, email, contact, image, password } = childSnapshot.val();
+				const { name, role, email, contact, image, password, clinic } = childSnapshot.val();
 				
 				let formattedRole = role.replace(/([a-z])([A-Z])/g, '$1 $2');
 				users.push({
@@ -286,7 +286,8 @@ function StaffList() {
 					email,
 					contact,
 					image,
-					password
+					password,
+					clinic
 				});
 				
 				switch (role) {
