@@ -364,7 +364,7 @@ function StaffList() {
 					>
 						<Column field="name" header="Name" sortable filter filterElement={nameRowFilterTemplate} body={nameBodyTemplate} style={{ width:"15%" }}></Column>
 						<Column field="email" header="Email" sortable filter filterElement={emailRowFilterTemplate} style={{ width:"15%" }}></Column>
-						<Column field="contact" header="Contact Number" sortable filter filterElement={contactRowFilterTemplate} body={phoneBodyTemplate} style={{ width:"15%" }}></Column>
+						<Column field="contact" header="Contact Number" sortable filter filterElement={contactRowFilterTemplate} body={contactBodyTemplate} style={{ width:"15%" }}></Column>
 						<Column field="role" header="Role" sortable filter filterElement={roleRowFilterTemplate} body={roleBodyTemplate} style={{ width:"15%" }}></Column>
 						<Column field="action" header="Action" body={actionBodyTemplate} style={{ width:"10%" }}></Column>
 					</DataTable>

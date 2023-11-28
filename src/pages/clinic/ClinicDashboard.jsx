@@ -402,7 +402,7 @@ function ClinicDashboard() {
                                     ...data[id],
                                     ...userSnapshot.val(),
                                     age: formatAge(userSnapshot.val().dob),
-                                    date: formatDate(data[id].date),
+                                    date: formatDate(data[id].requested_on),
                                 }
                                 requests.push(data[id]);
                             });
@@ -412,7 +412,7 @@ function ClinicDashboard() {
                                 ...data[id],
                                 ...data[id].patient,
                                 age: formatAge(data[id].patient.dob),
-                                date: formatDate(data[id].date),
+                                date: formatDate(data[id].requested_on),
                             }
                             requests.push(data[id]);
                         }                        
@@ -519,7 +519,25 @@ function ClinicDashboard() {
                                         backgroundColor='red' 
                                         color='white'
                                         onClick={() => {
-                                            delete_user(rowData);
+											delete_user(rowData).then(r => {
+												if (r.success) {
+													toast({
+														title: 'User deleted successfully!',
+														status: 'success',
+														duration: 5000,
+														isClosable: true,
+														position: 'top-right'
+													});
+												} else {
+													toast({
+														title: 'Error deleting user!',
+														status: 'error',
+														duration: 5000,
+														isClosable: true,
+														position: 'top-right'
+													});
+												}
+											});
                                             onCloseApprove();
                                         }}
                                     >

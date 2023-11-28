@@ -299,7 +299,7 @@ function PatientAppointmentCard() {
 							...data,
 							...userSnapshot.val(),
 							age: formatAge(userSnapshot.val().dob),
-							date: formatDate(data[id].date),
+							date: formatDate(data[id].requested_on),
 							doctor: doctorData,
 						};
 					});
@@ -311,7 +311,7 @@ function PatientAppointmentCard() {
 						...data,
 						...data.patient,
 						age: formatAge(data.patient.dob),
-						date: formatDate(data.date),
+						date: formatDate(data.requested_on),
 						doctor: doctorData,
 					};
 				});

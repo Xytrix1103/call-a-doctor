@@ -143,7 +143,7 @@ function PatientDashboard() {
                                 ...data[id],
                                 ...userSnapshot.val(),
                                 age: formatAge(userSnapshot.val().dob),
-                                date: formatDate(data[id].date),
+                                date: formatDate(data[id].requested_on),
                             }
                             requests.push(data[id]);
                         });
@@ -153,7 +153,7 @@ function PatientDashboard() {
                             ...data[id],
                             ...data[id].patient,
                             age: formatAge(data[id].patient.dob),
-                            date: formatDate(data[id].date),
+                            date: formatDate(data[id].requested_on),
                         }
                         requests.push(data[id]);
                     }                        
@@ -171,7 +171,7 @@ function PatientDashboard() {
                                     ...data[id],
                                     ...userSnapshot.val(),
                                     age: formatAge(userSnapshot.val().dob),
-                                    date: formatDate(data[id].date),
+                                    date: formatDate(data[id].requested_on),
                                     doctor: doctorData,
                                 };
                                 appointments.push(data[id]);
@@ -185,7 +185,7 @@ function PatientDashboard() {
                                     ...data[id],
                                     ...data[id].patient,
                                     age: formatAge(data[id].patient.dob),
-                                    date: formatDate(data[id].date),
+                                    date: formatDate(data[id].requested_on),
                                     doctor: doctorData,
                                 };
                                 appointments.push(data[id]);

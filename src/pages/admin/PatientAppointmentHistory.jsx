@@ -22,9 +22,14 @@ import {GoDotFill} from "react-icons/go";
 import {NavLink, useParams} from "react-router-dom";
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
 
-function PatientAppointmentHistory({ asAdmin=false }) {
+function PatientAppointmentHistory({ asAdmin=false, asPatient=false }) {
+    console.log("asAdmin", asAdmin);
+    console.log("PatientAppointmentHistory");
     const {user} = useAuth();
     const {id} = useParams();
+
+    const [uid, setUid] = useState(user.uid);
+
     const [clinic, setClinic] = useState({});
     const [patient, setPatient] = useState({});
     const [appointments, setAppointments] = useState([]);
@@ -55,7 +60,7 @@ function PatientAppointmentHistory({ asAdmin=false }) {
             query(
                 ref(db, 'requests'),
                 orderByChild('uid'),
-                equalTo(id)
+                equalTo(uid)
             ),
             async (snapshot) => {
                 const app = [];
@@ -96,17 +101,21 @@ function PatientAppointmentHistory({ asAdmin=false }) {
             }
         );
 
-        onValue(query(ref(db, `users/${id}`)), (snapshot) => {
+        onValue(query(ref(db, `users/${uid}`)), (snapshot) => {
             let data = snapshot.val();
             data.age = formatAge(data.dob);
             setPatient(data);
         });
 
-    }, [id]);
+    }, [uid]);
 
     useEffect(() => {
-        console.log("appointments", appointments);
-    }, [appointments]);
+        if (user?.role === "Patient") {
+            setUid(user.uid);
+        } else {
+            setUid(id);
+        }
+    }, [user]);
     
     return (
         <Center h="auto" bg="#f4f4f4">
@@ -210,7 +219,10 @@ function PatientAppointmentHistory({ asAdmin=false }) {
                                                 asAdmin ?
                                                     <Button bg='transparent' as={NavLink} to={`/admin/patients/${appointment.id}/requests`}><GiMedicines size={40} color='#0078ff'/></Button>
                                                     :
-                                                    <Button bg='transparent' as={NavLink} to={`/patients/${appointment.id}/requests`}><GiMedicines size={40} color='#0078ff'/></Button>
+                                                    user?.role === "Patient" ?
+                                                        <Button bg='transparent' as={NavLink} to={`/requests/${appointment.id}`}><GiMedicines size={40} color='#0078ff'/></Button>
+                                                        :
+                                                        <Button bg='transparent' as={NavLink} to={`/patients/${appointment.id}/requests`}><GiMedicines size={40} color='#0078ff'/></Button>
                                             }
                                         </Flex>
                                     ))    

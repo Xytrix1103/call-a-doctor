@@ -41,7 +41,7 @@ const PatientNavbar = () => {
 				<Link as={NavLink} color="teal.500" to="/clinics" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }} _hover={{  textDecoration: "none" }}>
 					Clinic List
 				</Link>
-				<Link as={NavLink} color="teal.500" to={`/patients/${user.uid}`} marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }} _hover={{  textDecoration: "none" }}>
+				<Link as={NavLink} color="teal.500" to="/requests" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }} _hover={{  textDecoration: "none" }}>
 					Appointment History
 				</Link>
 				<Menu marginRight={6}>
