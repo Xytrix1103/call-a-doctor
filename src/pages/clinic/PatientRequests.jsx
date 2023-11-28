@@ -475,13 +475,13 @@ function PatientRequests() {
 			>
 				<Tabs variant="enclosed" defaultIndexs={0} mb="1em">
 					<TabList>
-						<Tab flex="0 0 140px" maxW="140px">
+						<Tab flex="0 0 140px" maxW="140px" borderRadius="10px 10px 0 0">
 							Pending
 						</Tab>
-						<Tab flex="0 0 140px" maxW="140px">
+						<Tab flex="0 0 140px" maxW="140px" borderRadius="10px 10px 0 0">
 							Approved
 						</Tab>
-						<Tab flex="0 0 140px" maxW="140px">
+						<Tab flex="0 0 140px" maxW="140px" borderRadius="10px 10px 0 0">
 							Rejected
 						</Tab>
 					</TabList>
