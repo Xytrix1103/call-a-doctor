@@ -1,12 +1,11 @@
 import {
-    Avatar,
+	Avatar,
 	Box,
 	Button,
 	Divider,
 	Flex,
 	HStack,
 	IconButton,
-	Input,
 	Link,
 	Modal,
 	ModalBody,
@@ -17,14 +16,13 @@ import {
 	ModalOverlay,
 	Text,
 	useDisclosure,
-	useToast,
 } from '@chakra-ui/react'
 import {BiLinkExternal, BiSolidPhone} from "react-icons/bi";
 import {BsCalendarDayFill, BsGenderFemale, BsGenderMale} from "react-icons/bs";
-import {FaCar, FaMapLocationDot, FaPlus, FaTrash, FaUser, FaX, FaStethoscope } from "react-icons/fa6";
-import { IoIosCheckmarkCircle } from "react-icons/io";
+import {FaCar, FaMapLocationDot, FaUser, FaX} from "react-icons/fa6";
+import {IoIosCheckmarkCircle} from "react-icons/io";
 import {GiMedicines, GiSandsOfTime} from "react-icons/gi";
-import { MdEmail } from "react-icons/md";
+import {MdEmail} from "react-icons/md";
 import {GoDotFill} from "react-icons/go";
 import {useState} from 'react';
 import {DirectionsRenderer, GoogleMap, InfoWindow, Marker, useLoadScript} from '@react-google-maps/api';
@@ -422,7 +420,7 @@ export const AppointmentHistoryCard = ({clinic, appointment}) => {
                                 <BiSolidPhone size={20} color='#3d98ff'/>
 									<Text fontSize='sm' letterSpacing='wide' ml={4}>
 										<Text fontWeight='medium' color='grey'>Doctor's
-											Contact</Text> {appointment.doctor.phone}
+											Contact</Text> {appointment.doctor.contact}
 									</Text>
 								</Flex>
 							</Box>

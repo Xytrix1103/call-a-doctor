@@ -8,7 +8,7 @@ import {auth, db, secondaryAuth} from "./firebase.js";
 import {ref, set} from "firebase/database";
 
 export const register = async (data, asAdmin=false) => {
-	const {email, password, name, gender="", date_of_birth="", phone = "", address = "", role="Patient"} = data;
+	const {email, password, name, gender="", dob="", contact = "", address = "", role="Patient"} = data;
 	const authObj = asAdmin ? secondaryAuth : auth;
 	
 	return await createUserWithEmailAndPassword(authObj, email, password).then(async (newUser) => {
@@ -16,13 +16,14 @@ export const register = async (data, asAdmin=false) => {
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
 				created_on: new Date(),
+				created_by: asAdmin ? auth.currentUser.uid : newUser.user.uid,
 				email: newUser.user.email,
 				password: password,
 				role: role,
 				name: name,
 				gender: gender,
-				dob: date_of_birth,
-				phone: phone,
+				dob: dob,
+				contact: contact,
 				address: address
 			})
 			.then(() => {
@@ -50,6 +51,7 @@ export const register_clinic_admin = async (data, asAdmin=false) => {
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
 				created_on: new Date(),
+				created_by: asAdmin ? auth.currentUser.uid : newUser.user.uid,
 				email: newUser.user.email,
 				password: password,
 				role: role,
@@ -70,7 +72,7 @@ export const register_clinic_admin = async (data, asAdmin=false) => {
 }
 
 export const register_doctor = async (data, asAdmin = false) => {
-	const {email, password, name, gender="", date_of_birth="", phone = "", role="Doctor"} = data;
+	const {email, password, name, gender="", dob="", contact = "", role="Doctor"} = data;
 	
 	const authObj = asAdmin ? secondaryAuth : auth;
 	
@@ -79,13 +81,14 @@ export const register_doctor = async (data, asAdmin = false) => {
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
 				created_on: new Date(),
+				created_by: asAdmin ? auth.currentUser.uid : newUser.user.uid,
 				email: newUser.user.email,
 				password: password,
 				role: role,
 				name: name,
 				gender: gender,
-				dob: date_of_birth,
-				phone: phone
+				dob: dob,
+				contact: contact
 			}).then(() => {
 				return newUser.user;
 			}).catch((error) => {
@@ -101,16 +104,17 @@ export const register_doctor = async (data, asAdmin = false) => {
 }
 
 export const register_admin = async (data) => {
-	const {email, password, name, phone, role="Admin"} = data;
+	const {email, password, name, contact, role="Admin"} = data;
 	
 	return await createUserWithEmailAndPassword(secondaryAuth, email, password).then(async (newUser) => {
 		if (newUser) {
 			return await set(ref(db, `users/${newUser.user.uid}`), {
 				uid: newUser.user.uid,
 				created_on: new Date(),
+				created_by: newUser.user.uid,
 				email: newUser.user.email,
 				password: password,
-				phone: phone,
+				contact: contact,
 				role: role,
 				name: name
 			}).then(() => {

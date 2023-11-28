@@ -155,7 +155,7 @@ function AddDoctorToList() {
                             </Box>
                             <Flex alignItems="center" justifyContent="space-between" mt={6}>
                                 <Box flex="1" mr={4}>
-                                    <FormControl isInvalid={errors.date_of_birth} id='date_of_birth'>
+                                    <FormControl isInvalid={errors.dob} id='dob'>
                                         <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
                                             Date of Birth <Text as="span" color="red.500" fontWeight="bold">*</Text>
                                         </FormLabel>
@@ -163,14 +163,14 @@ function AddDoctorToList() {
                                             <Input
                                                 variant="filled"
                                                 type="date"
-                                                name="date_of_birth"
-                                                id="date_of_birth"
+                                                name="dob"
+                                                id="dob"
                                                 rounded="xl"
                                                 borderWidth="1px"
                                                 borderColor="gray.300"
                                                 color="gray.900"
                                                 {
-                                                    ...register("date_of_birth", {
+                                                    ...register("dob", {
                                                         required: "Date of birth is required",
                                                     })
                                                 }
@@ -179,7 +179,7 @@ function AddDoctorToList() {
                                             />
                                         </InputGroup>
                                         <FormErrorMessage>
-                                            {errors.date_of_birth && errors.date_of_birth.message}
+                                            {errors.dob && errors.dob.message}
                                         </FormErrorMessage>  
                                     </FormControl>
                                 </Box>
@@ -210,20 +210,20 @@ function AddDoctorToList() {
                                 </Box>
                             </Flex>
                             <Box>
-                                <FormControl isInvalid={errors.phone}>
+                                <FormControl isInvalid={errors.contact}>
                                     <FormLabel mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
                                         Contact Number <Text as="span" color="red.500" fontWeight="bold">*</Text>
                                     </FormLabel>
                                     <Input
                                         variant="filled"
                                         type="tel"
-                                        id="phone"
+                                        id="contact"
                                         {
-                                            ...register("phone", {
+                                            ...register("contact", {
                                                 required: "Contact number is required",
                                                 pattern: {
                                                     value: /^(\+?\d{1,3}[- ]?)?\d{10}$/,
-                                                    message: "Invalid phone number format",
+                                                    message: "Invalid contact number format",
                                                 },
                                             })
                                         }
@@ -237,7 +237,7 @@ function AddDoctorToList() {
                                         p={2.5}
                                     />
                                     <FormErrorMessage>
-                                        {errors.phone && errors.phone.message}
+                                        {errors.contact && errors.contact.message}
                                     </FormErrorMessage>
                                 </FormControl>
                             </Box>

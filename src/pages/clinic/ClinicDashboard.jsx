@@ -293,7 +293,7 @@ function ClinicDashboard() {
         name: { value: null, matchMode: FilterMatchMode.CONTAINS },
         email: { value: null, matchMode: FilterMatchMode.CONTAINS },
         dob: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        phone: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        contact: { value: null, matchMode: FilterMatchMode.CONTAINS },
         qualification: { value: null, matchMode: FilterMatchMode.CONTAINS },
     });
 
@@ -680,10 +680,10 @@ function ClinicDashboard() {
                         </InputGroup>             
                     </Flex>
                                                     
-                    <DataTable value={doctors} removableSort stripedRows showGridlines paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} filters={doctorFilters} globalFilterFields={['name', 'email' , 'dob', 'phone', 'qualification']}>
+                    <DataTable value={doctors} removableSort stripedRows showGridlines paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} filters={doctorFilters} globalFilterFields={['name', 'email' , 'dob', 'contact', 'qualification']}>
                         <Column field="name" sortable header="Name" body={nameBodyTemplate}></Column>
                         <Column field="email" sortable header="Email" ></Column>
-                        <Column field="phone" sortable header="Phone" ></Column>
+                        <Column field="contact" sortable header="Contact" ></Column>
                         <Column field="qualification" sortable header="Qualification" ></Column>
                         <Column field="action" header="Action" body={actionBodyTemplate} ></Column>
                     </DataTable>                        

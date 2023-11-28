@@ -1,15 +1,14 @@
 import {
-    Box, 
-    Center, 
-    Flex, 
-    Text,
     Accordion,
-    AccordionItem,
     AccordionButton,
-    AccordionPanel,
     AccordionIcon,
-    IconButton,
+    AccordionItem,
+    AccordionPanel,
+    Box,
     Button,
+    Center,
+    Flex,
+    Text,
 } from '@chakra-ui/react';
 import {useEffect, useState} from "react";
 import {equalTo, get, onValue, orderByChild, query, ref} from "firebase/database";
@@ -18,9 +17,9 @@ import {useAuth} from "../../components/AuthCtx.jsx";
 import {BiSolidPhone} from "react-icons/bi";
 import {BsGenderFemale, BsGenderMale} from "react-icons/bs";
 import {FaMapLocationDot, FaUser} from "react-icons/fa6";
-import {GiSandsOfTime, GiMedicines} from "react-icons/gi";
+import {GiMedicines, GiSandsOfTime} from "react-icons/gi";
 import {GoDotFill} from "react-icons/go";
-import {useParams, NavLink} from "react-router-dom";
+import {NavLink, useParams} from "react-router-dom";
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
 
 function PatientAppointmentHistory({ asAdmin=false }) {
@@ -170,7 +169,7 @@ function PatientAppointmentHistory({ asAdmin=false }) {
                                 <BiSolidPhone size={25} color='#3d98ff'/>
                                 <Text fontSize='md' letterSpacing='wide' ml={4}>
                                     <Text fontWeight='medium'
-                                            color='grey'>Contact</Text> {patient.phone}
+                                            color='grey'>Contact</Text> {patient.contact}
                                 </Text>
                             </Flex>
                         </Box>

@@ -80,7 +80,7 @@ function ClinicRegistry() {
 				break;
 			case 1:
 				console.log("Step 2");
-				trigger(["clinic_name", "address", "phone", "business_reg_num", "specialist_clinic"]).then(r => {
+				trigger(["clinic_name", "address", "contact", "business_reg_num", "specialist_clinic"]).then(r => {
 					if (r && image) {
 						setActiveStep(activeStep + 1);
 					} else {

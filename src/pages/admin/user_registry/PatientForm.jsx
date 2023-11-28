@@ -249,7 +249,7 @@ export const PatientForm = ({user, self=false}) => {
 		}
 	    
 	    if (!user) {
-		    const valid = await trigger(['name', 'email', 'phone', 'address', 'date_of_birth', 'password', 'confirm_password']);
+		    const valid = await trigger(['name', 'email', 'contact', 'address', 'dob', 'password', 'confirm_password']);
 		    const password = data["password"];
 		    const confirm_password = data["confirm_password"];
 			
@@ -304,7 +304,7 @@ export const PatientForm = ({user, self=false}) => {
 			    });
 		    });
 	    } else {
-		    const valid = await trigger(['name', 'phone', 'address', 'date_of_birth']);
+		    const valid = await trigger(['name', 'contact', 'address', 'dob']);
 		    let update = {};
 			
 			if (!valid) {
@@ -360,15 +360,15 @@ export const PatientForm = ({user, self=false}) => {
         if (user) {
             setValue('name', user?.name);
             setValue('email', user?.email);
-            setValue('phone', user?.phone);
+            setValue('contact', user?.contact);
             setValue('address', user?.address);
-            setValue('date_of_birth', user?.dob);
+            setValue('dob', user?.dob);
         } else {
 			setValue('name', null);
 			setValue('email', null);
-			setValue('phone', null);
+			setValue('contact', null);
 			setValue('address', null);
-			setValue('date_of_birth', null);
+			setValue('dob', null);
 	       
         }
 	}, [user]);
@@ -561,7 +561,7 @@ export const PatientForm = ({user, self=false}) => {
 
                     <Flex alignItems="center" justifyContent="space-between" mt={6}>
                         <Box flex="1" mr={4}>
-                            <FormControl isInvalid={errors.date_of_birth}>
+                            <FormControl isInvalid={errors.dob}>
                                 <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900" >
                                     Date of Birth <Text as="span" color="red.500" fontWeight="bold">*</Text>
                                 </FormLabel>
@@ -572,7 +572,7 @@ export const PatientForm = ({user, self=false}) => {
                                         name="dob"
                                         id="dob"
                                         {
-                                            ...register("date_of_birth", {
+                                            ...register("dob", {
                                                 required: "Date of birth cannot be empty",
                                             })
                                         }
@@ -585,7 +585,7 @@ export const PatientForm = ({user, self=false}) => {
                                     />
                                 </InputGroup>
                                 <FormErrorMessage>
-                                    {errors.date_of_birth && errors.date_of_birth.message}
+                                    {errors.dob && errors.dob.message}
                                 </FormErrorMessage>
                             </FormControl>
                         </Box>
@@ -617,15 +617,15 @@ export const PatientForm = ({user, self=false}) => {
                         </Box>
                     </Flex>
                     <Box mb={2} mt={6}>
-                        <FormControl fontSize="sm" fontWeight="medium" color="gray.900"  id="phone" isInvalid={errors.phone} >
+                        <FormControl fontSize="sm" fontWeight="medium" color="gray.900"  id="contact" isInvalid={errors.phone} >
                             <FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
                                 Contact Number <Text as="span" color="red.500" fontWeight="bold">*</Text>
                             </FormLabel>
                             <Input
                                 variant="filled"
                                 type="tel"
-                                name="phone"
-                                id="phone"
+                                name="contact"
+                                id="contact"
                                 placeholder="+60 12-345 6789"
                                 rounded="xl"
                                 borderWidth="1px"
@@ -636,17 +636,17 @@ export const PatientForm = ({user, self=false}) => {
                                 w="full"
                                 p={2.5}
                                 {
-                                    ...register("phone", {
+                                    ...register("contact", {
                                         required: "Contact Number is required",
                                         pattern: {
                                             value: /^(\+?\d{1,3}[- ]?)?\d{10}$/,
-                                            message: "Invalid phone number format",
+                                            message: "Invalid contact number format",
                                         },
                                     })
                                 }
                             />
                             <FormErrorMessage>
-                                {errors.phone && errors.phone.message}
+                                {errors.contact && errors.contact.message}
                             </FormErrorMessage>
                         </FormControl>
                     </Box>

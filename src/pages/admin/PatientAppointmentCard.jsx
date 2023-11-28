@@ -1,13 +1,9 @@
 import {
-    Avatar,
+	Avatar,
 	Box,
 	Button,
 	Divider,
 	Flex,
-	HStack,
-	IconButton,
-	Input,
-	Link,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -18,18 +14,17 @@ import {
 	Text,
 	useDisclosure,
 } from '@chakra-ui/react'
-import {BiLinkExternal, BiSolidPhone} from "react-icons/bi";
+import {BiSolidPhone} from "react-icons/bi";
 import {BsCalendarDayFill, BsGenderFemale, BsGenderMale} from "react-icons/bs";
-import {FaCar, FaMapLocationDot, FaPlus, FaTrash, FaUser, FaX, FaStethoscope } from "react-icons/fa6";
-import { IoIosCheckmarkCircle } from "react-icons/io";
+import {FaCar, FaMapLocationDot, FaUser, FaX} from "react-icons/fa6";
+import {IoIosCheckmarkCircle} from "react-icons/io";
 import {GiMedicines, GiSandsOfTime} from "react-icons/gi";
-import { MdEmail } from "react-icons/md";
+import {MdEmail} from "react-icons/md";
 import {GoDotFill} from "react-icons/go";
 import {useEffect, useState} from "react";
-import {useParams, NavLink} from "react-router-dom";
-import {equalTo, get, onValue, orderByChild, query, ref} from "firebase/database";
+import {useParams} from "react-router-dom";
+import {get, onValue, query, ref} from "firebase/database";
 import {db} from "../../../api/firebase.js";
-import {DirectionsRenderer, GoogleMap, InfoWindow, Marker, useLoadScript} from '@react-google-maps/api';
 
 // function Map({place_id, onDistanceChange, clinic_place_id}) {
 // 	const mapStyle = {
@@ -395,7 +390,7 @@ function PatientAppointmentCard() {
 									<BiSolidPhone size={20} color='#3d98ff'/>
 									<Text fontSize='sm' letterSpacing='wide' ml={4}>
 										<Text fontWeight='medium'
-										      color='grey'>Contact</Text> {appointment.patient ? appointment.patient.contact : appointment.phone}
+										      color='grey'>Contact</Text> {appointment.patient ? appointment.patient.contact : appointment.contact}
 									</Text>
 								</Flex>
 							</Box>
@@ -460,7 +455,7 @@ function PatientAppointmentCard() {
                                 <BiSolidPhone size={20} color='#3d98ff'/>
 									<Text fontSize='sm' letterSpacing='wide' ml={4}>
 										<Text fontWeight='medium' color='grey'>Doctor's
-											Contact</Text> {appointment.doctor?.phone}
+											Contact</Text> {appointment.doctor?.contact}
 									</Text>
 								</Flex>
 							</Box>

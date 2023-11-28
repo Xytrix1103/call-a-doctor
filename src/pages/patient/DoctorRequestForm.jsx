@@ -420,16 +420,16 @@ const FormSection = (props) => {
                     </Box>
                     <Flex alignItems="center" justifyContent="space-between" mt={6}>
                         <Box flex="1" mr={4}>
-                            <FormControl isInvalid={errors.date_of_birth}>
+                            <FormControl isInvalid={errors.dob}>
                                 <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
                                     Date of Birth <Text as="span" color="red.500">*</Text>
                                 </FormLabel>
                                 <Input
                                     variant="filled"
                                     type="date"
-                                    id="date_of_birth"
+                                    id="dob"
                                     {
-                                        ...register("date_of_birth", {
+                                        ...register("dob", {
                                             required: "Date of birth cannot be empty",
                                         })
                                     }
@@ -444,7 +444,7 @@ const FormSection = (props) => {
                                     p={2.5}
                                 />
                                 <FormErrorMessage>
-                                    {errors.date_of_birth && errors.date_of_birth.message}
+                                    {errors.dob && errors.dob.message}
                                 </FormErrorMessage>
                             </FormControl>
                         </Box>
@@ -648,7 +648,7 @@ const DoctorRequestForm = () => {
                 ...req,
                 patient: {
                     name: data.patient_name,
-                    dob: data.date_of_birth,
+                    dob: data.dob,
                     address: data.address,
                     contact: data.contact,
                     gender: data.gender,
@@ -696,12 +696,12 @@ const DoctorRequestForm = () => {
     useEffect(() => {
         if (usePersonalDetails) {
             setValue("patient_name", user.name);
-            setValue("date_of_birth", user.dob);
+            setValue("dob", user.dob);
             setValue("address", user.address);
-            setValue("contact", user.phone);
+            setValue("contact", user.contact);
         } else {
             resetField("patient_name");
-            resetField("date_of_birth");
+            resetField("dob");
             resetField("address");
             resetField("contact");
         }
