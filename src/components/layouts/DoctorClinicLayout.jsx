@@ -17,7 +17,7 @@ const DoctorClinicLayout = () => {
 	return (
 		<>
 			{
-				user.role !== "Doctor" || user.role !== "ClinicAdmin" ?
+				user.role !== "Doctor" && user.role !== "ClinicAdmin" ?
 					(
 						<Navigate to="/" />
 					) :
