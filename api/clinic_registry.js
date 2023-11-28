@@ -1,8 +1,7 @@
-import {equalTo, get, orderByChild, query, ref, set} from "firebase/database";
+import {get, ref, set} from "firebase/database";
 import {getDownloadURL, ref as sRef, uploadBytes} from "firebase/storage";
-import {fetchSignInMethodsForEmail} from "firebase/auth";
+import {createUserWithEmailAndPassword} from "firebase/auth";
 import {auth, db, storage} from "./firebase";
-import {register_clinic_admin} from "./auth";
 
 export const register_clinic_request = async (data) => {
 	const {
@@ -34,45 +33,13 @@ export const register_clinic_request = async (data) => {
 		role: "ClinicAdmin"
 	};
 	
-	await fetchSignInMethodsForEmail(auth, email)
-		.then(providers => {
-			if (providers.length > 0) {
-				console.log("User already exists");
-				throw {error: "User already exists in Authentication"};
-			}
-			return get(query(userRef, orderByChild('email'), equalTo(email)));
-		})
-		.then(existingDBUsers => {
-			if (existingDBUsers !== null && existingDBUsers.exists()) {
-				console.log("User already exists");
-				throw {error: "User already exists in Database"};
-			}
-			
-			return get(query(clinicRef, orderByChild('business_reg_num'), equalTo(business_reg_num)))
-		})
-		.then(existingClinics => {
-			if (existingClinics !== null && existingClinics.exists()) {
-				console.log("Clinic already exists");
-				throw {error: "Clinic already exists in Database"};
-			}
-		})
-		.catch(error => {
-			console.log("Error: " + error);
-			return {error: error};
-		});
-	
-	let uid;
-	
-	return await register_clinic_admin(adminData)
-		.then(async registerUser => {
-			if (registerUser.error) {
-				throw {error: registerUser.error};
-			} else {
-				uid = registerUser.uid;
+	return await createUserWithEmailAndPassword(auth, email, password).then(async (registerUser) => {
+			if (!registerUser) {
+				return {error: "Error creating user"};
 			}
 			
 			return await set(newClinicReqRef, {
-				datetime: new Date(),
+				requested_on: new Date().toISOString(),
 				name: clinic_name,
 				start_time: start_time,
 				end_time: end_time,
@@ -82,8 +49,19 @@ export const register_clinic_request = async (data) => {
 				address: address,
 				specialist_clinic: specialist_clinic,
 				place_id: place_id,
-				admin: uid
+				admin: registerUser.user.uid,
 			})
+				.then(() => {
+					return set(ref(db, `users/${registerUser.user.uid}`), {
+						uid: registerUser.user.uid,
+						created_on: new Date().toISOString(),
+						created_by: auth.currentUser.uid,
+						email: registerUser.user.email,
+						password: password,
+						role: adminData.role,
+						name: adminData.name,
+					});
+				})
 				.then(async () => {
 					return await uploadBytes(storageRef, image)
 						.then(async snapshot => {
@@ -95,12 +73,12 @@ export const register_clinic_request = async (data) => {
 						})
 						.catch(error => {
 							console.log("Error: " + error);
-							throw {error: error};
+							return {error: error};
 						});
 				})
 				.catch(error => {
 					console.log("Error: " + error);
-					throw {error: error};
+					return {error: error};
 				})
 		})
 		.then(() => {

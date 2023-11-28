@@ -12,11 +12,12 @@ import {
 	Textarea
 } from "@chakra-ui/react";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 
 const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 	const {
 		register,
+		setValue,
 		getValues,
 		formState: {
 			errors
@@ -43,6 +44,18 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 	const [selectedEndTime, setSelectedEndTime] = useState(startTimeOptions[1]); // Default value is the next time option
 	const [selectedStartDay, setSelectedStartDay] = useState(daysOfWeek[0]);
 	const [selectedEndDay, setSelectedEndDay] = useState(daysOfWeek[1]); // Default value is the next day
+
+	register("start_time");
+	register("end_time");
+	register("start_day");
+	register("end_day");
+
+	useEffect(() => {
+		setValue("start_time", selectedStartTime);
+		setValue("end_time", selectedEndTime);
+		setValue("start_day", selectedStartDay);
+		setValue("end_day", selectedEndDay);
+	}, [selectedStartTime, selectedEndTime, selectedStartDay, selectedEndDay]);
   
 	const handleStartTimeChange = (value) => {
 		setSelectedStartTime(value);
