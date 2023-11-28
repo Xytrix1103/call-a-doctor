@@ -126,7 +126,9 @@ export const update_password = async (data, new_password) => {
 	});
 }
 
-export const delete_user = async (email, password) => {
+export const delete_user = async (data) => {
+	const {email, password, clinic, role} = data;
+
 	return await signInWithEmailAndPassword(secondaryAuth, email, password)
 		.then((userCredential) => {
 			return deleteUser(userCredential.user).then(() => {
@@ -134,6 +136,13 @@ export const delete_user = async (email, password) => {
 					deleted_on: new Date(),
 					deleted: true,
 					deleted_by: auth.currentUser.uid
+				}).then(() => {
+					if (clinic === null) {
+						return {success: true};
+					} else {
+						const node = role === "Doctor" ? "doctors" : "admins";
+						return update(ref(db, `clinics/${clinic}/${node}/${userCredential.user.uid}`), null)
+					}
 				}).then(() => {
 					return {success: true};
 				}).catch((error) => {
