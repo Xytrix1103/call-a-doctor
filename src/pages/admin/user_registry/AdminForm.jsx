@@ -50,7 +50,7 @@ export const AdminForm = ({user, self=false}) => {
         console.log("Submitting admin form", data);
         
         if (!user) {
-            const valid = await trigger(['name', 'phone', 'email', 'password', 'confirm_password']);
+            const valid = await trigger(['name', 'contact', 'email', 'password', 'confirm_password']);
             const password = data["password"];
             const confirm_password = data["confirm_password"];
             
@@ -97,7 +97,7 @@ export const AdminForm = ({user, self=false}) => {
                 });
             });
         } else {
-            const valid = await trigger(['name', 'phone']);
+            const valid = await trigger(['name', 'contact']);
             let update = {};
             
             if (!valid) {
@@ -153,11 +153,11 @@ export const AdminForm = ({user, self=false}) => {
         if (user) {
             setValue('name', user.name);
             setValue('email', user.email);
-            setValue('phone', user.phone);
+            setValue('contact', user.contact);
         } else {
             setValue('name', null);
             setValue('email', null);
-            setValue('phone', null);
+            setValue('contact', null);
         }
     }, [user]);
 
@@ -308,15 +308,15 @@ export const AdminForm = ({user, self=false}) => {
                         {errors.name && errors.name.message}
                     </FormErrorMessage>
                 </FormControl>
-                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900"  id="phone_number" isInvalid={errors.phone}>
+                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900"  id="contact" isInvalid={errors.contact}>
                     <FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
-                        Phone Number <Text as="span" color="red.500" fontWeight="bold">*</Text>
+                        Contact <Text as="span" color="red.500" fontWeight="bold">*</Text>
                     </FormLabel>
                     <Input
                         variant="filled"
                         type="tel"
-                        name="phone_number"
-                        id="phone_number"
+                        name="contact"
+                        id="contact"
                         placeholder="012-345-6789"
                         rounded="xl"
                         borderWidth="1px"
@@ -327,17 +327,17 @@ export const AdminForm = ({user, self=false}) => {
                         w="full"
                         p={2.5}
                         {
-                            ...register("phone", {
-                                required: "Phone Number is required",
+                            ...register("contact", {
+                                required: "Contact is required",
                                 pattern: {
                                     value: /^(\+?\d{1,3}[- ]?)?\d{10}$/,
-                                    message: "Invalid phone number format",
+                                    message: "Invalid contact number format",
                                 },
                             })
                         }
                     />
                     <FormErrorMessage>
-                        {errors.phone && errors.phone.message}
+                        {errors.contact && errors.contact.message}
                     </FormErrorMessage>
                 </FormControl>
                 <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900" id="email" isInvalid={errors.email}>

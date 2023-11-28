@@ -13,7 +13,7 @@ export const register_clinic_request = async (data) => {
 		end_day,
 		business_reg_num,
 		specialist_clinic,
-		phone,
+		contact,
 		address,
 		place_id,
 		image,
@@ -78,7 +78,7 @@ export const register_clinic_request = async (data) => {
 				end_time: end_time,
 				start_day: start_day,
 				end_day: end_day,
-				contact: phone,
+				contact: contact,
 				address: address,
 				specialist_clinic: specialist_clinic,
 				place_id: place_id,
@@ -121,7 +121,7 @@ export const register_clinic_request = async (data) => {
 export const register_clinic = async (data) => {
 	const {
 		id,
-		datetime,
+		requested_on,
 		name,
 		start_time,
 		end_time,
@@ -143,8 +143,8 @@ export const register_clinic = async (data) => {
 	}
 	
 	return await set(newClinicRef, {
-			request_datetime: datetime,
-			approved_datetime: new Date(),
+			requested_on: requested_on,
+			approved_on: new Date(),
 			approved_by: auth.currentUser.uid,
 			name: name,
 			start_time: start_time,
@@ -182,12 +182,15 @@ export const reject_clinic_request = async (data) => {
 	
 	const clinicRequestRef = ref(db, `clinic_requests/${id}`);
 	
-	return await set(ref(db, `clinic_requests/${id}/rejected`), reason)
+	return await set(ref(db, `clinic_requests/${id}/rejected`), true)
+		.then(() => {
+			return set(ref(db, `clinic_requests/${id}/reject_reason`), reason);
+		})
 		.then(() => {
 			return set(ref(db, `clinic_requests/${id}/rejected_by`), auth.currentUser.uid);
 		})
 		.then(() => {
-			return set(ref(db, `clinic_requests/${id}/rejected_datetime`), new Date());
+			return set(ref(db, `clinic_requests/${id}/rejected_on`), new Date());
 		})
 		.then(() => {
 			console.log("Clinic request rejected");

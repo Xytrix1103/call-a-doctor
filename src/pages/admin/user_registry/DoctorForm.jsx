@@ -81,16 +81,16 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
 	        if (user) {
 	            setValue('name', user?.name);
 	            setValue('email', user?.email);
-	            setValue('phone', user?.phone);
-	            setValue('date_of_birth', user?.date_of_birth);
+	            setValue('contact', user?.contact);
+	            setValue('dob', user?.dob);
 				setValue("clinic", user?.clinic);
 	            setValue('qualification', user?.qualification);
 	            setValue('introduction', user?.introduction);
 	        } else {
 				setValue('name', null);
 				setValue('email', null);
-				setValue('phone', null);
-				setValue('date_of_birth', null);
+				setValue('contact', null);
+				setValue('dob', null);
 				setValue("clinic", clinics?.[0]?.id);
 				setValue('qualification', null);
 				setValue('introduction', null);
@@ -98,8 +98,8 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
 		} else {
 			setValue('name', null);
 			setValue('email', null);
-			setValue('phone', null);
-			setValue('date_of_birth', null);
+			setValue('contact', null);
+			setValue('dob', null);
 			setValue('clinic',  '');
 			setValue('qualification', null);
 			setValue('introduction', null);
@@ -165,7 +165,7 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
         console.log("Submitting doctor form", data);
 		
 		if (!user) {
-			const valid = await trigger(['name', 'phone', 'date_of_birth', 'qualification', 'introduction', 'clinic', 'email', 'password', 'confirm_password']);
+			const valid = await trigger(['name', 'contact', 'dob', 'qualification', 'introduction', 'clinic', 'email', 'password', 'confirm_password']);
 			const password = data["password"];
 			const confirm_password = data["confirm_password"];
 			
@@ -227,7 +227,7 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
 			});
 		} else {
 			console.log("Updating doctor");
-			const valid = await trigger(['name', 'phone', 'date_of_birth', 'qualification', 'introduction', 'clinic']);
+			const valid = await trigger(['name', 'contact', 'dob', 'qualification', 'introduction', 'clinic']);
 			let update = {};
 			
 			if (!valid) {
@@ -437,7 +437,7 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
                     </Box>
                     <Flex alignItems="center" justifyContent="space-between" mt={6}>
                         <Box flex="1" mr={4}>
-                            <FormControl isInvalid={errors.date_of_birth} id='date_of_birth'>
+                            <FormControl isInvalid={errors.dob} id='dob'>
                                 <FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900">
                                     Date of Birth <Text as="span" color="red.500" fontWeight="bold">*</Text>
                                 </FormLabel>
@@ -445,14 +445,14 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
                                     <Input
                                         variant="filled"
                                         type="date"
-                                        name="date_of_birth"
-                                        id="date_of_birth"
+                                        name="dob"
+                                        id="dob"
                                         rounded="xl"
                                         borderWidth="1px"
                                         borderColor="gray.300"
                                         color="gray.900"
                                         {
-                                            ...register("date_of_birth", {
+                                            ...register("dob", {
                                                 required: "Date of birth is required",
                                             })
                                         }
@@ -461,7 +461,7 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
                                     />
                                 </InputGroup>
                                 <FormErrorMessage>
-                                    {errors.date_of_birth && errors.date_of_birth.message}
+                                    {errors.dob && errors.dob.message}
                                 </FormErrorMessage>  
                             </FormControl>
                         </Box>
@@ -492,20 +492,20 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
                         </Box>
                     </Flex>
                     <Box>
-                        <FormControl isInvalid={errors.phone}>
+                        <FormControl isInvalid={errors.contact}>
                             <FormLabel mb={2} mt={6} fontSize="sm" fontWeight="medium" color="gray.900">
-                                Contact Number <Text as="span" color="red.500" fontWeight="bold">*</Text>
+                                Contact <Text as="span" color="red.500" fontWeight="bold">*</Text>
                             </FormLabel>
                             <Input
                                 variant="filled"
                                 type="tel"
-                                id="phone"
+                                id="contact"
                                 {
-                                    ...register("phone", {
+                                    ...register("contact", {
                                         required: "Contact number is required",
                                         pattern: {
                                             value: /^(\+?\d{1,3}[- ]?)?\d{10}$/,
-                                            message: "Invalid phone number format",
+                                            message: "Invalid contact number format",
                                         },
                                     })
                                 }
@@ -519,7 +519,7 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
                                 p={2.5}
                             />
                             <FormErrorMessage>
-                                {errors.phone && errors.phone.message}
+                                {errors.contact && errors.contact.message}
                             </FormErrorMessage>
                         </FormControl>
                     </Box>

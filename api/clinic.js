@@ -24,19 +24,19 @@ export const add_doctor = async (data) => {
 		.then(providers => {
 			if (providers.length > 0) {
 				console.log("User already exists");
-				throw {error: "User already exists in Authentication"};
+				return {error: "User already exists in Authentication"};
 			}
 			return get(query(userRef, orderByChild('email'), equalTo(email)));
 		})
 		.then(existingDBUsers => {
 			if (existingDBUsers !== null && existingDBUsers.exists()) {
 				console.log("User already exists");
-				throw {error: "User already exists in Database"};
+				return {error: "User already exists in Database"};
 			}
 			return register_doctor(data)
 				.then((registerUser) => {
 					if (registerUser.error) {
-						throw {error: registerUser.error};
+						return {error: registerUser.error};
 					} else {
 						uid = registerUser.uid;
 						storageRef = sRef(storage, `doctors/${uid}`);
@@ -72,7 +72,7 @@ export const approve_patient_request = async (id, doctor) => {
 			return set(ref(db, `requests/${id}/doctor`), doctor);
 		})
 		.then(() => {
-			return set(ref(db, `requests/${id}/date`), new Date().toISOString());
+			return set(ref(db, `requests/${id}/approved_on`), new Date().toISOString());
 		})
 		.then(() => {
 			return set(ref(db, `requests/${id}/approved_by`), auth.currentUser.uid);
@@ -91,7 +91,7 @@ export const reject_patient_request = async (id, reason) => {
 			return set(ref(db, `requests/${id}/reject_reason`), reason);
 		})
 		.then(() => {
-			return set(ref(db, `requests/${id}/date`), new Date().toISOString());
+			return set(ref(db, `requests/${id}/rejected_on`), new Date().toISOString());
 		})
 		.then(() => {
 			return set(ref(db, `requests/${id}/rejected_by`), auth.currentUser.uid);

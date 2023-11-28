@@ -46,8 +46,14 @@ const ClinicNavbar = () => {
 				)
 				}
 				{user.clinic && (
-					<Link as={NavLink} color="teal.500" to="/appointments" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }} _hover={{  textDecoration: "none" }}>
-						Appointment History
+					<Link as={NavLink} color="teal.500" to="/patients" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }} _hover={{  textDecoration: "none" }}>
+						Patients
+					</Link>
+				)
+				}
+				{user.clinic && (
+					<Link as={NavLink} color="teal.500" to="/staff" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }} _hover={{  textDecoration: "none" }}>
+						Staff
 					</Link>
 				)
 				}

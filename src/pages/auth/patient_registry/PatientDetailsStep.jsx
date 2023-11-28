@@ -6,15 +6,15 @@ import {
 	FormHelperText,
 	FormLabel,
 	Grid,
-	InputGroup,
 	IconButton,
-	InputRightElement,
 	Input,
+	InputGroup,
+	InputRightElement,
 	Select,
 	Text,
 	Textarea
 } from "@chakra-ui/react";
-import {useRef, useState} from "react";
+import {useState} from "react";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 
 const PatientDetailsStep = ({form, place}) => {
@@ -214,7 +214,7 @@ const PatientDetailsStep = ({form, place}) => {
 			<Box w="full" h="full">
 			<Flex alignItems="center" justifyContent="space-between">
 					<Box flex="1" mr={4}>
-						<FormControl isInvalid={errors.date_of_birth}>
+						<FormControl isInvalid={errors.dob}>
 							<FormLabel mb={2} fontSize="sm" fontWeight="medium" color="gray.900" requiredIndicator>
 								Date of Birth <Text as="span" color="red.500" fontWeight="bold">*</Text>
 							</FormLabel>
@@ -222,10 +222,10 @@ const PatientDetailsStep = ({form, place}) => {
 								<Input
 									variant="filled"
 									type="date"
-									name="date_of_birth"
-									id="date_of_birth"
+									name="dob"
+									id="dob"
 									{
-										...register("date_of_birth", {
+										...register("dob", {
 											required: "Date of birth cannot be empty",
 										})
 									}
@@ -239,7 +239,7 @@ const PatientDetailsStep = ({form, place}) => {
 								/>
 							</InputGroup>
 							<FormErrorMessage>
-								{errors.date_of_birth && errors.date_of_birth.message}
+								{errors.dob && errors.dob.message}
 							</FormErrorMessage>
 						</FormControl>
 					</Box>
@@ -267,15 +267,15 @@ const PatientDetailsStep = ({form, place}) => {
 					</Box>
 				</Flex>
 				<Box mb={2} mt={6}>
-					<FormControl fontSize="sm" fontWeight="medium" color="gray.900"  id="phone" isInvalid={errors.phone} requiredIndicator>
+					<FormControl fontSize="sm" fontWeight="medium" color="gray.900"  id="contact" isInvalid={errors.contact} requiredIndicator>
 						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
-							Contact Number <Text as="span" color="red.500" fontWeight="bold">*</Text>
+							Contact <Text as="span" color="red.500" fontWeight="bold">*</Text>
 						</FormLabel>
 						<Input
 							variant="filled"
 							type="tel"
-							name="phone"
-							id="phone"
+							name="contact"
+							id="contact"
 							placeholder="+60 12-345 6789"
 							rounded="xl"
 							borderWidth="1px"
@@ -286,17 +286,17 @@ const PatientDetailsStep = ({form, place}) => {
 							w="full"
 							p={2.5}
 							{
-								...register("phone", {
+								...register("contact", {
 									required: "Contact Number is required",
 									pattern: {
 										value: /^(\+?\d{1,3}[- ]?)?\d{10}$/,
-										message: "Invalid phone number format",
+										message: "Invalid contact number format",
 									},
 								})
 							}
 						/>
 						<FormErrorMessage>
-							{errors.phone && errors.phone.message}
+							{errors.contact && errors.contact.message}
 						</FormErrorMessage>
 					</FormControl>
 				</Box>

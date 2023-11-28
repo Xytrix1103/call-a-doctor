@@ -36,9 +36,13 @@ const DoctorNavbar = () => {
 				<Link as={NavLink} color="teal.500" to="/" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
 					Home
 				</Link>
-				<Link as={NavLink} color="teal.500" to="/your-appointments" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
+				<Link as={NavLink} color="teal.500" to="/appointments" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
 					Appointments
 				</Link>
+				<Link as={NavLink} color="teal.500" to="/patients" marginRight={6} _activeLink={{ color: "#0307fc" }} _focus={{ boxShadow: "none" }}>
+					Patients
+				</Link>
+				
 				<Menu marginRight={6}>
 					<MenuButton as={Link} color="teal.500" display="flex" alignItems="center">
 						<Flex alignItems="center">
