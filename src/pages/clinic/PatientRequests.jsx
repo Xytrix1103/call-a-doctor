@@ -24,6 +24,11 @@ import {
 	useToast,
 	VStack,
 } from '@chakra-ui/react';
+import {BiSolidPhone} from "react-icons/bi";
+import {BsCalendarDayFill, BsGenderFemale, BsGenderMale} from "react-icons/bs";
+import {FaCar, FaMapLocationDot, FaPlus, FaTrash, FaUser, FaX} from "react-icons/fa6";
+import {GiMedicines, GiSandsOfTime} from "react-icons/gi";
+import {GoDotFill} from "react-icons/go";
 import {equalTo, get, onValue, orderByChild, query, ref} from 'firebase/database';
 import {memo, useEffect, useRef, useState} from 'react';
 import {db} from "../../../api/firebase.js";
@@ -64,99 +69,154 @@ const PatientRequest = ({toast, patientRequest, doctors, handleAssignDoctor, set
 		e.preventDefault();
 		setAction({id: patientRequest.id, approve: false});
 	}
+
+	const getDoctorName = (doctorId) => {
+		const doctor = doctors.find((d) => d.id === doctorId);
+		return doctor ? doctor.name : 'Not Assigned';
+	}
 	
 	return (
-		<Box key={patientRequest.id} borderWidth="1px" borderRadius="lg" p={4} width="100%">
-			<Text fontSize="md">
-				<Text fontWeight="bold" display="inline">
-					Patient Name:{' '}
-				</Text>
-				{patientRequest.name}
-			</Text>
-			<Text fontSize="md">
-				<Text fontWeight="bold" display="inline">
-					Date of Birth:{' '}
-				</Text>
-				{patientRequest.dob}
-			</Text>
-			<Text fontSize="md">
-				<Text fontWeight="bold" display="inline">
-					Gender:{' '}
-				</Text>
-				{patientRequest.gender}
-			</Text>
-			<Text fontSize="md">
-				<Text fontWeight="bold" display="inline">
-					Contact Number:{' '}
-				</Text>
-				{patientRequest.contact}
-			</Text>
-			<Text fontSize="md">
-				<Text fontWeight="bold" display="inline">
-					Address:{' '}
-				</Text>
-				{patientRequest.address}
-			</Text>
-			<Text fontSize="md">
-				<Text fontWeight="bold" display="inline">
-					Appointment Date:{' '}
-				</Text>
-				{patientRequest.date}
-			</Text>
-			<Text fontSize="md">
-				<Text fontWeight="bold" display="inline">
-					Appointment Time:{' '}
-				</Text>
-				{patientRequest.appointment_time}
-			</Text>
-			<Text fontSize="md">
-				<Text fontWeight="bold" display="inline">
-					Illness Description:{' '}
-				</Text>
-				{patientRequest.illness_description}
-			</Text>
-			{
-				request_filter(patientRequest) === 'Pending' && (
-					<>
-						<Text fontSize="md" fontWeight="bold" display="inline" mr={2}>
-							Assigned Doctor:
-						</Text>
-						<Select
-							value={patientRequest.doctor || ''}
-							onChange={(e) => handleAssignDoctor(patientRequest.id, e.target.value)}
-							size="md"
-							width="200px"
-						>
-							<option value="" disabled>
-								Select Doctor
-							</option>
-							{doctors.map((doctor) => (
-								<option key={doctor.id} value={doctor.uid}>
-									{doctor.name}
-								</option>
-							))}
-						</Select>
-						<Flex justify="flex-end" mt={4}>
-							<Button colorScheme="green" size="sm" onClick={handleApprove}>
-								Approve
-							</Button>
-							<Button colorScheme="red" size="sm" onClick={handleReject} ml={2}>
-								Reject
-							</Button>
+        <Flex
+            w='full'
+            rounded='lg'
+            my={8}
+            position='relative'
+            boxShadow="lg"
+            bg='white'
+        >
+            <Box
+                w='full'
+                rounded='md'
+                gridGap={4}
+                gridTemplateColumns="1fr 1fr"
+            >
+                <Flex px={4} pt={3} direction='column' mb={2}>
+                    <Box mb={2}/>
+                    <Box mb={1} w='full'>
+                        <Flex alignItems='center' mx={3} justifyContent='space-between'>
+                            <Flex alignItems='center'>
+                                <FaUser size={20} color='#3f2975'/>
+                                <Text fontSize='md' fontWeight='bold' letterSpacing='wide' ml={4}>
+                                    {patientRequest.name}
+                                </Text>
+                            </Flex>
+                        </Flex>
+                    </Box>
+                    <Box mb={1} w='full'>
+                        <Flex alignItems='center' mx={3}>
+                            <FaMapLocationDot size={20} color='#3176de'/>
+                            <Text fontSize='md' fontWeight='semibold' letterSpacing='wide' ml={4}>
+                                {patientRequest.address}
+                            </Text>
+                        </Flex>
+                    </Box>
+                </Flex>
+                
+                <Flex px={4}>
+                    <Flex direction='column' w='full'>
+                        <Box w='95%' mb={3} ml={3}>
+                            <Text fontSize='sm' letterSpacing='wide' noOfLines={3}>
+                                {patientRequest.illness_description}
+                            </Text>
+                        </Box>
+                        <Flex alignItems='center' mb={2}>
+                            <Box mb={2} w='full'>
+                                <Flex alignItems='center' mx={3}>
+                                    {patientRequest.gender === "Male" ? <BsGenderMale size={20} color='#3f2975'/> :
+                                        <BsGenderFemale size={20} color='#f50057'/>}
+                                    <Text fontSize='sm' letterSpacing='wide' ml={4}>
+                                        <Text fontWeight='medium'
+                                            color='grey'>Gender</Text> {patientRequest.gender}
+                                    </Text>
+                                </Flex>
+                            </Box>
+                            <GoDotFill size={40} color='black'/>
+                            <Box mb={2} w='full'>
+                                <Flex alignItems='center' justifyContent='center' mx={3}>
+                                    <GiSandsOfTime size={20} color='#964609'/>
+                                    <Text fontSize='sm' letterSpacing='wide' ml={4}>
+                                        <Text fontWeight='medium' color='grey'>Age</Text> {patientRequest.age}
+                                    </Text>
+                                </Flex>
+                            </Box>
+                            <GoDotFill size={40} color='black'/>
+                            <Box mb={2} w='full'>
+                                <Flex alignItems='center' justifyContent='center' mx={3}>
+                                    <BiSolidPhone size={20} color='#3d98ff'/>
+                                    <Text fontSize='sm' letterSpacing='wide' ml={4}>
+                                        <Text fontWeight='medium'
+                                            color='grey'>Contact</Text> {patientRequest.contact}
+                                    </Text>
+                                </Flex>
+                            </Box>
+                            <GoDotFill size={40} color='black'/>
+                            <Box mb={2} w='full'>
+                                <Flex alignItems='center' justifyContent='center' mx={3}>
+                                <BsCalendarDayFill size={20}/>
+                                    <Text fontSize='sm' letterSpacing='wide' ml={4}>
+                                        <Text fontWeight='medium' color='grey'>Appointment Date and Time</Text>
+                                        <Text>{patientRequest.formattedDate}</Text>
+                                        <Text>{patientRequest.appointment_time}</Text>
+                                    </Text>
+                                </Flex>
+                            </Box>
+                        </Flex>
+						<Flex direction="column" w="full">
+							{request_filter(patientRequest) === "Pending" && (
+                                <Box mb={1} w='full'>
+                                    <Flex alignItems='center' mx={3}>
+                                        <Text fontSize='md' fontWeight='bold' letterSpacing='wide' mr={3}>
+                                            Assign Doctor:
+                                        </Text>
+                                        <Select placeholder="Select Doctor" onChange={(e) => handleAssignDoctor(patientRequest.id, e.target.value)} w='200px'>
+                                            {doctors.map((doctor) => (
+                                                <option key={doctor.id} value={doctor.id}>
+                                                    {doctor.name}
+                                                </option>
+                                            ))}
+                                        </Select>
+                                    </Flex>
+                                    <Flex direction="column" alignItems="flex-end">
+                                        <Flex direction="row" mt={3} mb={3}>
+                                            <Button onClick={handleApprove} colorScheme="green" flex="1" width="50%">
+                                                Approve
+                                             </Button>
+                                            <Button onClick={handleReject} colorScheme="red" ml={2} flex="1" width="50%">
+                                                Reject
+                                            </Button>
+                                        </Flex>
+                                    </Flex>
+                                </Box>
+                            )}
+							{request_filter(patientRequest) === "Approved" && (
+								<Box mb={4} w='full'>
+									<Flex alignItems='center' mx={3}>
+										<Text fontSize='md' fontWeight='bold' letterSpacing='wide' mr={3}>
+											Assigned Doctor:
+										</Text>
+										<Text fontSize='md' letterSpacing='wide'>
+											{getDoctorName(patientRequest.doctor)}
+										</Text>
+									</Flex>
+								</Box>
+							)}
+                            {request_filter(patientRequest) === "Rejected" && (
+								<Box mb={4} w='full'>
+									<Flex alignItems='center' mx={3}>
+										<Text fontSize='md' fontWeight='bold' letterSpacing='wide' mr={3}>
+											Reason for Rejection:
+										</Text>
+										<Text fontSize='md' letterSpacing='wide'>
+											{patientRequest.reject_reason}
+										</Text>
+									</Flex>
+								</Box>
+                            )}
 						</Flex>
-					</>
-				)
-			}
-			
-			{request_filter(patientRequest) === 'Rejected' && (
-				<Text fontSize="md">
-					<Text fontWeight="bold" display="inline">
-						Reason for Rejection:{' '}
-					</Text>
-					{patientRequest?.reasonOfRejection}
-				</Text>
-			)}
-		</Box>
+					</Flex>
+				</Flex>
+			</Box>
+		</Flex>
 	)
 }
 
@@ -185,6 +245,7 @@ function renderPatientRequestsByStatus(toast, status, handleAssignDoctor, setAct
 function PatientRequests() {
 	const [patientRequests, setPatientRequests] = useState([]);
 	const [doctors, setDoctors] = useState([]);
+	const [date, setDate] = useState('');
 	const {isOpen: isOpenApprove, onOpen: onOpenApprove, onClose: onCloseApprove} = useDisclosure();
 	const {isOpen: isOpenReject, onOpen: onOpenReject, onClose: onCloseReject} = useDisclosure();
 	const reasonRef = useRef();
@@ -199,30 +260,69 @@ function PatientRequests() {
 	}
 	
 	useEffect(() => {
+		const today = new Date();
+		const dd = String(today.getDate()).padStart(2, '0');
+		const mm = String(today.getMonth() + 1).padStart(2, '0');
+		const yyyy = today.getFullYear();
+		const todayDate = `${dd}/${mm}/${yyyy}`;
+		setDate(todayDate);
+		console.log(todayDate);
+
 		onValue(ref(db, 'requests'), (snapshot) => {
 			const data = snapshot.val();
 			const requests = [];
-			for (let id in data) {
-				if (data[id].patient == null) {
-					get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
-						data[id] = {
-							id: id,
-							...data[id],
-							...userSnapshot.val(),
-						}
-						requests.push(data[id]);
-					});
+
+			const addAgeAndDate = (request) => {
+				const birthDate = new Date(request.dob);
+				const currentDate = new Date();
+				const age =
+				  currentDate.getFullYear() -
+				  birthDate.getFullYear() -
+				  (currentDate.getMonth() < birthDate.getMonth() ||
+					(currentDate.getMonth() === birthDate.getMonth() &&
+					  currentDate.getDate() < birthDate.getDate())
+					? 1
+					: 0);
+			
+				const formattedDate = new Date(request.date).toLocaleDateString(
+				  'en-GB',
+				  {
+					day: 'numeric',
+					month: 'long',
+					year: 'numeric',
+				  }
+				);
+			
+				request.age = age;
+				request.formattedDate = formattedDate;
+			  };
+			
+			  const processRequest = (request) => {
+				if (request.patient == null) {
+				  get(ref(db, `users/${request.uid}`)).then((userSnapshot) => {
+					request = {
+					  ...request,
+					  ...userSnapshot.val(),
+					};
+					addAgeAndDate(request);
+					requests.push(request);
+				  });
 				} else {
-					data[id] = {
-						id: id,
-						...data[id],
-						...data[id].patient,
-					}
-					requests.push(data[id]);
+				  request = {
+					...request,
+					...request.patient,
+				  };
+				  addAgeAndDate(request);
+				  requests.push(request);
 				}
-			}
-			console.log(requests);
-			setPatientRequests(requests);
+			  };
+			
+			  for (let id in data) {
+				processRequest(data[id]);
+			  }
+			
+			  console.log(requests);
+			  setPatientRequests(requests);
 		});
 		
 		onValue(query(ref(db, 'users'), orderByChild('role'), equalTo('Doctor')), (snapshot) => {
@@ -390,7 +490,7 @@ function PatientRequests() {
 						<TabPanel height="500px">
 							<VStack spacing={2} align="center">
 								<Box my={5} mx={5} w="full">
-									<Text fontSize="xl" fontWeight="bold" pl="6px">
+									<Text fontSize="xl" fontWeight="bold" pl="6px" letterSpacing='wide'>
 										Pending Patient Requests
 									</Text>
 								</Box>
@@ -401,7 +501,7 @@ function PatientRequests() {
 						<TabPanel height="500px">
 							<VStack spacing={2} align="center">
 								<Box my={5} mx={5} w="full">
-									<Text fontSize="xl" fontWeight="bold" pl="6px">
+									<Text fontSize="xl" fontWeight="bold" pl="6px" letterSpacing='wide'>
 										Approved Patient Requests
 									</Text>
 								</Box>
@@ -412,7 +512,7 @@ function PatientRequests() {
 						<TabPanel height="500px">
 							<VStack spacing={2} align="center">
 								<Box my={5} mx={5} w="full">
-									<Text fontSize="xl" fontWeight="bold" pl="6px">
+									<Text fontSize="xl" fontWeight="bold" pl="6px" letterSpacing='wide'>
 										Rejected Patient Requests
 									</Text>
 								</Box>
