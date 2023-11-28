@@ -128,27 +128,32 @@ export const delete_user = async (data) => {
 
 	return await signInWithEmailAndPassword(secondaryAuth, email, password)
 		.then((userCredential) => {
-			return deleteUser(userCredential.user).then(() => {
-				return update(ref(db, `users/${userCredential.user.uid}`), {
-					deleted_on: new Date(),
-					deleted: true,
-					deleted_by: auth.currentUser.uid
-				}).then(() => {
+			return deleteUser(userCredential.user)
+				.then(() => {
+					return update(ref(db, `users/${userCredential.user.uid}`), {
+						deleted_on: new Date(),
+						deleted: true,
+						deleted_by: auth.currentUser.uid
+					})
+				})
+				.then(() => {
 					if (clinic === null) {
 						return {success: true};
 					} else {
 						const node = role === "Doctor" ? "doctors" : "admins";
 						return update(ref(db, `clinics/${clinic}/${node}/${userCredential.user.uid}`), null)
 					}
-				}).then(() => {
+				})
+				.then(() => {
 					return {success: true};
-				}).catch((error) => {
+				})
+				.catch((error) => {
 					return {error: error};
-				});
+				})
+			.then(() => {
+				return {success: true};
+			})
 			}).catch((error) => {
 				return {error: error};
 			});
-		}).catch((error) => {
-			return {error: error};
-		});
 }
