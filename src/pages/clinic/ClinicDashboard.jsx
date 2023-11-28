@@ -1,49 +1,49 @@
 import {
-	Box,
-	Flex,
-	Image,
-    Link,
-	Input,
-	InputGroup,
-	Text,
     Avatar,
-    InputLeftElement,
     Badge,
-    VStack,
+    Box,
     Button,
+    Divider,
+    Flex,
+    Image,
+    Input,
+    InputGroup,
+    InputLeftElement,
+    Link,
     Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
     ModalBody,
     ModalCloseButton,
-    useDisclosure,
-    Tabs, 
-    TabList, 
-    TabPanels, 
-    Tab, 
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Tab,
+    TabList,
     TabPanel,
-    Divider,
+    TabPanels,
+    Tabs,
+    Text,
+    VStack,
 } from '@chakra-ui/react';
-import {useRef, useState, useEffect, memo} from "react";
-import {onValue, get, query, ref, orderByChild, equalTo} from "firebase/database";
+import {memo, useEffect, useState} from "react";
+import {equalTo, get, onValue, orderByChild, query, ref} from "firebase/database";
 import {db} from "../../../api/firebase.js";
 import {useAuth} from "../../components/AuthCtx.jsx";
 import {NavLink} from "react-router-dom";
-import { FaUser, FaStethoscope, FaStar, FaStarHalf, FaEye, FaTrash } from "react-icons/fa";
-import { BiSearchAlt2 } from "react-icons/bi";
-import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
-import { GiMedicines } from "react-icons/gi";
-import { GoDotFill } from "react-icons/go";
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
-import { BarChart } from '../../components/charts/BarChart';
-import { DoughnutChart } from '../../components/charts/DoughnutChart';
+import {FaEye, FaStar, FaStarHalf, FaStethoscope, FaTrash, FaUser} from "react-icons/fa";
+import {BiSearchAlt2} from "react-icons/bi";
+import {BsGenderFemale, BsGenderMale} from "react-icons/bs";
+import {GiMedicines} from "react-icons/gi";
+import {GoDotFill} from "react-icons/go";
+import {DataTable} from 'primereact/datatable';
+import {Column} from 'primereact/column';
+import {FilterMatchMode} from 'primereact/api';
+import {BarChart} from '../../components/charts/BarChart';
+import {DoughnutChart} from '../../components/charts/DoughnutChart';
 import {AppointmentTimelineChart} from "../../components/charts/AppointmentTimelineChart.jsx"
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
-import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
+import {useLoadScript} from '@react-google-maps/api';
+import {delete_user} from "../../../api/admin.js";
 
 const TimeSlotDoughnutChart = memo(({ appointments }) => {
     const [timeSlotDistribution, setTimeSlotDistribution] = useState({
@@ -518,6 +518,10 @@ function ClinicDashboard() {
                                         mr={3} 
                                         backgroundColor='red' 
                                         color='white'
+                                        onClick={() => {
+                                            delete_user(rowData.email, rowData.password);
+                                            onCloseApprove();
+                                        }}
                                     >
                                         Delete
                                     </Button>
