@@ -1,24 +1,4 @@
-import {
-	Box,
-	Flex,
-	Image,
-    Link,
-	Input,
-	InputGroup,
-	Text,
-    Avatar,
-    InputLeftElement,
-    Badge,
-    VStack,
-    Button,
-    IconButton,
-    Tabs, 
-    TabList, 
-    TabPanels, 
-    Tab, 
-    TabPanel,
-    Divider,
-} from '@chakra-ui/react';
+import {Box, Flex, Text,} from '@chakra-ui/react';
 import {useAuth} from "../../components/AuthCtx.jsx";
 import {useEffect, useState} from "react";
 import {equalTo, onValue, orderByChild, query, ref} from "firebase/database";
@@ -132,7 +112,7 @@ const VerificationPending = () => {
 								position="absolute"
 								bottom="100px"
 							>
-								{clinic.rejected}
+								{clinic.reject_reason}
 							</Text>
 						</>
 					) : (

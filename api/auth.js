@@ -1,15 +1,16 @@
 import {
-    createUserWithEmailAndPassword,
-    sendPasswordResetEmail,
-    signInWithEmailAndPassword,
-    signOut
+	createUserWithEmailAndPassword,
+	sendPasswordResetEmail,
+	signInWithEmailAndPassword,
+	signOut
 } from "firebase/auth";
 import {auth, db, secondaryAuth, storage} from "./firebase.js";
 import {ref, set} from "firebase/database";
 import {getDownloadURL, ref as sRef, uploadBytes} from "firebase/storage";
 
 export const register = async (data, asAdmin=false) => {
-	const {email, place_id, password, name, gender="", dob="", contact = "", address = "", role="Patient"} = data;
+	const {email, place_id, password, name, gender="", dob="",
+		contact = "", address = "", role="Patient"} = data;
 	const authObj = asAdmin ? secondaryAuth : auth;
 	
 	return await createUserWithEmailAndPassword(authObj, email, password).then(async (newUser) => {

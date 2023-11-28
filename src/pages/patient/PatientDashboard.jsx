@@ -135,7 +135,7 @@ function PatientDashboard() {
             const promises = [];
             const data = snapshot.val();
             for (let id in data) {
-                if (!data[id].approved) {
+                if (!data[id].approved || data[id].rejected) {
                     if (data[id].patient == null) {
                         get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
                             data[id] = {
