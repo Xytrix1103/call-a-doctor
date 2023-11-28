@@ -1,7 +1,7 @@
-import { Box, Flex, Text, Popover, PopoverTrigger, PopoverContent, Divider, Avatar } from '@chakra-ui/react';
-import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
-import { FaEarthAsia } from "react-icons/fa6";
-import { GoDotFill } from "react-icons/go";
+import {Avatar, Box, Divider, Flex, Text} from '@chakra-ui/react';
+import {BsGenderFemale, BsGenderMale} from "react-icons/bs";
+import {FaEarthAsia} from "react-icons/fa6";
+import {GoDotFill} from "react-icons/go";
 
 const TimelineItem = ({ appointment }) => (
     <Flex>
@@ -48,7 +48,7 @@ const TimelineItem = ({ appointment }) => (
                                         Contact
                                     </Text>
                                     <Text fontSize="xs" fontWeight="semibold" color="gray.700">
-                                        {appointment.patient ? appointment.patient.contact : appointment.phone}
+                                        {appointment.patient ? appointment.patient.contact : appointment.contact}
                                     </Text>
                                 </Box>
                                 <Box>

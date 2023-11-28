@@ -149,13 +149,13 @@ function Register() {
                                         {errors.email && errors.email.message}
                                     </FormErrorMessage>
                                 </FormControl>
-                                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900"  id="phone_number" isInvalid={errors.phone_number}>
-                                    <FormLabel>Phone Number</FormLabel>
+                                <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900"  id="contact" isInvalid={errors.contact}>
+                                    <FormLabel>Contact</FormLabel>
                                     <Input
                                         variant="filled"
                                         type="tel"
-                                        name="phone_number"
-                                        id="phone_number"
+                                        name="contact"
+                                        id="contact"
                                         placeholder="+60 12-345 6789"
                                         rounded="xl"
                                         borderWidth="1px"
@@ -166,14 +166,14 @@ function Register() {
                                         w="full"
                                         p={2.5}
                                         {
-                                            ...register("phone_number", {
-                                                required: "Phone Number is required",
+                                            ...register("contact", {
+                                                required: "Contact Number is required",
 
                                             })
                                         }
                                     />
                                     <FormErrorMessage>
-                                        {errors.phone_number && errors.phone_number.message}
+                                        {errors.contact && errors.contact.message}
                                     </FormErrorMessage>
                                 </FormControl>
                                 <FormControl mb={2} mt={4} fontSize="sm" fontWeight="medium" color="gray.900"  id="password" isInvalid={errors.password}>

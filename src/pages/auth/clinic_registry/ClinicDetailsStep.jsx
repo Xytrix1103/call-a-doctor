@@ -313,16 +313,16 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 					</FormControl>
 				</Box>
 				<Box mb={2} mt={6}>
-					<FormControl isInvalid={errors.phone}>
+					<FormControl isInvalid={errors.contact}>
 						<FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
 							Contact Number <Text as="span" color="red.500" fontWeight="bold">*</Text>
 						</FormLabel>
 						<Input
 							variant="filled"
 							type="tel"
-							id="phone"
+							id="contact"
 							{
-								...register("phone", {
+								...register("contact", {
 									required: "Contact number cannot be empty",
 								})
 							}
@@ -338,7 +338,7 @@ const ClinicDetailsStep = ({form, imageRef, place, image, setImage}) => {
 							p={2.5}
 						/>
 						<FormErrorMessage>
-							{errors.phone && errors.phone.message}
+							{errors.contact && errors.contact.message}
 						</FormErrorMessage>
 					</FormControl>
 				</Box>

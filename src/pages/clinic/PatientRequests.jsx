@@ -33,13 +33,14 @@ import {equalTo, get, onValue, orderByChild, query, ref} from 'firebase/database
 import {memo, useEffect, useRef, useState} from 'react';
 import {db} from "../../../api/firebase.js";
 import {approve_patient_request, reject_patient_request} from "../../../api/clinic.js";
+import {useAuth} from "../../components/AuthCtx.jsx";
 
 const request_filter = (patientRequest) => {
-	if (!patientRequest.rejected && !patientRequest.approved) {
+	if (!patientRequest?.rejected && !patientRequest?.approved) {
 		return "Pending";
-	} else if (patientRequest.rejected && !patientRequest.approved) {
+	} else if (patientRequest?.rejected && !patientRequest?.approved) {
 		return "Rejected";
-	} else if (patientRequest.approved && !patientRequest.rejected) {
+	} else if (patientRequest?.approved && !patientRequest?.rejected) {
 		return "Approved";
 	} else {
 		return "Pending";
@@ -47,7 +48,7 @@ const request_filter = (patientRequest) => {
 }
 
 const PatientRequest = ({toast, patientRequest, doctors, handleAssignDoctor, setAction}) => {
-	console.log(patientRequest);
+	console.log(doctors);
 	const handleApprove = (e) => {
 		e.preventDefault();
 		console.log(patientRequest.doctor);
@@ -249,6 +250,7 @@ function PatientRequests() {
 	const {isOpen: isOpenApprove, onOpen: onOpenApprove, onClose: onCloseApprove} = useDisclosure();
 	const {isOpen: isOpenReject, onOpen: onOpenReject, onClose: onCloseReject} = useDisclosure();
 	const reasonRef = useRef();
+	const {user} = useAuth();
 	const [action, setAction] = useState({
 		id: null,
 		approve: false,
@@ -324,48 +326,71 @@ function PatientRequests() {
 			  console.log(requests);
 			  setPatientRequests(requests);
 		});
-		
-		onValue(query(ref(db, 'users'), orderByChild('role'), equalTo('Doctor')), (snapshot) => {
+	}, []);
+	
+	useEffect(() => {
+		console.log("patient requests changed");
+		onValue(query(ref(db, 'users'), orderByChild('role'), equalTo('Doctor')), async (snapshot) => {
+			console.log(snapshot.val());
 			const data = snapshot.val();
 			const doctors = [];
 			for (let id in data) {
-				let isAvailable = true;
-				onValue(query(ref(db, `requests`), orderByChild('doctor'), equalTo(id)), (snapshot) => {
+				if (data[id].clinic !== user?.clinic || data[id].deleted) {
+					continue;
+				}
+				
+				console.log("getting requests")
+				await get(query(ref(db, `requests`), orderByChild('doctor'), equalTo(id))).then((snapshot) => {
 					if (snapshot.val() !== null) {
+						let doc = {
+							id: id,
+							...data[id],
+							busy_times: [],
+						};
+						
 						for (let requestId in snapshot.val()) {
 							const today = new Date();
 							const requestDate = new Date(snapshot.val()[requestId].date);
 							const requestTime = snapshot.val()[requestId].appointment_time;
 							const requestTime24HourFormat = requestTime.slice(-2) === 'AM' ?
 								parseInt(requestTime.slice(0, 2)) :
-								parseInt(requestTime.slice(0, 2)) + 12;
+								parseInt(requestTime.slice(0, 2)) === 12 ?
+									parseInt(requestTime.slice(0, 2)) :
+									parseInt(requestTime.slice(0, 2)) + 12;
+							
+							console.log(today.getHours(), requestTime24HourFormat);
 							
 							if (today.getFullYear() === requestDate.getFullYear() &&
 								today.getMonth() === requestDate.getMonth() &&
 								today.getDate() === requestDate.getDate()) {
-								if (today.getHours() > requestTime24HourFormat) {
-									if (snapshot.val()[requestId].appointment_time === snapshot.val()[requestId].appointment_time) {
-										isAvailable = false;
-										break;
-									}
+								doc.busy_times.push(requestTime);
+								
+								if (today.getHours() >= requestTime24HourFormat && !doc.busy_times.includes(requestTime)) {
+									doc.busy_times.push(requestTime);
 								}
 							}
 						}
+						
+						doctors.push(doc);
+					} else {
+						doctors.push({
+							id: id,
+							...data[id],
+							busy_times: [],
+						});
 					}
 				});
-				
-				if (isAvailable) {
-					doctors.push({
-						id: id,
-						...data[id],
-					});
-				}
 			}
 			setDoctors(doctors);
 		});
-	}, []);
+	}, [patientRequests]);
+	
+	useEffect(() => {
+		console.log(doctors);
+	}, [doctors]);
 	
 	const handleAssignDoctor = (id, uid) => {
+		console.log(id, uid);
 		const index = patientRequests.findIndex((request) => request.id === id);
 		let updatedPatientRequests = [...patientRequests];
 		updatedPatientRequests[index].doctor = uid;

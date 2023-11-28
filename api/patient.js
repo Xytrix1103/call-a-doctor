@@ -8,7 +8,7 @@ export const request_doctor = async (data) => {
 	
 	return await set(ref(db, `requests/${newRequestKey}`), {
 		...data,
-		date: new Date().toISOString(),
+		requested_on: new Date().toISOString(),
 	})
 		.then(() => {
 			return { success: true, request_id: newRequestKey };

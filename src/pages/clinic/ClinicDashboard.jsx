@@ -1,49 +1,49 @@
 import {
-	Box,
-	Flex,
-	Image,
-    Link,
-	Input,
-	InputGroup,
-	Text,
     Avatar,
-    InputLeftElement,
     Badge,
-    VStack,
+    Box,
     Button,
+    Divider,
+    Flex,
+    Image,
+    Input,
+    InputGroup,
+    InputLeftElement,
+    Link,
     Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
     ModalBody,
     ModalCloseButton,
-    useDisclosure,
-    Tabs, 
-    TabList, 
-    TabPanels, 
-    Tab, 
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Tab,
+    TabList,
     TabPanel,
-    Divider,
+    TabPanels,
+    Tabs,
+    Text,
+    VStack,
 } from '@chakra-ui/react';
-import {useRef, useState, useEffect, memo} from "react";
-import {onValue, get, query, ref, orderByChild, equalTo} from "firebase/database";
+import {memo, useEffect, useState} from "react";
+import {equalTo, get, onValue, orderByChild, query, ref} from "firebase/database";
 import {db} from "../../../api/firebase.js";
 import {useAuth} from "../../components/AuthCtx.jsx";
 import {NavLink} from "react-router-dom";
-import { FaUser, FaStethoscope, FaStar, FaStarHalf, FaEye, FaTrash } from "react-icons/fa";
-import { BiSearchAlt2 } from "react-icons/bi";
-import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
-import { GiMedicines } from "react-icons/gi";
-import { GoDotFill } from "react-icons/go";
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
-import { BarChart } from '../../components/charts/BarChart';
-import { DoughnutChart } from '../../components/charts/DoughnutChart';
+import {FaEye, FaStar, FaStarHalf, FaStethoscope, FaTrash, FaUser} from "react-icons/fa";
+import {BiSearchAlt2} from "react-icons/bi";
+import {BsGenderFemale, BsGenderMale} from "react-icons/bs";
+import {GiMedicines} from "react-icons/gi";
+import {GoDotFill} from "react-icons/go";
+import {DataTable} from 'primereact/datatable';
+import {Column} from 'primereact/column';
+import {FilterMatchMode} from 'primereact/api';
+import {BarChart} from '../../components/charts/BarChart';
+import {DoughnutChart} from '../../components/charts/DoughnutChart';
 import {AppointmentTimelineChart} from "../../components/charts/AppointmentTimelineChart.jsx"
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
-import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
+import {useLoadScript} from '@react-google-maps/api';
+import {delete_user} from "../../../api/admin.js";
 
 const TimeSlotDoughnutChart = memo(({ appointments }) => {
     const [timeSlotDistribution, setTimeSlotDistribution] = useState({
@@ -293,7 +293,7 @@ function ClinicDashboard() {
         name: { value: null, matchMode: FilterMatchMode.CONTAINS },
         email: { value: null, matchMode: FilterMatchMode.CONTAINS },
         dob: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        phone: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        contact: { value: null, matchMode: FilterMatchMode.CONTAINS },
         qualification: { value: null, matchMode: FilterMatchMode.CONTAINS },
     });
 
@@ -402,7 +402,7 @@ function ClinicDashboard() {
                                     ...data[id],
                                     ...userSnapshot.val(),
                                     age: formatAge(userSnapshot.val().dob),
-                                    date: formatDate(data[id].date),
+                                    date: formatDate(data[id].requested_on),
                                 }
                                 requests.push(data[id]);
                             });
@@ -412,7 +412,7 @@ function ClinicDashboard() {
                                 ...data[id],
                                 ...data[id].patient,
                                 age: formatAge(data[id].patient.dob),
-                                date: formatDate(data[id].date),
+                                date: formatDate(data[id].requested_on),
                             }
                             requests.push(data[id]);
                         }                        
@@ -425,7 +425,7 @@ function ClinicDashboard() {
                                         ...data[id],
                                         ...userSnapshot.val(),
                                         age: formatAge(userSnapshot.val().dob),
-                                        date: formatDate(data[id].date),
+                                        date: formatDate(data[id].requested_on),
                                         doctor: doctorData,
                                     };
                                     appointments.push(data[id]);
@@ -440,7 +440,7 @@ function ClinicDashboard() {
                                     ...data[id],
                                     ...data[id].patient,
                                     age: formatAge(data[id].patient.dob),
-                                    date: formatDate(data[id].date),
+                                    date: formatDate(data[id].requested_on),
                                     doctor: doctorData,
                                 };
                                 appointments.push(data[id]);
@@ -518,6 +518,28 @@ function ClinicDashboard() {
                                         mr={3} 
                                         backgroundColor='red' 
                                         color='white'
+                                        onClick={() => {
+											delete_user(rowData).then(r => {
+												if (r.success) {
+													toast({
+														title: 'User deleted successfully!',
+														status: 'success',
+														duration: 5000,
+														isClosable: true,
+														position: 'top-right'
+													});
+												} else {
+													toast({
+														title: 'Error deleting user!',
+														status: 'error',
+														duration: 5000,
+														isClosable: true,
+														position: 'top-right'
+													});
+												}
+											});
+                                            onCloseApprove();
+                                        }}
                                     >
                                         Delete
                                     </Button>
@@ -650,9 +672,12 @@ function ClinicDashboard() {
                 </Box>
                 <Box w='full' bg='white' p={5} rounded='lg' boxShadow='md'>
                     <Flex alignItems='center' justifyContent='space-between' mb={4}>
-                        <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide'>
-                            List of Doctors
-                        </Text>           
+                        <Flex w='full' alignItems='center' justifyContent='space-between' mr={2}>
+                            <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide'>
+                                List of Doctors
+                            </Text>
+                            <Button ml={3} colorScheme='blue' as={NavLink} to='/doctors/add'>Add Doctor</Button>                              
+                        </Flex>
                         <InputGroup size="md" w='40%'>
                             <InputLeftElement
                                 pointerEvents="none"
@@ -673,10 +698,10 @@ function ClinicDashboard() {
                         </InputGroup>             
                     </Flex>
                                                     
-                    <DataTable value={doctors} removableSort stripedRows showGridlines paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} filters={doctorFilters} globalFilterFields={['name', 'email' , 'dob', 'phone', 'qualification']}>
+                    <DataTable value={doctors} removableSort stripedRows showGridlines paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} filters={doctorFilters} globalFilterFields={['name', 'email' , 'dob', 'contact', 'qualification']}>
                         <Column field="name" sortable header="Name" body={nameBodyTemplate}></Column>
                         <Column field="email" sortable header="Email" ></Column>
-                        <Column field="phone" sortable header="Phone" ></Column>
+                        <Column field="contact" sortable header="Contact" ></Column>
                         <Column field="qualification" sortable header="Qualification" ></Column>
                         <Column field="action" header="Action" body={actionBodyTemplate} ></Column>
                     </DataTable>                        
@@ -694,7 +719,7 @@ function ClinicDashboard() {
                     <Flex w='full' direction='column'>
                         <Box w='full' bg='white' rounded='lg'>
                             <Flex bg="white" h="full" shadow="lg" borderRadius="lg" transition="transform 0.3s" _hover={{ transform: 'scale(1.02)', shadow: 'xl' }}>
-                                <Link as={NavLink} to={`/clinics/${clinicId}`} key={clinicId} style={{ textDecoration: 'none' }} w="full" h="full">
+                                <Link as={NavLink} to={`/clinic`} key={clinicId} style={{ textDecoration: 'none' }} w="full" h="full">
                                     <VStack w="full" h="full">
                                         <Image
                                             w="full"

@@ -1,22 +1,22 @@
 import {
-	Avatar,
-	Box,
-	Button,
-	Center,
-	Divider,
-	Flex,
-	Input,
-	InputGroup,
-	InputLeftElement,
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	ModalOverlay,
-	Select,
-	Text,
+    Avatar,
+    Box,
+    Button,
+    Center,
+    Divider,
+    Flex,
+    Input,
+    InputGroup,
+    InputLeftElement,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Select,
+    Text,
 } from '@chakra-ui/react'
 import {useEffect, useState} from "react";
 import {db} from "../../../api/firebase.js";
@@ -30,6 +30,7 @@ import {FilterMatchMode} from 'primereact/api';
 import '../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css';
 import {NavLink} from 'react-router-dom';
 import {useAuth} from "../../components/AuthCtx.jsx";
+import {delete_user} from "../../../api/admin.js";
 
 function StaffList() {
 	const [users, setUsers] = useState([]);
@@ -38,7 +39,7 @@ function StaffList() {
 		name: { value: null, matchMode: FilterMatchMode.CONTAINS },
 		role: { value: null, matchMode: FilterMatchMode.EQUALS },
 		email: { value: null, matchMode: FilterMatchMode.CONTAINS },
-		phone: { value: null, matchMode: FilterMatchMode.CONTAINS },
+		contact: { value: null, matchMode: FilterMatchMode.CONTAINS },
 	});
 	const [roles] = useState(['Doctor', 'Clinic Admin']);
 	const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -80,10 +81,10 @@ function StaffList() {
 		);
 	};
 	
-	const phoneBodyTemplate = (rowData) => {
+	const contactBodyTemplate = (rowData) => {
 		return (
 			<Box display='flex' alignItems='center' gap={1}>
-				{rowData.phone}
+				{rowData.contact}
 			</Box>
 		);
 	};
@@ -147,6 +148,28 @@ function StaffList() {
 										mr={3}
 										backgroundColor='red'
 										color='white'
+										onClick={() => {
+											delete_user(rowData).then(r => {
+												if (r.success) {
+													toast({
+														title: 'User deleted successfully!',
+														status: 'success',
+														duration: 5000,
+														isClosable: true,
+														position: 'top-right'
+													});
+												} else {
+													toast({
+														title: 'Error deleting user!',
+														status: 'error',
+														duration: 5000,
+														isClosable: true,
+														position: 'top-right'
+													});
+												}
+											});
+											onCloseApprove();
+										}}
 									>
 										Delete
 									</Button>
@@ -191,12 +214,12 @@ function StaffList() {
 		);
 	};
 	
-	const phoneRowFilterTemplate = (options) => {
+	const contactRowFilterTemplate = (options) => {
 		return (
 			<InputText
 				value={options.value}
-				onChange={(e) => options.filterApplyCallback(e.target.value, filters['phone'].matchMode)}
-				placeholder="Search by phone number"
+				onChange={(e) => options.filterApplyCallback(e.target.value, filters['contact'].matchMode)}
+				placeholder="Search by contact number"
 				style={{ width: '100%', padding: '0.5rem' }}
 			/>
 		);
@@ -253,7 +276,7 @@ function StaffList() {
 			let doctorCount = 0;
 			
 			snapshot.forEach((childSnapshot) => {
-				const { name, role, email, phone, image } = childSnapshot.val();
+				const { name, role, email, contact, image, password, clinic } = childSnapshot.val();
 				
 				let formattedRole = role.replace(/([a-z])([A-Z])/g, '$1 $2');
 				users.push({
@@ -261,8 +284,10 @@ function StaffList() {
 					name,
 					role: formattedRole,
 					email,
-					phone,
+					contact,
 					image,
+					password,
+					clinic
 				});
 				
 				switch (role) {
@@ -333,13 +358,13 @@ function StaffList() {
 				>
 					<DataTable value={users} header={header} stripedRows showGridlines paginator rows={10}
 					           removableSort rowsPerPageOptions={[10, 25, 50]} tableStyle={{ minWidth: '50rem' }}
-					           filters={filters} filterDisplay="row" globalFilterFields={['name', 'role', 'email', 'phone']}
+					           filters={filters} filterDisplay="row" globalFilterFields={['name', 'role', 'email', 'contact']}
 					           selectionMode={rowClick ? null : 'checkbox'} selection={selectedUsers}
 					           onSelectionChange={(e) => setSelectedUsers(e.value)} dataKey="id"
 					>
 						<Column field="name" header="Name" sortable filter filterElement={nameRowFilterTemplate} body={nameBodyTemplate} style={{ width:"15%" }}></Column>
 						<Column field="email" header="Email" sortable filter filterElement={emailRowFilterTemplate} style={{ width:"15%" }}></Column>
-						<Column field="phone" header="Phone Number" sortable filter filterElement={phoneRowFilterTemplate} body={phoneBodyTemplate} style={{ width:"15%" }}></Column>
+						<Column field="contact" header="Contact Number" sortable filter filterElement={contactRowFilterTemplate} body={contactBodyTemplate} style={{ width:"15%" }}></Column>
 						<Column field="role" header="Role" sortable filter filterElement={roleRowFilterTemplate} body={roleBodyTemplate} style={{ width:"15%" }}></Column>
 						<Column field="action" header="Action" body={actionBodyTemplate} style={{ width:"10%" }}></Column>
 					</DataTable>

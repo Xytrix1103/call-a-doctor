@@ -6,7 +6,6 @@ import {
 	AccordionPanel,
 	Avatar,
 	Box,
-	Button,
 	Center,
 	Flex,
 	HStack,
@@ -15,7 +14,6 @@ import {
 	Textarea,
 } from '@chakra-ui/react'
 import {DirectionsRenderer, GoogleMap, InfoWindow, Marker, useLoadScript} from '@react-google-maps/api';
-import {NavLink, useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
 import {FaStar, FaStarHalf} from "react-icons/fa";
 import {AiFillStar} from "react-icons/ai";
@@ -23,6 +21,7 @@ import {BiLinkExternal} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
 import {ClinicDoctorList} from "../patient/ClinicDoctorList.jsx";
+import {useAuth} from "../../components/AuthCtx.jsx";
 
 function Map({ place_id, onDistanceChange }) {
 	const mapStyle = {
@@ -173,7 +172,8 @@ function Map({ place_id, onDistanceChange }) {
 
 function DoctorClinicDetails() {
 	const [data, setData] = useState({});
-	const {id} = useParams();
+	const {user} = useAuth();
+	const id = user.clinic;
 	console.log(id);
     
     useEffect(() => {

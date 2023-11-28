@@ -1,38 +1,36 @@
 import {
+    Avatar,
     Box,
+    Button,
     Center,
+    Divider,
+    Flex,
+    Input,
     InputGroup,
     InputLeftElement,
-    Input,
-    Flex,
-    Text,
-    Avatar,
-    Button,
-    Select,
-    Divider,
     Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
     ModalBody,
     ModalCloseButton,
-    useDisclosure,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Select,
+    Text,
+    useToast,
 } from '@chakra-ui/react'
-import {useState, useEffect} from "react";
+import {useEffect, useState} from "react";
 import {db} from "../../../api/firebase.js";
-import {onValue, query, ref} from "firebase/database";
-import { BiSearchAlt2 } from 'react-icons/bi';
-import { FaUser, FaStethoscope, FaHospitalUser, FaUserShield, FaPhoneAlt, FaEye, FaTrash } from 'react-icons/fa';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { classNames } from 'primereact/utils';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { MultiSelect } from 'primereact/multiselect';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import {equalTo, onValue, orderByChild, query, ref} from "firebase/database";
+import {BiSearchAlt2} from 'react-icons/bi';
+import {FaEye, FaHospitalUser, FaStethoscope, FaTrash, FaUser, FaUserShield} from 'react-icons/fa';
+import {DataTable} from 'primereact/datatable';
+import {Column} from 'primereact/column';
+import {InputText} from 'primereact/inputtext';
+import {FilterMatchMode} from 'primereact/api';
 import '../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css';
-import { NavLink } from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
+import {delete_user} from "../../../api/admin.js";
 
 function UserList() {
     const [users, setUsers] = useState([]);
@@ -41,7 +39,7 @@ function UserList() {
         name: { value: null, matchMode: FilterMatchMode.CONTAINS },
         role: { value: null, matchMode: FilterMatchMode.EQUALS },
         email: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        phone: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        contact: { value: null, matchMode: FilterMatchMode.CONTAINS },
         address: { value: null, matchMode: FilterMatchMode.CONTAINS },
     });
     const [roles] = useState(['Doctor', 'Admin', 'Patient', 'Clinic Admin']);
@@ -52,6 +50,7 @@ function UserList() {
     const [clinicAdminCount, setClinicAdminCount] = useState(0);
     const [doctorCount, setDoctorCount] = useState(0);
     const [patientCount, setPatientCount] = useState(0);
+    const toast = useToast();
 
     const onGlobalFilterChange = (e) => {
         const value = e.target.value;
@@ -91,10 +90,10 @@ function UserList() {
         );
     };
 
-    const phoneBodyTemplate = (rowData) => {
+    const contactBodyTemplate = (rowData) => {
         return (
             <Box display='flex' alignItems='center' gap={1}>
-                {rowData.phone}
+                {rowData.contact}
             </Box>
         );
     };
@@ -158,6 +157,28 @@ function UserList() {
                                         mr={3} 
                                         backgroundColor='red' 
                                         color='white'
+                                        onClick={() => {
+                                            delete_user(rowData).then(r => {
+                                                if (r.success) {
+                                                    toast({
+                                                        title: 'User deleted successfully!',
+                                                        status: 'success',
+                                                        duration: 5000,
+                                                        isClosable: true,
+                                                        position: 'top-right'
+                                                    });
+                                                } else {
+                                                    toast({
+                                                        title: 'Error deleting user!',
+                                                        status: 'error',
+                                                        duration: 5000,
+                                                        isClosable: true,
+                                                        position: 'top-right'
+                                                    });
+                                                }
+                                            });
+                                            onCloseApprove();
+                                        }}
                                     >
                                         Delete
                                     </Button>
@@ -213,12 +234,12 @@ function UserList() {
         );
     };
 
-    const phoneRowFilterTemplate = (options) => {
+    const contactRowFilterTemplate = (options) => {
         return (
             <InputText
                 value={options.value}
-                onChange={(e) => options.filterApplyCallback(e.target.value, filters['phone'].matchMode)}
-                placeholder="Search by phone number"
+                onChange={(e) => options.filterApplyCallback(e.target.value, filters['contact'].matchMode)}
+                placeholder="Search by contact number"
                 style={{ width: '100%', padding: '0.5rem' }}
             />
         );
@@ -269,7 +290,7 @@ function UserList() {
     };
 
     useEffect(() => {
-        onValue(query(ref(db, 'users')), (snapshot) => {
+        onValue(query(ref(db, 'users'), orderByChild("deleted"), equalTo(null)), (snapshot) => {
             const users = [];
             let adminCount = 0;
             let clinicAdminCount = 0;
@@ -277,7 +298,7 @@ function UserList() {
             let patientCount = 0;
         
             snapshot.forEach((childSnapshot) => {
-                const { name, role, email, phone, image, address } = childSnapshot.val();
+                const { name, role, email, contact, image, address, password, clinic=null } = childSnapshot.val();
         
                 let formattedRole = role.replace(/([a-z])([A-Z])/g, '$1 $2');
                 users.push({
@@ -285,9 +306,11 @@ function UserList() {
                     name,
                     role: formattedRole,
                     email,
-                    phone,
+                    contact,
                     image,
                     address,
+                    password,
+                    clinic
                 });
 
                 switch (role) {
@@ -384,14 +407,14 @@ function UserList() {
                 >
                     <DataTable value={users} header={header} stripedRows showGridlines paginator rows={10} 
                         removableSort rowsPerPageOptions={[10, 25, 50]} tableStyle={{ minWidth: '50rem' }}
-                        filters={filters} filterDisplay="row" globalFilterFields={['name', 'role', 'email', 'phone']}
+                        filters={filters} filterDisplay="row" globalFilterFields={['name', 'role', 'email', 'contact']}
                         selectionMode={rowClick ? null : 'checkbox'} selection={selectedUsers} 
                         onSelectionChange={(e) => setSelectedUsers(e.value)} dataKey="id"
                     >
                         <Column field="name" header="Name" sortable filter filterElement={nameRowFilterTemplate} body={nameBodyTemplate} style={{ width:"15%" }}></Column>
                         <Column field="email" header="Email" sortable filter filterElement={emailRowFilterTemplate} style={{ width:"15%" }}></Column>
                         <Column field="address" header="Address" sortable filter filterElement={addressRowFilterTemplate} style={{ width:"30%" }}></Column>
-                        <Column field="phone" header="Phone Number" sortable filter filterElement={phoneRowFilterTemplate} body={phoneBodyTemplate} style={{ width:"15%" }}></Column>
+                        <Column field="contact" header="Contact" sortable filter filterElement={contactRowFilterTemplate} body={contactBodyTemplate} style={{ width:"15%" }}></Column>
                         <Column field="role" header="Role" sortable filter filterElement={roleRowFilterTemplate} body={roleBodyTemplate} style={{ width:"15%" }}></Column>
                         <Column field="action" header="Action" body={actionBodyTemplate} style={{ width:"10%" }}></Column>
                     </DataTable>

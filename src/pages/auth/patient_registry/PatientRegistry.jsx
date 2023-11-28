@@ -119,7 +119,7 @@ function PatientRegistry() {
 				break;
 			case 1:
 				console.log("Step 2");
-				trigger(["name", "address", "phone", "age", "password", "confirm_password"]).then(r => {
+				trigger(["name", "address", "contact", "age", "password", "confirm_password"]).then(r => {
 					if (r) {
                         onSubmit(form.getValues()).then(r => {
                             if (r) {

@@ -29,18 +29,22 @@ import PendingAppointments from './pages/doctor/PendingAppointments';
 import UserList from './pages/admin/UserList';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import VerificationPending from './pages/clinic/VerificationPending';
-import AppointmentHistory from './pages/clinic/AppointmentHistory';
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
 import ManageUser from './pages/admin/ManageUser';
 import Profile from "./pages/auth/Profile.jsx";
 import DoctorClinicDetails from './pages/doctor/DoctorClinicDetails';
 import EditDoctor from './pages/clinic/EditDoctor';
 import Clinic from "./pages/clinic/Clinic.jsx";
+import Patients from "./pages/admin/Patients.jsx";
+import PatientAppointmentHistory from './pages/admin/PatientAppointmentHistory';
+import PatientAppointmentCard from './pages/admin/PatientAppointmentCard';
 import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
+import StaffList from "./pages/clinic/StaffList.jsx";
+import DoctorClinicLayout from "./components/layouts/DoctorClinicLayout.jsx";
 
 const DashboardElement = () => {
 	const { user } = useAuth();
-  
+ 
 	switch (user.role) {
 		case "Patient":
 			return <PatientDashboard />;
@@ -71,15 +75,22 @@ const router = createBrowserRouter(
 			<Route element={<PatientLayout/>}>
 				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="clinics/:id" element={<ClinicDetails/>}/>
+				<Route path="requests" element={<PatientAppointmentHistory asPatient={true}/>}/>
+				<Route path="request/:id" element={<PatientAppointmentCard/>}/>
 				<Route path="clinics/:id/request" element={<DoctorRequestForm/>}/>
 			</Route>
+			<Route element={<DoctorClinicLayout/>}>
+				<Route path="patients" element={<Patients/>}/>
+				<Route path="patients/:id" element={<PatientAppointmentHistory/>}/>
+				<Route path="patients/:id/requests" element={<PatientAppointmentCard/>}/>
+			</Route>
 			<Route element={<DoctorLayout/>}>
-				<Route path="doctor-clinic/:id" element={<DoctorClinicDetails/>}/>
-				<Route path="your-appointments" element={<PendingAppointments/>}/>
+				<Route path="appointments" element={<PendingAppointments/>}/>
+				<Route path="my-clinic" element={<DoctorClinicDetails/>}/>
 			</Route>
 			<Route element={<ClinicLayout/>}>
 				<Route path="clinic" element={<Clinic/>}/>
-				<Route path="appointments" element={<AppointmentHistory/>}/>
+				<Route path="staff" element={<StaffList/>}/>
 				<Route path="patient-requests" element={<PatientRequests/>}/>
 				<Route path="doctor/:id" element={<EditDoctor/>}/>
 				<Route path="doctors/add" element={<AddDoctorToList/>}/>
@@ -98,8 +109,9 @@ const router = createBrowserRouter(
 				<Route path="doctors/:id" element={<></>}/>
 				<Route path="doctors/:id/schedule" element={<></>}/>
 				<Route path="doctors/:id/patients" element={<></>}/>
-				<Route path="patients" element={<></>}/>
-				<Route path="patients/:id" element={<></>}/>
+				<Route path="patients" element={<Patients asAdmin={true}/>}/>
+				<Route path="patients/:id" element={<PatientAppointmentHistory asAdmin={true}/>}/>
+				<Route path="patients/:id/requests" element={<PatientAppointmentCard/>}/>
 			</Route>
 		</Route>
 	)

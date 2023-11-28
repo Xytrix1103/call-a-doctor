@@ -5,6 +5,7 @@ import {
 	Text,
     Badge,
     Link,
+    Divider,
     VStack,
 } from '@chakra-ui/react';
 import {useState, useEffect} from "react";
@@ -13,6 +14,8 @@ import {db} from "../../../api/firebase.js";
 import {useAuth} from "../../components/AuthCtx.jsx";
 import {NavLink} from "react-router-dom";
 import {AiFillStar} from "react-icons/ai";
+import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
+import { GoDotFill } from "react-icons/go";
 import {AppointmentTimelineChart} from "../../components/charts/AppointmentTimelineChart.jsx"
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -140,7 +143,7 @@ function PatientDashboard() {
                                 ...data[id],
                                 ...userSnapshot.val(),
                                 age: formatAge(userSnapshot.val().dob),
-                                date: formatDate(data[id].date),
+                                date: formatDate(data[id].requested_on),
                             }
                             requests.push(data[id]);
                         });
@@ -150,7 +153,7 @@ function PatientDashboard() {
                             ...data[id],
                             ...data[id].patient,
                             age: formatAge(data[id].patient.dob),
-                            date: formatDate(data[id].date),
+                            date: formatDate(data[id].requested_on),
                         }
                         requests.push(data[id]);
                     }                        
@@ -168,7 +171,7 @@ function PatientDashboard() {
                                     ...data[id],
                                     ...userSnapshot.val(),
                                     age: formatAge(userSnapshot.val().dob),
-                                    date: formatDate(data[id].date),
+                                    date: formatDate(data[id].requested_on),
                                     doctor: doctorData,
                                 };
                                 appointments.push(data[id]);
@@ -182,7 +185,7 @@ function PatientDashboard() {
                                     ...data[id],
                                     ...data[id].patient,
                                     age: formatAge(data[id].patient.dob),
-                                    date: formatDate(data[id].date),
+                                    date: formatDate(data[id].requested_on),
                                     doctor: doctorData,
                                 };
                                 appointments.push(data[id]);
@@ -340,7 +343,7 @@ function PatientDashboard() {
                         </Box>
                     </Flex>
                 </Box>
-                <Flex w='full' direction='column' p={4} maxH={'800px'}>
+                <Flex w='full' direction='column' alignItems='center' justifyContent='center' p={4} bg='white' roundedBottom='lg'>
                     <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide' mb={3}>
                         Your requests
                     </Text>
@@ -362,16 +365,25 @@ function PatientDashboard() {
                             },
                         }}
                     >
-                        {
-                            requests.length === 0 ? (
-                                <Text>No requests available.</Text>
-                            ) : 
-                            (
-                                requests.map((request) => (
-                                    <PatientRequests key={request.id} request={request} />
-                                ))
-                            )
-                        }
+                        <Flex 
+                            w='full' 
+                            h='full'
+                            direction='column' 
+                            alignItems='center' 
+                            justifyContent='center' 
+                            gap={6}
+                        >
+                            {
+                                requests.length === 0 ? (
+                                    <Text>No requests available.</Text>
+                                ) : 
+                                (
+                                    requests.map((request) => (
+                                        <PatientRequests key={request.id} request={request} />
+                                    ))
+                                )
+                            }                            
+                        </Flex>
                     </Box>
                 </Flex>
             </Flex>
