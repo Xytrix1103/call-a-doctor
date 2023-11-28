@@ -201,7 +201,7 @@ function PatientAppointmentHistory({ asAdmin=false, asPatient=false }) {
                                                         <Flex alignItems='center'>
                                                             <FaUser size={20} color='#3f2975'/>
                                                             <Text fontSize='md' fontWeight='bold' letterSpacing='wide' ml={4}>
-                                                                Request for {appointment.patient.name}
+                                                                Request for {appointment.patient ? appointment.patient.name : appointment.name}
                                                             </Text>
                                                         </Flex>
                                                     </Flex>
@@ -210,7 +210,7 @@ function PatientAppointmentHistory({ asAdmin=false, asPatient=false }) {
                                                     <Flex alignItems='center' mx={3}>
                                                         <FaMapLocationDot size={20} color='#3176de'/>
                                                         <Text fontSize='md' fontWeight='semibold' letterSpacing='wide' ml={4}>
-                                                            {appointment.patient.address}
+                                                            {appointment.patient ? appointment.patient.address : appointment.address}
                                                         </Text>
                                                     </Flex>
                                                 </Box>                                

@@ -417,7 +417,7 @@ function AdminDashboard() {
                         <Box w='33%' bg='white' rounded='lg' boxShadow='md'>
                             <Flex w='full' alignItems='center' direction='column'>
                                 <Text fontSize='md' fontWeight='semibold' letterSpacing='wide' mt={3} mx={3} textAlign='center'>
-                                    Distribution of Patients
+                                    Time Slot Distribution
                                 </Text>
                                 <TimeSlotDoughnutChart appointments={appointments} />
                             </Flex>
