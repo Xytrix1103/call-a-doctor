@@ -29,10 +29,12 @@ import {onValue, query, ref} from "firebase/database";
 import {register_clinic_admin} from "../../../../api/auth.js";
 import {useNavigate} from "react-router-dom";
 import {update_admin, update_email, update_password} from "../../../../api/admin.js";
+import {useAuth} from "../../../components/AuthCtx.jsx";
 
 export const ClinicAdminForm = ({user, self=false}) => {
     const {
         setValue,
+        watch,
 		handleSubmit,
 		register,
         trigger,
@@ -48,9 +50,9 @@ export const ClinicAdminForm = ({user, self=false}) => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [clinics, setClinics] = useState([]);
     const toast = useToast();
+    const {user: currentUser} = useAuth();
 
     const navigate = useNavigate();
-    console.log(user);
 
     useEffect(() => {
         onValue(query(ref(db, "clinics")), (snapshot) => {
@@ -75,7 +77,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
             } else {
                 setValue('name', null);
                 setValue('email', null);
-                setValue('clinic',  clinics?.[0]?.id);
+                setValue('clinic',  currentUser?.clinic ? currentUser?.clinic : clinics?.[0]?.id);
             }
         } else {
             setValue('name', null);
@@ -84,10 +86,15 @@ export const ClinicAdminForm = ({user, self=false}) => {
         }
     }, [user, clinics]);
     
-    
     const onSubmit = async () => {
         let data = getValues();
         console.log("Submitting admin form", data);
+        
+        for (const [key, value] of Object.entries(data)) {
+            if(key === "new_email" || key === "new_password" || key === "new_confirm_password") {
+                delete data[key];
+            }
+        }
         
         if (!user) {
             const valid = await trigger(['name', 'email', 'password', 'confirm_password']);
@@ -123,7 +130,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                         isClosable: true,
                         position: "top"
                     });
-                    navigate('/admin/users');
+                    {self ? navigate('/profile') : (currentUser?.role === "ClinicAdmin" ? navigate('/staff') : navigate('/admin/users'))}
                 }
             }).catch((err) => {
                 console.log(err);
@@ -172,7 +179,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                             isClosable: true,
                             position: "top"
                         });
-                        navigate('/admin/users');
+                        {self ? navigate('/profile') : (currentUser?.role === "ClinicAdmin" ? navigate('/staff') : navigate('/admin/users'))}
                     }
                 }).catch((err) => {
                     console.log(err);
@@ -352,13 +359,14 @@ export const ClinicAdminForm = ({user, self=false}) => {
                         color="gray.900"
                         size="md"
                         focusBorderColor="blue.500"
-                        defaultValue={user?.clinic}
+                        isDisabled={!!currentUser?.clinic}
+                        value={currentUser?.clinic ? currentUser?.clinic : watch("clinic") || clinics?.[0]?.id}
                         {
                             ...register("clinic")
                         }
                     >
                         {clinics.map((clinic) => (
-                            <option key={clinic.id} value={clinic.id} selected={clinic.id === user?.clinic}>
+                            <option key={clinic.id} value={clinic.id}>
                                 {clinic.name}
                             </option>
                         ))}
