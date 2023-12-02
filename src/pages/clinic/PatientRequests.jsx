@@ -1,28 +1,28 @@
 import {
-	Box,
-	Button,
-	Center,
-	Divider,
-	Flex,
-	Input,
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	ModalOverlay,
-	Select,
-	SimpleGrid,
-	Tab,
-	TabList,
-	TabPanel,
-	TabPanels,
-	Tabs,
-	Text,
-	useDisclosure,
-	useToast,
-	VStack,
+    Box,
+    Button,
+    Center,
+    Divider,
+    Flex,
+    Input,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Select,
+    SimpleGrid,
+    Tab,
+    TabList,
+    TabPanel,
+    TabPanels,
+    Tabs,
+    Text,
+    useDisclosure,
+    useToast,
+    VStack,
 } from '@chakra-ui/react';
 import {BiSolidPhone} from "react-icons/bi";
 import {BsCalendarDayFill, BsGenderFemale, BsGenderMale} from "react-icons/bs";
@@ -275,7 +275,7 @@ function PatientRequests() {
         const todayDate = `${dd}/${mm}/${yyyy}`;
         setDate(todayDate);
 
-        onValue(ref(db, 'requests'), (snapshot) => {
+        onValue(query(ref(db, 'requests'), orderByChild('clinic'), equalTo(user?.clinic)), (snapshot) => {
             const data = snapshot.val();
             const requests = [];
 
