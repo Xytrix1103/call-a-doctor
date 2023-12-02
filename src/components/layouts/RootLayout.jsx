@@ -1,5 +1,5 @@
 import {Navigate, Outlet, useLocation, useNavigation} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {useAuth} from "../AuthCtx.jsx";
 import GlobalSpinner from "../GlobalSpinner.jsx";
 import {Box, Grid} from "@chakra-ui/react";
@@ -12,7 +12,6 @@ const RootLayout = () => {
 	const {user, loading} = useAuth();
 	const location = useLocation();
 	const navigation = useNavigation();
-	const [root, setRoot] = useState("/");
 	
 	console.log(location.pathname);
 	
@@ -26,7 +25,7 @@ const RootLayout = () => {
 			{
 				loading || navigation.state === "loading" ?
 					<GlobalSpinner/> :
-					(location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/register-clinic" || location.pathname === "/forgot") ?
+					["/login", "/register", "/register-clinic", "/forgot"].includes(location.pathname) ?
 						!user ?
 							<Box w="100%" h="100%" bg="#f4f4f4" overflow="auto" minH="100vh">
 								<Outlet/>

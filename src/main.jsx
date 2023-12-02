@@ -103,17 +103,11 @@ const router = createBrowserRouter(
 				<Route path="clinics" element={<ApprovedClinicList/>}/>
 				<Route path="clinics/:id" element={<ApprovedClinicDetails/>}/>
 				<Route path="clinics/:id/edit" element={<EditApprovedClinicDetails/>}/>
-				<Route path="clinics/:id/doctors" element={<></>}/>
-				<Route path="clinics/:id/patients" element={<></>}/>
 				<Route path="approve-clinics" element={<ClinicRegistryApproval/>}/>
 				<Route path="approve-clinics/:id" element={<ClinicRegistryDetails/>}/>
 				<Route path="users" element={<UserList/>}/>
 				<Route path="users/add" element={<ManageUser/>}/>
 				<Route path="users/:id/edit" element={<ManageUser/>}/>
-				<Route path="doctors" element={<></>}/>
-				<Route path="doctors/:id" element={<></>}/>
-				<Route path="doctors/:id/schedule" element={<></>}/>
-				<Route path="doctors/:id/patients" element={<></>}/>
 				<Route path="patients" element={<Patients asAdmin={true}/>}/>
 				<Route path="patients/:id" element={<PatientAppointmentHistory asAdmin={true}/>}/>
 				<Route path="patients/:id/requests" element={<PatientAppointmentCard/>}/>
