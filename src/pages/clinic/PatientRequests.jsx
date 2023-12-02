@@ -291,7 +291,7 @@ function PatientRequests() {
                         ? 1
                         : 0);
 
-                const formattedDate = new Date(request.date).toLocaleDateString(
+                const formattedDate = new Date(request.requested_on).toLocaleDateString(
                     'en-GB',
                     {
                         day: 'numeric',
