@@ -14,9 +14,9 @@ import {
 	Text,
 	useDisclosure,
 } from '@chakra-ui/react'
-import {BiSolidPhone} from "react-icons/bi";
+import {BiSolidPhone, BiSolidClinic } from "react-icons/bi";
 import {BsCalendarDayFill, BsGenderFemale, BsGenderMale} from "react-icons/bs";
-import {FaCar, FaMapLocationDot, FaUser, FaX} from "react-icons/fa6";
+import {FaCar, FaMapLocationDot, FaUser, FaX } from "react-icons/fa6";
 import {IoIosCheckmarkCircle} from "react-icons/io";
 import {GiMedicines, GiSandsOfTime} from "react-icons/gi";
 import {MdEmail} from "react-icons/md";
@@ -264,6 +264,7 @@ function PatientAppointmentCard() {
 	const {id} = useParams();
 	console.log(id);
 	const [appointment, setAppointment] = useState({});
+	const [clinic, setClinic] = useState({});
 
 	function formatDate(isoDate) {
         const date = new Date(isoDate);
@@ -286,6 +287,13 @@ function PatientAppointmentCard() {
         });
     }
 
+	function fetchClinicData(clinicId) {
+		const clinicRef = ref(db, `clinics/${clinicId}`);
+		return get(clinicRef).then((clinicSnapshot) => {
+			return clinicSnapshot.val();
+		});
+	}
+
 	useEffect(() => {
 		onValue(query(ref(db, `requests/${id}`)), 
 		async (snapshot) => {
@@ -293,27 +301,33 @@ function PatientAppointmentCard() {
 			let data = snapshot.val();
 			if (data.patient == null) {
 				await get(ref(db, `users/${data.uid}`)).then(async (userSnapshot) => {
-					await fetchDoctorData(data.doctor).then((doctorData) => {
-						data = {
-							id: id,
-							...data,
-							...userSnapshot.val(),
-							age: formatAge(userSnapshot.val().dob),
-							date: formatDate(data[id].requested_on),
-							doctor: doctorData,
-						};
+					await fetchDoctorData(data.doctor).then(async (doctorData) => {
+						await fetchClinicData(data.clinic).then((clinicData) => {
+							data = {
+								id: id,
+								...data,
+								...userSnapshot.val(),
+								age: formatAge(userSnapshot.val().dob),
+								date: formatDate(data.requested_on),
+								doctor: doctorData,
+							};
+							setClinic(clinicData);
+						});
 					});
 				});
 			} else {
-				await fetchDoctorData(data.doctor).then((doctorData) => {
-					data = {
-						id: id,
-						...data,
-						...data.patient,
-						age: formatAge(data.patient.dob),
-						date: formatDate(data.requested_on),
-						doctor: doctorData,
-					};
+				await fetchDoctorData(data.doctor).then(async (doctorData) => {
+					await fetchClinicData(data.clinic).then((clinicData) => {
+						data = {
+							id: id,
+							...data,
+							...data.patient,
+							age: formatAge(data.patient.dob),
+							date: formatDate(data.requested_on),
+							doctor: doctorData,
+						};
+						setClinic(clinicData);
+					})
 				});
 			}
 			console.log("Data: ",data);
@@ -410,17 +424,17 @@ function PatientAppointmentCard() {
                             <GoDotFill size={40} color='black'/>
 							<Box mb={2} w='full'>
 								<Flex alignItems='center' justifyContent='center' mx={3}>
-									<FaCar size={20}/>
+									<BiSolidClinic color='#f54242' size={20}/>
 									<Text fontSize='sm' letterSpacing='wide' ml={4}>
-										<Text fontWeight='medium' color='grey'>Arrival
-											Status</Text> {appointment.arrived ? "Arrived" : "On The Way"}
+										<Text fontWeight='medium' color='grey'>Clinic
+											Name</Text> {clinic.name ? clinic.name : "N/A"}
 									</Text>
 								</Flex>
 							</Box>
                             <GoDotFill size={40} color='black'/>
                             <Box mb={2} w='full'>
 								<Flex alignItems='center' justifyContent='center' mx={3}>
-									<IoIosCheckmarkCircle size={25}/>
+									<IoIosCheckmarkCircle color='#42f57b' size={25}/>
 									<Text fontSize='sm' letterSpacing='wide' ml={4}>
 										<Text fontWeight='medium' color='grey'>Completion
 											Status</Text> {appointment.completed ? "Completed" : "Ongoing"}
@@ -442,7 +456,7 @@ function PatientAppointmentCard() {
                             <GoDotFill size={40} color='black'/>
 							<Box mb={2} w='full'>
 								<Flex alignItems='center' justifyContent='center' mx={3}>
-									<MdEmail size={20}/>
+									<MdEmail color='#f58d42' size={20}/>
 									<Text fontSize='sm' letterSpacing='wide' ml={4}>
 										<Text fontWeight='medium' color='grey'>Doctor Email</Text> 
                                         {appointment.doctor?.email}
@@ -461,10 +475,17 @@ function PatientAppointmentCard() {
 							</Box>
 						</Flex>
 
+						<Box w='full' p={4}>
+							<Text>
+								<Text fontWeight='medium' color='grey'>Prescription List</Text>
+							</Text>
+							<Divider my={1} w='full' border='1px' borderColor='gray.300' />
+						</Box>
+
 						{appointment.prescriptions?.map((prescription, index) => (
-							<Flex key={prescription} mb={4} alignItems="center" mx={4} mt={6}>
+							<Flex key={prescription} mb={4} alignItems="center" mx={6}>
 								<Text w='10%'>{index+=1}</Text>
-								<Box border={'1px'} p={3} w='full' rounded={'md'} ml={3} borderColor={'gray.400'}>
+								<Box border={'1px'} p={3} w='full' rounded={'md'} ml={2} borderColor={'gray.400'}>
 									<Flex alignItems='center' gap={2}>
 										<GiMedicines size={20} />
 										{prescription.medicine ? prescription.medicine : "N/A"}
@@ -491,7 +512,7 @@ function PatientAppointmentCard() {
 								<Box mx={2}>
 									<FaX size={10} color='grey'/>
 								</Box>
-								<Box border={'1px'} rounded={'md'} p={3} w='50%' borderColor={'gray.400'}>
+								<Box border={'1px'} rounded={'md'} p={3} w='70%' borderColor={'gray.400'}>
 									<Flex alignItems='center' gap={2}>
 										<Text fontWeight='bold' letterSpacing='wide'>Dosage: </Text>
 										{prescription.dosage ? prescription.dosage : "N/A"}
@@ -508,6 +529,7 @@ function PatientAppointmentCard() {
 								</Box>
 							</Flex>
 						))}
+
 					</Flex>
 				</Flex>
 			</Box>

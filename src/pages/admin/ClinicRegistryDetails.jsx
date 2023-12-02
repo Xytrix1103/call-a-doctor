@@ -5,9 +5,10 @@ import {useEffect, useState} from "react";
 import {AiOutlineArrowLeft} from "react-icons/ai";
 import {BiLinkExternal} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
-import {onValue, query, ref} from "firebase/database";
+import {onValue, query, ref, get} from "firebase/database";
 
 function Map({ placeId, onDistanceChange }) {
+	console.log(placeId);
 	const mapStyle = {
 	  height: '500px',
 	  width: '100%',
@@ -36,15 +37,18 @@ function Map({ placeId, onDistanceChange }) {
 		<Box>
 			<GoogleMap
 				onLoad={(map) => {
+					console.log("Map Loaded")
 					setMapRef(map);
 					if (placeId && window.google && window.google.maps) {
+						console.log("Service")
 						const service = new window.google.maps.places.PlacesService(map);
 						service.getDetails(
 							{
-								place_id: placeId,
+								placeId: placeId,
 							},
 							(result, status) => {
 								if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+									console.log("Getting Result")
 									const { name, formatted_address } = result;
 						
 									setPlace(result);
@@ -153,11 +157,24 @@ function ClinicRegistryDetails() {
 	const navigate = useNavigate();
     
     useEffect(() => {
-        onValue(query(ref(db, `clinic_requests/${id}`)), (snapshot) => {
-	        const data = snapshot.val();
-	        setData(data);
+        onValue(query(ref(db, `clinic_requests/${id}`)), async (snapshot) => {
+			await fetchAdminData(snapshot.val().admin).then((adminData) => {
+				let data = {
+					id: id,
+					...snapshot.val(),
+					admin: adminData,
+				}
+				setData(data);
+			});
         });
     }, []);
+
+    function fetchAdminData(userId) {
+        const adminRef = ref(db, `users/${userId}`);
+        return get(adminRef).then((adminSnapshot) => {
+            return adminSnapshot.val();
+        });
+    }
 
 	const handleDistance = (distance) => {
 	  	setDistance(distance); // Set the distance state
@@ -268,7 +285,7 @@ function ClinicRegistryDetails() {
 								pointerEvents="none"
 								tabIndex="-1"
 							>
-								{data.business_reg_num ? data.business_reg_num : 'No business registration number available'}
+								{data.id ? data.id : 'No business registration number available'}
 							</Text>
 						</Box>
 
@@ -385,9 +402,8 @@ function ClinicRegistryDetails() {
 								rounded={'lg'}
 								h="350px"
 							>
-								<Map placeId={data.placeId} onDistanceChange={handleDistance}/>
+								{data?.place_id && <Map placeId={data?.place_id} onDistanceChange={handleDistance}/>}
 							</Box>
-							
 						</Flex>
 					</Box>
 				</Flex>
@@ -414,7 +430,7 @@ function ClinicRegistryDetails() {
 								pointerEvents="none"
 								tabIndex="-1"
 							>
-								{data.admin_name ? data.admin_name : 'No admin name available'}
+								{data.admin?.name ? data.admin?.name : 'No admin name available'}
 							</Text>
 						</Box>
 					</Box>
@@ -433,7 +449,7 @@ function ClinicRegistryDetails() {
 								pointerEvents="none"
 								tabIndex="-1"
 							>
-								{data.email ? data.email : 'No admin email available'}
+								{data.admin?.email ? data.admin?.email : 'No admin email available'}
 							</Text>
 						</Box>
 					</Box>
