@@ -127,7 +127,7 @@ function UserList() {
     const actionBodyTemplate = (rowData) => {
         return (
             <Flex justifyContent='center' alignItems='center' gap={2}>
-                <Button bg='transparent' as={NavLink} to={`/admin/users/edit/${rowData.id}`}><FaEye color='#0078ff'/></Button>
+                <Button bg='transparent' as={NavLink} to={`/admin/users/${rowData.id}/edit`}><FaEye color='#0078ff'/></Button>
                 <Button bg='transparent' _focus={{ boxShadow: 'none', outline: 'none' }} onClick={() => onOpenApprove(rowData.id)}><FaTrash color='#ff0004'/></Button>
 
                 {isOpenApprove && selectedUserId === rowData.id && (
