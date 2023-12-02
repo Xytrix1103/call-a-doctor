@@ -21,7 +21,7 @@ import {
 import {memo, useEffect, useRef, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {db} from "../../../api/firebase.js";
-import {onValue, ref, query, get, orderByChild, equalTo} from "firebase/database";
+import {equalTo, onValue, orderByChild, query, ref} from "firebase/database";
 import {useForm} from "react-hook-form";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
 import {useAuth} from "../../components/AuthCtx.jsx";
@@ -335,7 +335,7 @@ function Clinic() {
 				const data = snapshot.val();
 				const clinicId = Object.keys(data)[0];
 				const singleClinic = data[clinicId];
-				setClinic(singleClinic);
+				setClinic({ ...singleClinic, id: clinicId, request: true });
 			});
 		} else {
 			onValue(ref(db, `clinics/${user?.clinic}`), (snapshot) => {
@@ -426,7 +426,7 @@ function Clinic() {
 			return;
 		}
 		
-		update_clinic(clinic.id, update).then((res) => {
+		update_clinic(clinic.id, update, clinic?.request).then((res) => {
 			if (res.error) {
 				toast({
 					title: "Error",
@@ -515,7 +515,7 @@ function Clinic() {
 				position: "top",
 			});
 			
-			return;
+
 		}
 		
 	}
@@ -540,7 +540,7 @@ function Clinic() {
 					</Box>
 				</Flex>
 				<Flex w="full" h="full" grow={1} direction="column">
-					<form onSubmit={user.clinic ? handleSubmit(onSubmit) : handleSubmit(onUpdateRequest)}>
+					<form onSubmit={handleSubmit(onSubmit)}>
 						<Grid templateColumns="repeat(2, 1fr)" gap={6} w="full" h="full">
 							<Box w="full" h="full">
 								<Box w="full">

@@ -104,7 +104,7 @@ export const reject_patient_request = async (id, reason) => {
 		});
 }
 
-export const update_clinic = async (id, data) => {
+export const update_clinic = async (id, data, request=false) => {
 	const {image} = data;
 	let new_data = {};
 	
@@ -114,7 +114,7 @@ export const update_clinic = async (id, data) => {
 		}
 	}
 	
-	const clinicRef = ref(db, `clinics/${id}`);
+	const clinicRef = request ? ref(db, `clinic_requests/${id}`) : ref(db, `clinics/${id}`);
 	
 	return await update(clinicRef, new_data)
 		.then(() => {
