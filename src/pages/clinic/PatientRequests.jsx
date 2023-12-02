@@ -212,9 +212,9 @@ function PatientRequests() {
 				const today = new Date();
 				const requestDate = new Date(data[id].date);
 				console.log(today, requestDate);
-				if (today.getFullYear() === requestDate.getFullYear() &&
-					today.getMonth() === requestDate.getMonth() &&
-					today.getDate() === requestDate.getDate()) {
+				// if (today.getFullYear() === requestDate.getFullYear() &&
+				// 	today.getMonth() === requestDate.getMonth() &&
+				// 	today.getDate() === requestDate.getDate()) {
 					
 					if (data[id].patient == null) {
 						await get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
@@ -235,7 +235,7 @@ function PatientRequests() {
 						console.log(data[id]);
 						requests.push(data[id]);
 					}
-				}
+				// }
 			}
 			console.log(requests);
 			setPatientRequests(requests);
