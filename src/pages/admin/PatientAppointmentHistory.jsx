@@ -7,6 +7,7 @@ import {
     Box,
     Button,
     Center,
+    Divider,
     Flex,
     Text,
 } from '@chakra-ui/react';
@@ -19,11 +20,13 @@ import {BsGenderFemale, BsGenderMale} from "react-icons/bs";
 import {FaMapLocationDot, FaUser} from "react-icons/fa6";
 import {GiMedicines, GiSandsOfTime} from "react-icons/gi";
 import {GoDotFill} from "react-icons/go";
+import {MdEmail, MdOutlineAccessTime } from "react-icons/md";
 import {NavLink, useParams} from "react-router-dom";
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
 
 function PatientAppointmentHistory({ asAdmin=false, asPatient=false }) {
     console.log("asAdmin", asAdmin);
+    console.log("asPatient", asPatient);
     console.log("PatientAppointmentHistory");
     const {user} = useAuth();
     const {id} = useParams();
@@ -75,7 +78,7 @@ function PatientAppointmentHistory({ asAdmin=false, asPatient=false }) {
                                         ...data[id],
                                         ...userSnapshot.val(),
                                         age: formatAge(userSnapshot.val().dob),
-                                        date: formatDate(data[id].date),
+                                        date: formatDate(data[id].requested_on),
                                         doctor: doctorData,
                                     };
                                     app.push(data[id]);
@@ -88,7 +91,7 @@ function PatientAppointmentHistory({ asAdmin=false, asPatient=false }) {
                                     ...data[id],
                                     ...data[id].patient,
                                     age: formatAge(data[id].patient.dob),
-                                    date: formatDate(data[id].date),
+                                    date: formatDate(data[id].requested_on),
                                     doctor: doctorData,
                                 };
                                 app.push(data[id]);
@@ -129,9 +132,10 @@ function PatientAppointmentHistory({ asAdmin=false, asPatient=false }) {
                     p={3}
                     mb={3}
                 >
-                    <Flex justifyContent='space-between' alignItems='center' mb={2}>
-                        <Text fontSize='xl' fontWeight='bold'>Appointment History</Text>
+                    <Flex justifyContent='space-between' alignItems='center' mb={2} ml={3}>
+                        <Text fontSize='xl' fontWeight='bold' letterSpacing='wide'>Appointment History</Text>
                     </Flex>
+                    <Divider my={2} />
                     <Flex pt={3} direction='column' mb={2}>
                         <Box mb={1} w='full'>
                             <Flex alignItems='center' mx={3} justifyContent='space-between'>
@@ -182,6 +186,16 @@ function PatientAppointmentHistory({ asAdmin=false, asPatient=false }) {
                                 </Text>
                             </Flex>
                         </Box>
+                        <GoDotFill size={40} color='black'/>
+                        <Box mb={2} w='full'>
+                            <Flex alignItems='center' justifyContent='center' mx={3}>
+                                <MdEmail size={25} color='#f58d42'/>
+                                <Text fontSize='md' letterSpacing='wide' ml={4}>
+                                    <Text fontWeight='medium'
+                                            color='grey'>Email</Text> {patient.email}
+                                </Text>
+                            </Flex>
+                        </Box>
                     </Flex>
                     <Accordion defaultIndex={[0]} allowMultiple>
                         <AccordionItem>
@@ -194,14 +208,40 @@ function PatientAppointmentHistory({ asAdmin=false, asPatient=false }) {
                             <AccordionPanel pb={4}>
                                 {
                                     appointments.map((appointment) => (
-                                        <Flex p={4} alignItems='center' justifyContent='space-between' border={'1px'} borderColor={'gray.400'} rounded={'md'}>
+                                        <Flex p={4} alignItems='center' justifyContent='space-between' border={'1px'} borderColor={'gray.200'} rounded={'md'}>
                                             <Box w='full'>
                                                 <Box mb={1} w='full'>
-                                                    <Flex alignItems='center' mx={3} justifyContent='space-between'>
+                                                    <Flex alignItems='center' mx={3}>
                                                         <Flex alignItems='center'>
                                                             <FaUser size={20} color='#3f2975'/>
                                                             <Text fontSize='md' fontWeight='bold' letterSpacing='wide' ml={4}>
                                                                 Request for {appointment.patient ? appointment.patient.name : appointment.name}
+                                                            </Text>
+                                                        </Flex>
+                                                        <Box mx='2'>
+                                                            <GoDotFill size={10} color='gray'/>
+                                                        </Box>
+                                                        <Flex alignItems='center'>
+                                                            <Text fontSize='sm' fontWeight='medium' letterSpacing='wide' ml={2}>
+                                                                {appointment.patient ? "On Behalf" : "Self"}
+                                                            </Text>
+                                                        </Flex>
+                                                        <Box mx='2'>
+                                                            <GoDotFill size={10} color='gray'/>
+                                                        </Box>
+                                                        <Flex alignItems='center'>
+                                                            <GiSandsOfTime size={20} color='#964609'/>
+                                                            <Text fontSize='sm' fontWeight='medium' letterSpacing='wide' ml={2}>
+                                                                {appointment.date}
+                                                            </Text>
+                                                        </Flex>
+                                                        <Box mx='2'>
+                                                            <GoDotFill size={10} color='gray'/>
+                                                        </Box>
+                                                        <Flex alignItems='center'>
+                                                            <MdOutlineAccessTime size={20} color='#428af5'/>
+                                                            <Text fontSize='sm' fontWeight='medium' letterSpacing='wide' ml={2}>
+                                                                {appointment.appointment_time}
                                                             </Text>
                                                         </Flex>
                                                     </Flex>
