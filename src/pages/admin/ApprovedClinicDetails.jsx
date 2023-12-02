@@ -6,6 +6,7 @@ import {
 	AccordionPanel,
 	Avatar,
 	Box,
+	Button,
 	Center,
 	Flex,
 	HStack,
@@ -14,10 +15,10 @@ import {
 	Textarea,
 } from '@chakra-ui/react'
 import {DirectionsRenderer, GoogleMap, InfoWindow, Marker, useLoadScript} from '@react-google-maps/api';
-import {useParams} from 'react-router-dom';
+import {NavLink, useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
 import {AiFillStar} from "react-icons/ai";
-import {FaStar, FaStarHalf} from "react-icons/fa";
+import {FaPen, FaStar, FaStarHalf} from "react-icons/fa";
 import {BiLinkExternal} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
@@ -246,7 +247,7 @@ function ApprovedClinicDetails() {
 					</Box>
 
 					<Box my={7} mx={5} w="full">
-						<Flex alignItems="center" justifyContent="end">
+						<Flex alignItems="center" justifyContent="end" gridGap={2}>
 							<Box
 								color='gray.500'
 								fontWeight='semibold'
@@ -276,7 +277,8 @@ function ApprovedClinicDetails() {
 								<Box as='span' ml='2' color='gray.600' fontSize='sm'>
 									{ ratings } ratings
 								</Box>
-							</Box>							
+							</Box>
+							<Button bg='transparent' as={NavLink} to={`/admin/clinics/${id}/edit`}><FaPen color='#0078ff'/></Button>
 						</Flex>
 					</Box>
 				</Flex>

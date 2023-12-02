@@ -91,6 +91,7 @@ const router = createBrowserRouter(
 			<Route element={<ClinicLayout/>}>
 				<Route path="clinic" element={<Clinic/>}/>
 				<Route path="staff" element={<StaffList/>}/>
+				<Route path="staff/add" element={<StaffList/>}/>
 				<Route path="patient-requests" element={<PatientRequests/>}/>
 				<Route path="doctor/:id" element={<EditDoctor/>}/>
 				<Route path="doctors/add" element={<AddDoctorToList/>}/>
@@ -98,13 +99,14 @@ const router = createBrowserRouter(
 			<Route path='/admin' element={<AdminLayout/>}>
 				<Route path="clinics" element={<ApprovedClinicList/>}/>
 				<Route path="clinics/:id" element={<ApprovedClinicDetails/>}/>
+				<Route path="clinics/:id/edit" element={<></>}/>
 				<Route path="clinics/:id/doctors" element={<></>}/>
 				<Route path="clinics/:id/patients" element={<></>}/>
 				<Route path="approve-clinics" element={<ClinicRegistryApproval/>}/>
 				<Route path="approve-clinics/:id" element={<ClinicRegistryDetails/>}/>
 				<Route path="users" element={<UserList/>}/>
 				<Route path="users/add" element={<ManageUser/>}/>
-				<Route path="users/edit/:id" element={<ManageUser/>}/>
+				<Route path="users/:id/edit" element={<ManageUser/>}/>
 				<Route path="doctors" element={<></>}/>
 				<Route path="doctors/:id" element={<></>}/>
 				<Route path="doctors/:id/schedule" element={<></>}/>
