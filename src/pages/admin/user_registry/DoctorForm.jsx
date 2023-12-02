@@ -33,11 +33,11 @@ import {onValue, query, ref} from "firebase/database";
 import {register_doctor} from "../../../../api/auth.js";
 import {update_doctor, update_email, update_password} from "../../../../api/admin.js";
 import {useNavigate} from "react-router-dom";
+import {useAuth} from "../../../components/AuthCtx.jsx";
 
-export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
-    console.log("self?", self);
-    console.log("clinic_admin?", clinic_admin);
+export const DoctorForm = ({user, self = false}) => {
     console.log("DoctorForm");
+	
     const {
         setValue,
 		reset,
@@ -55,6 +55,7 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
 	const [isDragActive, setIsDragActive] = useState(false);
 	const [imageSrc, setImageSrc] = useState(null);
     const [clinics, setClinics] = useState([]);
+	const {user: currentUser} = useAuth();
 
     const imageRef = useRef(null);
 	const previewImageRef = useRef(null);
@@ -91,7 +92,7 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
 				setValue('email', null);
 				setValue('contact', null);
 				setValue('dob', null);
-				setValue("clinic", clinics?.[0]?.id);
+				setValue("clinic", currentUser?.clinic ? currentUser?.clinic : clinics?.[0]?.id);
 				setValue('qualification', null);
 				setValue('introduction', null);
 	        }
@@ -164,6 +165,12 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
 		let data = getValues();
         console.log("Submitting doctor form", data);
 		
+		for (const [key, value] of Object.entries(data)) {
+			if(key === "new_email" || key === "new_password" || key === "new_confirm_password") {
+				delete data[key];
+			}
+		}
+		
 		if (!user) {
 			const valid = await trigger(['name', 'contact', 'dob', 'qualification', 'introduction', 'clinic', 'email', 'password', 'confirm_password']);
 			const password = data["password"];
@@ -212,7 +219,7 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
 						isClosable: true,
 						position: "top"
 					});
-                    {self ? navigate('/profile') : (clinic_admin ? navigate('/profile') : navigate('/admin/users'))}
+                    {self ? navigate('/profile') : (currentUser?.role === "ClinicAdmin" ? navigate('/staff') : navigate('/admin/users'))}
 				}
 			}).catch((err) => {
 				console.log(err);
@@ -268,7 +275,7 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
 							isClosable: true,
 							position: "top"
 						});
-                        {self ? navigate('/profile') : (clinic_admin ? navigate('/profile') : navigate('/admin/users'))}
+                        {self ? navigate('/profile') : (currentUser?.role === "ClinicAdmin" ? navigate('/staff') : navigate('/admin/users'))}
 					}
 				}).catch((err) => {
 					console.log(err);
@@ -539,7 +546,8 @@ export const DoctorForm = ({user, self=false, clinic_admin=false}) => {
                                 color="gray.900"
                                 size="md"
                                 focusBorderColor="blue.500"
-                                value={watch("clinic") || clinics?.[0]?.id}
+                                isDisabled={!!currentUser?.clinic}
+                                value={currentUser?.clinic ? currentUser?.clinic : watch("clinic") || clinics?.[0]?.id}
                                 {
 	                                ...register("clinic")
                                 }

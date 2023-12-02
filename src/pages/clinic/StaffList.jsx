@@ -1,22 +1,22 @@
 import {
-    Avatar,
-    Box,
-    Button,
-    Center,
-    Divider,
-    Flex,
-    Input,
-    InputGroup,
-    InputLeftElement,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    Select,
-    Text,
+	Avatar,
+	Box,
+	Button,
+	Center,
+	Divider,
+	Flex,
+	Input,
+	InputGroup,
+	InputLeftElement,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	ModalOverlay,
+	Select,
+	Text,
 } from '@chakra-ui/react'
 import {useEffect, useState} from "react";
 import {db} from "../../../api/firebase.js";
@@ -118,7 +118,7 @@ function StaffList() {
 	const actionBodyTemplate = (rowData) => {
 		return (
 			<Flex justifyContent='center' alignItems='center' gap={2}>
-				<Button bg='transparent' as={NavLink} to={`/clinic/staff/${rowData.id}`}><FaEye color='#0078ff'/></Button>
+				<Button bg='transparent' as={NavLink} to={`/staff/${rowData.id}/edit`}><FaEye color='#0078ff'/></Button>
 				<Button bg='transparent' _focus={{ boxShadow: 'none', outline: 'none' }} onClick={() => onOpenApprove(rowData.id)}><FaTrash color='#ff0004'/></Button>
 				
 				{isOpenApprove && selectedUserId === rowData.id && (
