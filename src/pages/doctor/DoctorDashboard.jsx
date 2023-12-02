@@ -1,25 +1,14 @@
-import {
-	Box,
-	Flex,
-	Image,
-	Text,
-    Badge,
-    Link,
-    VStack,
-    HStack,
-} from '@chakra-ui/react';
-import {useState, useEffect} from "react";
+import {Badge, Box, Flex, HStack, Image, Link, Text, VStack,} from '@chakra-ui/react';
+import {useEffect, useState} from "react";
 import {equalTo, get, onValue, orderByChild, query, ref} from 'firebase/database';
 import {db} from "../../../api/firebase.js";
 import {useAuth} from "../../components/AuthCtx.jsx";
-import {BiLinkExternal, BiSolidPhone} from "react-icons/bi";
+import {BiLinkExternal} from "react-icons/bi";
 import {NavLink} from "react-router-dom";
 import {AiFillStar} from "react-icons/ai";
 import {AppointmentTimelineChart} from "../../components/charts/AppointmentTimelineChart.jsx"
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
-import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
+import {DirectionsRenderer, GoogleMap, InfoWindow, Marker} from '@react-google-maps/api';
 
 function Map({place_id}) {
 	const mapStyle = {
@@ -39,20 +28,12 @@ function Map({place_id}) {
 	const [distance, setDistance] = useState(null);
 	const [directions, setDirections] = useState(null);
 	
-	const {isLoaded, loadError} = useLoadScript({
-		googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
-		libraries: libs,
-	});
-	
 	const getMapsLink = () => {
 		if (place) {
 			const {name} = place;
 			return `https://www.google.com/maps/search/?api=1&query=${name}`;
 		}
 	};
-	
-	if (loadError) return "Error loading maps";
-	if (!isLoaded) return "Loading maps";
 	
 	return (
 		<Box>
@@ -139,12 +120,6 @@ function DoctorDashboard() {
     const [clinic, setClinic] = useState([]);
     const [appointments, setAppointments] = useState([]);
     const [ratings, setRatings] = useState([]);
-
-    const libs = ['places'];
-    const { isLoaded, loadError } = useLoadScript({
-		googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
-		libraries: libs,
-	});
     
     function formatDate(isoDate) {
         const date = new Date(isoDate);

@@ -1,15 +1,10 @@
-import {
-	Box,
-    HStack,
-    Link,
-	Text,
-} from '@chakra-ui/react';
-import {useState, useEffect} from "react";
+import {Box, HStack, Link, Text,} from '@chakra-ui/react';
+import {useEffect, useState} from "react";
 import {onValue, query, ref} from "firebase/database";
 import {db} from "../../../api/firebase.js";
 import {BiLinkExternal} from "react-icons/bi";
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
-import {GoogleMap, Marker, useLoadScript, InfoWindow} from '@react-google-maps/api';
+import {GoogleMap, InfoWindow, Marker} from '@react-google-maps/api';
 
 export const AdminMap = () => {
     const [clinics, setClinics] = useState([]);
@@ -26,11 +21,6 @@ export const AdminMap = () => {
     });
     const [isMapLoading, setIsMapLoading] = useState(true);
     const [mapLoadError, setMapLoadError] = useState(null);
-
-    const { isLoaded, loadError } = useLoadScript({
-        googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
-        libraries: libs,
-    });
 
     const getMapsLink = (clinic) => {
         return `https://www.google.com/maps/search/?api=1&query=${clinic.name}`;
@@ -74,9 +64,6 @@ export const AdminMap = () => {
             });
         });
     }, [mapRef]);
-
-    if (loadError) return "Error loading maps";
-    if (!isLoaded) return "Loading maps";
 
     return (
         <Box w='full' h='full'>

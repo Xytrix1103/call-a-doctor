@@ -14,23 +14,15 @@ import {
 import {useEffect, useState} from "react";
 import {db} from "../../../api/firebase.js";
 import {BiSearchAlt2} from "react-icons/bi";
-import {onValue, query, ref} from "firebase/database";
+import {onValue, ref} from "firebase/database";
 import {NavLink} from "react-router-dom";
-import {AiFillStar} from "react-icons/ai";
-import { FaUser, FaStethoscope, FaStar, FaStarHalf } from "react-icons/fa";
-import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
+import {FaStar, FaStarHalf} from "react-icons/fa";
 
 function ClinicList() {
     const [clinics, setClinics] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [destinationCoordinates, setDestinationCoordinates] = useState(null);
 
-    const libs = ['places'];
-    const { isLoaded, loadError } = useLoadScript({
-		googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
-		libraries: libs,
-	});
-    
     useEffect(() => {
         // Fetch clinic details from Realtime Database
         const clinicsRef = ref(db, 'clinics');
@@ -113,7 +105,6 @@ function ClinicList() {
     const filteredClinics = clinics.filter((clinic) =>
         clinic.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    
     
     return (
         <Box w="full" h="full" p={2} direction="column" mb={4}>

@@ -31,7 +31,7 @@ import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 import {memo, useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import {BiLinkExternal, BiSearchAlt2} from "react-icons/bi";
-import {Autocomplete, GoogleMap, InfoWindow, LoadScript, Marker} from "@react-google-maps/api";
+import {Autocomplete, GoogleMap, InfoWindow, Marker} from "@react-google-maps/api";
 import {update_email, update_password, update_patient} from "../../../../api/admin.js";
 import {useNavigate} from "react-router-dom";
 import {register as registerUser} from "../../../../api/auth.js";
@@ -144,10 +144,7 @@ const Map = ({user, place, setPlace}) => {
 	}, []);
 	
 	return (
-		<LoadScript
-			googleMapsApiKey="AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A"
-			libraries={libs}
-		>
+		<>
 			<Box
  				mb={3}
 				mt={2}
@@ -208,7 +205,7 @@ const Map = ({user, place, setPlace}) => {
 					</>
 				)}
 			</GoogleMap>
-		</LoadScript>
+		</>
 	);
 }
 
@@ -235,6 +232,12 @@ export const PatientForm = ({user, self=false}) => {
     const onSubmit = async () => {
 		let data = getValues();
         console.log('Submitting patient form', data);
+
+		for (const [key, value] of Object.entries(data)) {
+			if(key === "new_email" || key === "new_password" || key === "new_confirm_password") {
+				delete data[key];
+			}
+		}
 		
 		if (!place) {
 			toast({
@@ -254,6 +257,14 @@ export const PatientForm = ({user, self=false}) => {
 		    const confirm_password = data["confirm_password"];
 			
 			if (!valid) {
+				toast({
+					title: "Failed to update patient.",
+					description: "Please fill in all required fields",
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+					position: "top"
+				});
 				return;
 			}
 		    
@@ -304,56 +315,76 @@ export const PatientForm = ({user, self=false}) => {
 			    });
 		    });
 	    } else {
-		    const valid = await trigger(['name', 'contact', 'address', 'dob']);
-		    let update = {};
-			
+			const valid = await trigger(['name', 'contact', 'address', 'dob']);
+			let update = {};
+
 			if (!valid) {
+				toast({
+					title: "Failed to update patient.",
+					description: "Please fill in all required fields",
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+					position: "top"
+				});
 				return;
 			}
-		    
-		    //loop thru form values
-		    for (const [key, value] of Object.entries(data)) {
-			    if (value !== user[key] && key !== 'confirm_password' && key !== 'password' && key !== 'email') {
-				    update[key] = value;
-			    }
-		    }
-		    
-		    if (Object.keys(update).length > 0) {
-			    update_patient(user.uid, update).then((res) => {
-				    console.log(res);
-				    if (res.error) {
-					    toast({
-						    title: "Error!",
-						    description: "An error has occurred!",
-						    status: "error",
-						    duration: 5000,
-						    isClosable: true,
-						    position: "top"
-					    });
-				    } else {
-					    toast({
-						    title: "Success!",
-						    description: "User has been updated!",
-						    status: "success",
-						    duration: 5000,
-						    isClosable: true,
-						    position: "top"
-					    });
-					    navigate('/admin/users');
-				    }
-			    }).catch((err) => {
-				    console.log(err);
-				    toast({
-					    title: "Error!",
-					    description: "An error has occurred!",
-					    status: "error",
-					    duration: 5000,
-					    isClosable: true,
-					    position: "top"
-				    });
-			    });
-		    }
-	    }
+
+			//loop thru form values
+			for (const [key, value] of Object.entries(data)) {
+				if (value !== user[key] && key !== 'confirm_password' && key !== 'password' && key !== 'email') {
+					update[key] = value;
+				}
+			}
+
+			if (Object.keys(update).length > 0) {
+				update_patient(user.uid, update).then((res) => {
+					console.log(res);
+					if (res.error) {
+						toast({
+							title: "Error!",
+							description: "An error has occurred!",
+							status: "error",
+							duration: 5000,
+							isClosable: true,
+							position: "top"
+						});
+					} else {
+						toast({
+							title: "Success!",
+							description: "User has been updated!",
+							status: "success",
+							duration: 5000,
+							isClosable: true,
+							position: "top"
+						});
+
+						!self && navigate('/admin/users');
+					}
+				}).catch((err) => {
+					console.log(err);
+					toast({
+						title: "Error!",
+						description: "An error has occurred!",
+						status: "error",
+						duration: 5000,
+						isClosable: true,
+						position: "top"
+					});
+				});
+			} else {
+				toast({
+					title: "No changes detected!",
+					description: "No changes have been made!",
+					status: "info",
+					duration: 5000,
+					isClosable: true,
+					position: "top"
+				});
+
+				!self && navigate('/admin/users');
+			}
+		}
     }
 
     useEffect(() => {
@@ -404,6 +435,14 @@ export const PatientForm = ({user, self=false}) => {
 		console.log("Submitting email modal");
 		
 		if (!valid) {
+			toast({
+				title: "Failed to update email.",
+				description: "Please fill in all required fields",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+				position: "top"
+			});
 			return;
 		}
 		
@@ -448,6 +487,14 @@ export const PatientForm = ({user, self=false}) => {
 		console.log("Submitting password modal");
 		
 		if (!valid) {
+			toast({
+				title: "Failed to update password.",
+				description: "Please fill in all required fields",
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+				position: "top"
+			});
 			return;
 		}
 		
@@ -495,7 +542,7 @@ export const PatientForm = ({user, self=false}) => {
 	};
 
     return (
-        <form action="/api/register" method="post">
+        <form>
             <Grid templateColumns="repeat(2, 1fr)" gap={8} w="full" h="full" px={5}>
                 <Box w="full" h="full">
                     <Box w="full">
@@ -617,7 +664,7 @@ export const PatientForm = ({user, self=false}) => {
                         </Box>
                     </Flex>
                     <Box mb={2} mt={6}>
-                        <FormControl fontSize="sm" fontWeight="medium" color="gray.900"  id="contact" isInvalid={errors.phone} >
+                        <FormControl fontSize="sm" fontWeight="medium" color="gray.900"  id="contact" isInvalid={errors.contact} >
                             <FormLabel fontSize="sm" fontWeight="medium" color="gray.900">
                                 Contact Number <Text as="span" color="red.500" fontWeight="bold">*</Text>
                             </FormLabel>

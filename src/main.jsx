@@ -22,6 +22,7 @@ import AdminLayout from "./components/layouts/AdminLayout.jsx";
 import ClinicRegistryApproval from "./pages/admin/ClinicRegistryApproval.jsx";
 import ClinicRegistryDetails from './pages/admin/ClinicRegistryDetails';
 import ApprovedClinicDetails from './pages/admin/ApprovedClinicDetails';
+import EditApprovedClinicDetails from './pages/admin/EditApprovedClinicDetails.jsx';
 import ApprovedClinicList from './pages/admin/ApprovedClinicList';
 import PatientDashboard from './pages/patient/PatientDashboard';
 import ClinicDashboard from './pages/clinic/ClinicDashboard';
@@ -41,6 +42,7 @@ import PatientAppointmentCard from './pages/admin/PatientAppointmentCard';
 import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
 import StaffList from "./pages/clinic/StaffList.jsx";
 import DoctorClinicLayout from "./components/layouts/DoctorClinicLayout.jsx";
+import ManageStaff from "./pages/clinic/ManageStaff.jsx";
 
 const DashboardElement = () => {
 	const { user } = useAuth();
@@ -76,7 +78,7 @@ const router = createBrowserRouter(
 				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="clinics/:id" element={<ClinicDetails/>}/>
 				<Route path="requests" element={<PatientAppointmentHistory asPatient={true}/>}/>
-				<Route path="request/:id" element={<PatientAppointmentCard/>}/>
+				<Route path="requests/:id" element={<PatientAppointmentCard/>}/>
 				<Route path="clinics/:id/request" element={<DoctorRequestForm/>}/>
 			</Route>
 			<Route element={<DoctorClinicLayout/>}>
@@ -91,6 +93,8 @@ const router = createBrowserRouter(
 			<Route element={<ClinicLayout/>}>
 				<Route path="clinic" element={<Clinic/>}/>
 				<Route path="staff" element={<StaffList/>}/>
+				<Route path="staff/add" element={<ManageStaff/>}/>
+				<Route path="staff/:id/edit" element={<ManageStaff/>}/>
 				<Route path="patient-requests" element={<PatientRequests/>}/>
 				<Route path="doctor/:id" element={<EditDoctor/>}/>
 				<Route path="doctors/add" element={<AddDoctorToList/>}/>
@@ -98,13 +102,14 @@ const router = createBrowserRouter(
 			<Route path='/admin' element={<AdminLayout/>}>
 				<Route path="clinics" element={<ApprovedClinicList/>}/>
 				<Route path="clinics/:id" element={<ApprovedClinicDetails/>}/>
+				<Route path="clinics/:id/edit" element={<EditApprovedClinicDetails/>}/>
 				<Route path="clinics/:id/doctors" element={<></>}/>
 				<Route path="clinics/:id/patients" element={<></>}/>
 				<Route path="approve-clinics" element={<ClinicRegistryApproval/>}/>
 				<Route path="approve-clinics/:id" element={<ClinicRegistryDetails/>}/>
 				<Route path="users" element={<UserList/>}/>
 				<Route path="users/add" element={<ManageUser/>}/>
-				<Route path="users/edit/:id" element={<ManageUser/>}/>
+				<Route path="users/:id/edit" element={<ManageUser/>}/>
 				<Route path="doctors" element={<></>}/>
 				<Route path="doctors/:id" element={<></>}/>
 				<Route path="doctors/:id/schedule" element={<></>}/>

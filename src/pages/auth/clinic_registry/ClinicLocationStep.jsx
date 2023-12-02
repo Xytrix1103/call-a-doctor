@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from "react";
-import {Autocomplete, GoogleMap, InfoWindow, LoadScript, Marker} from "@react-google-maps/api";
+import {Autocomplete, GoogleMap, InfoWindow, Marker} from "@react-google-maps/api";
 import {Box, HStack, Input, InputGroup, InputLeftElement, Link, Text} from "@chakra-ui/react";
 import {BiLinkExternal, BiSearchAlt2} from "react-icons/bi";
 
@@ -56,10 +56,7 @@ const ClinicLocationStep = ({place, setPlace}) => {
 	}, []);
 	
 	return (
-		<LoadScript
-			googleMapsApiKey="AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A"
-			libraries={libs}
-		>
+		<>
 			
 			<Box
 				mb={3}
@@ -121,7 +118,7 @@ const ClinicLocationStep = ({place, setPlace}) => {
 					</InfoWindow>
 				)}
 			</GoogleMap>
-		</LoadScript>
+		</>
 	);
 }
 
