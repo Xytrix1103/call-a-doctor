@@ -72,6 +72,7 @@ const router = createBrowserRouter(
 			<Route path="forgot" element={<ForgotPassword/>}/>
 			<Route path="register-clinic" element={<ClinicRegistry/>}/>
 			<Route path="profile" element={<Profile/>}/>
+			<Route path="clinic" element={<Clinic/>}/>
 			<Route element={<PatientLayout/>}>
 				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="clinics/:id" element={<ClinicDetails/>}/>
@@ -89,7 +90,6 @@ const router = createBrowserRouter(
 				<Route path="my-clinic" element={<DoctorClinicDetails/>}/>
 			</Route>
 			<Route element={<ClinicLayout/>}>
-				<Route path="clinic" element={<Clinic/>}/>
 				<Route path="staff" element={<StaffList/>}/>
 				<Route path="patient-requests" element={<PatientRequests/>}/>
 				<Route path="doctor/:id" element={<EditDoctor/>}/>
