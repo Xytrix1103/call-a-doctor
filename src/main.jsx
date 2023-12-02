@@ -22,6 +22,7 @@ import AdminLayout from "./components/layouts/AdminLayout.jsx";
 import ClinicRegistryApproval from "./pages/admin/ClinicRegistryApproval.jsx";
 import ClinicRegistryDetails from './pages/admin/ClinicRegistryDetails';
 import ApprovedClinicDetails from './pages/admin/ApprovedClinicDetails';
+import EditApprovedClinicDetails from './pages/admin/EditApprovedClinicDetails.jsx';
 import ApprovedClinicList from './pages/admin/ApprovedClinicList';
 import PatientDashboard from './pages/patient/PatientDashboard';
 import ClinicDashboard from './pages/clinic/ClinicDashboard';
@@ -101,7 +102,7 @@ const router = createBrowserRouter(
 			<Route path='/admin' element={<AdminLayout/>}>
 				<Route path="clinics" element={<ApprovedClinicList/>}/>
 				<Route path="clinics/:id" element={<ApprovedClinicDetails/>}/>
-				<Route path="clinics/:id/edit" element={<></>}/>
+				<Route path="clinics/:id/edit" element={<EditApprovedClinicDetails/>}/>
 				<Route path="clinics/:id/doctors" element={<></>}/>
 				<Route path="clinics/:id/patients" element={<></>}/>
 				<Route path="approve-clinics" element={<ClinicRegistryApproval/>}/>
