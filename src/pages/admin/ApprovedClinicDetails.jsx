@@ -14,7 +14,7 @@ import {
 	Text,
 	Textarea,
 } from '@chakra-ui/react'
-import {DirectionsRenderer, GoogleMap, InfoWindow, Marker, useLoadScript} from '@react-google-maps/api';
+import {DirectionsRenderer, GoogleMap, InfoWindow, Marker} from '@react-google-maps/api';
 import {NavLink, useParams} from 'react-router-dom';
 import {useEffect, useState} from "react";
 import {AiFillStar} from "react-icons/ai";
@@ -25,6 +25,7 @@ import {onValue, query, ref} from "firebase/database";
 import {ClinicDoctorList} from "../patient/ClinicDoctorList.jsx";
 
 function Map({ place_id, onDistanceChange }) {
+	console.log(place_id);
 	const mapStyle = {
 	  height: '350px',
 	  width: '100%',
@@ -42,100 +43,98 @@ function Map({ place_id, onDistanceChange }) {
 	const [distance, setDistance] = useState(null);
 	const [directions, setDirections] = useState(null);
 
-	const { isLoaded, loadError } = useLoadScript({
-		googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
-		libraries: libs,
-	});
-
 	const getMapsLink = () => {
 		if (place) {
 			const { name } = place;
 			return `https://www.google.com/maps/search/?api=1&query=${name}`;
 		}
 	};
-
-	if (loadError) return "Error loading maps";
-	if (!isLoaded) return "Loading maps";
-  
+	
+	useEffect(() => {
+		
+		if (place_id) {
+			console.log(place_id);
+			const service = new window.google.maps.places.PlacesService(mapRef);
+			service.getDetails(
+				{
+					placeId: place_id,
+				},
+				(result, status) => {
+					if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+						const { name, formatted_address, rating, reviews } = result;
+						
+						setPlace(result);
+						console.log(result);
+						setName(name);
+						setFormattedAddress(formatted_address);
+						console.log(rating);
+						console.log(reviews);
+						setDestinationCoordinates({
+							lat: result.geometry.location.lat(),
+							lng: result.geometry.location.lng(),
+						});
+						
+						setCenter({
+							lat: result.geometry.location.lat(),
+							lng: result.geometry.location.lng(),
+						});
+						
+						if (navigator.geolocation) {
+							navigator.geolocation.getCurrentPosition((position) => {
+								const currentLocation = new window.google.maps.LatLng(
+									position.coords.latitude,
+									position.coords.longitude
+								);
+								const placeLocation = new window.google.maps.LatLng(
+									result.geometry.location.lat(),
+									result.geometry.location.lng()
+								);
+								const directionsService = new window.google.maps.DirectionsService();
+								directionsService.route(
+									{
+										origin: currentLocation,
+										destination: placeLocation,
+										travelMode: window.google.maps.TravelMode.DRIVING,
+									},
+									(result, status) => {
+										if (status === window.google.maps.DirectionsStatus.OK) {
+											setDirections(result);
+											const distance = result.routes[0].legs[0].distance.value;
+											const distanceInKilometers = distance / 1000;
+											onDistanceChange(distanceInKilometers, rating, reviews);
+											setDistance(distance);
+											console.log(distance);
+										} else {
+											console.error(`Error retrieving directions: Status - ${status}`);
+										}
+									}
+								);
+							});
+						}
+					} else {
+						console.error(`Error retrieving place details: Status - ${status}`);
+					}
+				}
+			);
+		} else {
+			console.log('No place id provided');
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition((position) => {
+					setCenter({
+						lat: position.coords.latitude,
+						lng: position.coords.longitude,
+					});
+				});
+			}
+		}
+	}, [place_id]);
+	
 	return (
 		<Box>
 			<GoogleMap
 				onLoad={(map) => {
 					setMapRef(map);
-					if (place_id && window.google && window.google.maps) {
-						const service = new window.google.maps.places.PlacesService(map);
-						service.getDetails(
-							{
-								placeId: place_id,
-							},
-							(result, status) => {
-								if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-									const { name, formatted_address, rating, reviews } = result;
-						
-									setPlace(result);
-									console.log(result);
-									setName(name);
-									setFormattedAddress(formatted_address);
-									console.log(rating);
-									console.log(reviews);
-									setDestinationCoordinates({
-										lat: result.geometry.location.lat(),
-										lng: result.geometry.location.lng(),
-									});
-					
-									setCenter({
-										lat: result.geometry.location.lat(),
-										lng: result.geometry.location.lng(),
-									});
-
-									if (navigator.geolocation) {
-										navigator.geolocation.getCurrentPosition((position) => {
-											const currentLocation = new window.google.maps.LatLng(
-												position.coords.latitude,
-												position.coords.longitude
-											  );
-											  const placeLocation = new window.google.maps.LatLng(
-												result.geometry.location.lat(),
-												result.geometry.location.lng()
-											  );
-											  const directionsService = new window.google.maps.DirectionsService();
-											  directionsService.route(
-												{
-												  origin: currentLocation,
-												  destination: placeLocation,
-												  travelMode: window.google.maps.TravelMode.DRIVING,
-												},
-												(result, status) => {
-												  if (status === window.google.maps.DirectionsStatus.OK) {
-													setDirections(result);
-													const distance = result.routes[0].legs[0].distance.value;
-													const distanceInKilometers = distance / 1000; 
-													onDistanceChange(distanceInKilometers, rating, reviews); 
-													setDistance(distance);
-													console.log(distance);
-												  } else {
-													console.error(`Error retrieving directions: Status - ${status}`);
-												  }
-												}
-											);
-										});
-									}
-								} else {
-									console.error(`Error retrieving place details: Status - ${status}`);
-								}
-							}
-						);
-					} else {
-						if (navigator.geolocation) {
-							navigator.geolocation.getCurrentPosition((position) => {
-								setCenter({
-									lat: position.coords.latitude,
-									lng: position.coords.longitude,
-								});
-							});
-						}
-					}
-
+					console.log(map);
 				}}
 				center={center}
 				zoom={15}
@@ -184,6 +183,7 @@ function ApprovedClinicDetails() {
 				id: snapshot.key,
 				...data,
 			};
+			console.log(data);
 	        setData(data);
         });
     }, [id]);

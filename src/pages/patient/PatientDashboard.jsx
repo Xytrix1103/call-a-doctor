@@ -1,25 +1,13 @@
-import {
-	Box,
-	Flex,
-	Image,
-	Text,
-    Badge,
-    Link,
-    Divider,
-    VStack,
-} from '@chakra-ui/react';
-import {useState, useEffect} from "react";
-import {onValue, query, ref, limitToFirst, orderByChild, equalTo, get} from "firebase/database";
+import {Badge, Box, Divider, Flex, Image, Link, Text, VStack,} from '@chakra-ui/react';
+import {useEffect, useState} from "react";
+import {equalTo, get, limitToFirst, onValue, orderByChild, query, ref} from "firebase/database";
 import {db} from "../../../api/firebase.js";
 import {useAuth} from "../../components/AuthCtx.jsx";
 import {NavLink} from "react-router-dom";
 import {AiFillStar} from "react-icons/ai";
-import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
-import { GoDotFill } from "react-icons/go";
+import {BsGenderFemale, BsGenderMale} from "react-icons/bs";
+import {GoDotFill} from "react-icons/go";
 import {AppointmentTimelineChart} from "../../components/charts/AppointmentTimelineChart.jsx"
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
 
 const PatientRequests = ({ request }) => {
@@ -67,12 +55,6 @@ function PatientDashboard() {
     const [appointments, setAppointments] = useState([]);
     const [ratings, setRatings] = useState([]);
     const [filteredAppointments, setFilteredAppointments] = useState([]);
-
-    const libs = ['places'];
-    const { isLoaded, loadError } = useLoadScript({
-		googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
-		libraries: libs,
-	});
 
     function formatDate(isoDate) {
         const date = new Date(isoDate);

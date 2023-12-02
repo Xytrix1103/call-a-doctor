@@ -25,7 +25,7 @@ import {onValue, ref} from "firebase/database";
 import {useForm} from "react-hook-form";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
 import {useAuth} from "../../components/AuthCtx.jsx";
-import {Autocomplete, GoogleMap, InfoWindow, LoadScript, Marker} from "@react-google-maps/api";
+import {Autocomplete, GoogleMap, InfoWindow, Marker} from "@react-google-maps/api";
 import {BiLinkExternal, BiSearchAlt2} from "react-icons/bi";
 import {update_clinic} from "../../../api/admin.js";
 
@@ -173,10 +173,7 @@ const Map = ({clinic, place, setPlace}) => {
 	}, []);
 	
 	return (
-		<LoadScript
-			googleMapsApiKey="AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A"
-			libraries={libs}
-		>
+		<>
 			<Box
 				mb={3}
 				mt={2}
@@ -237,7 +234,7 @@ const Map = ({clinic, place, setPlace}) => {
 					</>
 				)}
 			</GoogleMap>
-		</LoadScript>
+		</>
 	);
 }
 
@@ -396,6 +393,9 @@ function EditApprovedClinicDetails() {
 		for (const key in data) {
 			if (data[key] !== clinic[key]) {
 				console.log(key, data[key], clinic[key]);
+				if (key === "image" && data[key] === null) {
+					continue;
+				}
 				if (key === "specialist_clinic" && data[key] === "") {
 					update[key] = null;
 				} else {
@@ -403,6 +403,8 @@ function EditApprovedClinicDetails() {
 				}
 			}
 		}
+		
+		console.log(update);
 		
 		if (Object.keys(update).length > 0) {
 			console.log(update);
@@ -439,6 +441,8 @@ function EditApprovedClinicDetails() {
 					position: "top",
 				});
 			}
+			
+			navigate("/admin/clinics");
 		}).catch((err) => {
 			toast({
 				title: "Error",

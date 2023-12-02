@@ -25,7 +25,7 @@ import {GiMedicines, GiSandsOfTime} from "react-icons/gi";
 import {MdEmail} from "react-icons/md";
 import {GoDotFill} from "react-icons/go";
 import {useState} from 'react';
-import {DirectionsRenderer, GoogleMap, InfoWindow, Marker, useLoadScript} from '@react-google-maps/api';
+import {DirectionsRenderer, GoogleMap, InfoWindow, Marker} from '@react-google-maps/api';
 
 function Map({place_id, onDistanceChange, clinic_place_id}) {
 	const mapStyle = {
@@ -45,20 +45,12 @@ function Map({place_id, onDistanceChange, clinic_place_id}) {
 	const [distance, setDistance] = useState(null);
 	const [directions, setDirections] = useState(null);
 	
-	const {isLoaded, loadError} = useLoadScript({
-		googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
-		libraries: libs,
-	});
-	
 	const getMapsLink = () => {
 		if (place) {
 			const {name} = place;
 			return `https://www.google.com/maps/search/?api=1&query=${name}`;
 		}
 	};
-	
-	if (loadError) return "Error loading maps";
-	if (!isLoaded) return "Loading maps";
 	
 	return (
 		<Box>

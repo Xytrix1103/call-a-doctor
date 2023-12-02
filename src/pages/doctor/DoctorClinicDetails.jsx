@@ -1,19 +1,19 @@
 import {
-	Accordion,
-	AccordionButton,
-	AccordionIcon,
-	AccordionItem,
-	AccordionPanel,
-	Avatar,
-	Box,
-	Center,
-	Flex,
-	HStack,
-	Link,
-	Text,
-	Textarea,
+    Accordion,
+    AccordionButton,
+    AccordionIcon,
+    AccordionItem,
+    AccordionPanel,
+    Avatar,
+    Box,
+    Center,
+    Flex,
+    HStack,
+    Link,
+    Text,
+    Textarea,
 } from '@chakra-ui/react'
-import {DirectionsRenderer, GoogleMap, InfoWindow, Marker, useLoadScript} from '@react-google-maps/api';
+import {DirectionsRenderer, GoogleMap, InfoWindow, Marker} from '@react-google-maps/api';
 import {useEffect, useState} from "react";
 import {FaStar, FaStarHalf} from "react-icons/fa";
 import {AiFillStar} from "react-icons/ai";
@@ -41,20 +41,12 @@ function Map({ place_id, onDistanceChange }) {
 	const [distance, setDistance] = useState(null);
 	const [directions, setDirections] = useState(null);
 
-	const { isLoaded, loadError } = useLoadScript({
-		googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
-		libraries: libs,
-	});
-
 	const getMapsLink = () => {
 		if (place) {
 			const { name } = place;
 			return `https://www.google.com/maps/search/?api=1&query=${name}`;
 		}
 	};
-
-	if (loadError) return "Error loading maps";
-	if (!isLoaded) return "Loading maps";
   
 	return (
 		<Box>

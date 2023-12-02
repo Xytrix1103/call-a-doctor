@@ -31,7 +31,7 @@ import {IoMdEye, IoMdEyeOff} from "react-icons/io";
 import {memo, useEffect, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import {BiLinkExternal, BiSearchAlt2} from "react-icons/bi";
-import {Autocomplete, GoogleMap, InfoWindow, LoadScript, Marker} from "@react-google-maps/api";
+import {Autocomplete, GoogleMap, InfoWindow, Marker} from "@react-google-maps/api";
 import {update_email, update_password, update_patient} from "../../../../api/admin.js";
 import {useNavigate} from "react-router-dom";
 import {register as registerUser} from "../../../../api/auth.js";
@@ -144,10 +144,7 @@ const Map = ({user, place, setPlace}) => {
 	}, []);
 	
 	return (
-		<LoadScript
-			googleMapsApiKey="AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A"
-			libraries={libs}
-		>
+		<>
 			<Box
  				mb={3}
 				mt={2}
@@ -208,7 +205,7 @@ const Map = ({user, place, setPlace}) => {
 					</>
 				)}
 			</GoogleMap>
-		</LoadScript>
+		</>
 	);
 }
 

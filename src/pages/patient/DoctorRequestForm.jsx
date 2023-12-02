@@ -20,7 +20,7 @@ import {
 import {useForm} from "react-hook-form";
 import {memo, useEffect, useRef, useState} from "react";
 import {useAuth} from "../../components/AuthCtx.jsx";
-import {Autocomplete, DirectionsRenderer, GoogleMap, InfoWindow, Marker, useLoadScript} from '@react-google-maps/api';
+import {Autocomplete, DirectionsRenderer, GoogleMap, InfoWindow, Marker} from '@react-google-maps/api';
 import {useParams} from 'react-router-dom';
 import {BiLinkExternal, BiSearchAlt2} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
@@ -49,11 +49,6 @@ const Map = (props) => {
         directions: null,
         places: null,
         autocomplete: null,
-    });
-  
-    const { isLoaded, loadError } = useLoadScript({
-        googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
-        libraries: libs,
     });
   
     const handlePlaceSelect = () => {
@@ -179,7 +174,7 @@ const Map = (props) => {
     }, [services]);
     
     useEffect(() => {
-        if (isLoaded && map && clinic) {
+        if (map && clinic) {
             if (!usePersonalDetails) {
                 setHomePlace(null);
                 if(clinic) {
@@ -211,10 +206,7 @@ const Map = (props) => {
                 }
             }
         }
-    }, [usePersonalDetails, user, isLoaded, map, clinic]);
-  
-    if (loadError) return "Error loading maps";
-    if (!isLoaded) return "Loading maps";
+    }, [usePersonalDetails, user, map, clinic]);
   
     return (
         <Box>
