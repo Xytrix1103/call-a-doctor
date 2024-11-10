@@ -7,43 +7,56 @@ import {
 import {auth, db, secondaryAuth, storage} from "./firebase.js";
 import {ref, set} from "firebase/database";
 import {getDownloadURL, ref as sRef, uploadBytes} from "firebase/storage";
+import bcrypt from 'bcryptjs';
+import CryptoJS from 'crypto-js';
 
-export const register = async (data, asAdmin=false) => {
-	const {email, place_id, password, name, gender="", dob="",
-		contact = "", address = "", role="Patient"} = data;
+const privateKey = import.meta.env.VITE_SECRET_KEY;
+
+export const register = async (data, asAdmin = false) => {
+	const { email, place_id, password, name, gender = "", dob = "", contact = "", address = "", role = "Patient" } = data;
 	const authObj = asAdmin ? secondaryAuth : auth;
-	
-	return await createUserWithEmailAndPassword(authObj, email, password).then(async (newUser) => {
-		if (newUser) {
-			return await set(ref(db, `users/${newUser.user.uid}`), {
-				uid: newUser.user.uid,
-				created_on: new Date().toISOString(),
-				created_by: asAdmin ? auth.currentUser.uid : newUser.user.uid,
-				email: newUser.user.email,
-				password: password,
-				role: role,
-				name: name,
-				gender: gender,
-				dob: dob,
-				contact: contact,
-				address: address,
-				place_id: place_id
-			})
-			.then(() => {
-				return newUser.user;
-			})
-			.catch((error) => {
-				throw {error: error};
-			});
-		} else {
-			return {error: "Error creating user"};
-		}
-	})
-	.catch((error) => {
-		console.log(error);
-		return {error: error};
-	});
-}
+
+	// Step 1: Hash the password
+	const hashedPassword = await bcrypt.hash(password, 10);
+
+	// Step 2: Encrypt sensitive fields with CryptoJS AES
+	const encryptedName = CryptoJS.AES.encrypt(name, privateKey).toString();
+	const encryptedEmail = CryptoJS.AES.encrypt(email, privateKey).toString();
+	const encryptedContact = CryptoJS.AES.encrypt(contact, privateKey).toString();
+	const encryptedAddress = CryptoJS.AES.encrypt(address, privateKey).toString();
+
+	return await createUserWithEmailAndPassword(authObj, email, password)
+		.then(async (newUser) => {
+			if (newUser) {
+				return await set(ref(db, `users/${newUser.user.uid}`), {
+					uid: newUser.user.uid,
+					created_on: new Date().toISOString(),
+					created_by: asAdmin ? auth.currentUser.uid : newUser.user.uid,
+					email: encryptedEmail,      // Store encrypted email
+					password: hashedPassword,  // Store hashed password
+					role: role,
+					name: encryptedName,       // Store encrypted name
+					gender: gender,
+					dob: dob,
+					contact: encryptedContact, // Store encrypted contact
+					address: encryptedAddress, // Store encrypted address
+					place_id: place_id
+				})
+				.then(() => {
+					return newUser.user;
+				})
+				.catch((error) => {
+					throw { error: error };
+				});
+			} else {
+				return { error: "Error creating user" };
+			}
+		})
+		.catch((error) => {
+			console.log(error);
+			return { error: error };
+		});
+};
 
 export const register_clinic_admin = async (data, asAdmin=false) => {
 	const {email, password, name, role="ClinicAdmin", clinic=null} = data;

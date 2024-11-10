@@ -35,6 +35,7 @@ import {Autocomplete, GoogleMap, InfoWindow, Marker} from "@react-google-maps/ap
 import {update_email, update_password, update_patient} from "../../../../api/admin.js";
 import {useNavigate} from "react-router-dom";
 import {register as registerUser} from "../../../../api/auth.js";
+import CryptoJS from 'crypto-js';
 
 const Map = ({user, place, setPlace}) => {
 	const mapStyle = {
@@ -76,6 +77,13 @@ const Map = ({user, place, setPlace}) => {
 		}
 	}
 
+	const privateKey = import.meta.env.VITE_SECRET_KEY;
+
+	const decryptField = (encryptedValue) => {
+		if (!encryptedValue) return null;  // Handle null or undefined values
+		return CryptoJS.AES.decrypt(encryptedValue, privateKey).toString(CryptoJS.enc.Utf8);
+	};
+
     useEffect(() => {
         if (mapRef && user?.address) {
             const autocompleteService = new window.google.maps.places.AutocompleteService();
@@ -89,7 +97,7 @@ const Map = ({user, place, setPlace}) => {
             console.log("Fetching place details for user's address");
     
             autocompleteService.getPlacePredictions(
-	            {input: user.address},
+	            {input: decryptField(user?.address)},
 	            (predictions, status) => {
 		            console.log("Predictions: ", predictions);
 		            if (status === window.google.maps.places.PlacesServiceStatus.OK && predictions && predictions.length > 0) {
@@ -387,21 +395,27 @@ export const PatientForm = ({user, self=false}) => {
 		}
     }
 
-    useEffect(() => {
-        if (user) {
-            setValue('name', user?.name);
-            setValue('email', user?.email);
-            setValue('contact', user?.contact);
-            setValue('address', user?.address);
-            setValue('dob', user?.dob);
-        } else {
+	const privateKey = import.meta.env.VITE_SECRET_KEY;
+	const decryptField = (encryptedValue) => {
+		if (!encryptedValue) return null;  // Handle null or undefined values
+		return CryptoJS.AES.decrypt(encryptedValue, privateKey).toString(CryptoJS.enc.Utf8);
+	};
+
+	useEffect(() => {
+		if (user) {
+			// Decrypt each field before setting it in the form
+			setValue('name', decryptField(user?.name));
+			setValue('email', decryptField(user?.email));
+			setValue('contact', decryptField(user?.contact));
+			setValue('address', decryptField(user?.address));
+			setValue('dob', user?.dob); 
+		} else {
 			setValue('name', null);
 			setValue('email', null);
 			setValue('contact', null);
 			setValue('address', null);
 			setValue('dob', null);
-	       
-        }
+		}
 	}, [user]);
 	
 	useEffect(() => {
