@@ -17,40 +17,96 @@ import {
 	useToast
 } from "@chakra-ui/react";
 import {IoMdEye, IoMdEyeOff} from "react-icons/io";
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {login} from "../../../api/auth.js";
 
 // import { set } from "lodash";
 
 function Login() {
-	const {
-		handleSubmit,
-		register,
-		formState: {
-			errors, isSubmitting
-		}
-	} = useForm();
+	const { handleSubmit, register, formState: { errors, isSubmitting } } = useForm();
 	const [show, setShow] = useState(false);
+	const [attempts, setAttempts] = useState(parseInt(localStorage.getItem("loginAttempts") || "0", 10));
+	const [isLocked, setIsLocked] = useState(false);
+	const [lockoutTime, setLockoutTime] = useState(parseInt(localStorage.getItem("lockoutTime") || "0", 10));
+	const [timeLeft, setTimeLeft] = useState(0);
 	const toast = useToast();
-	
+
+	const MAX_ATTEMPTS = 3;
+	const LOCKOUT_DURATION = 300000; // 5 minutes in milliseconds
+
+	useEffect(() => {
+		if (lockoutTime > Date.now()) {
+			setIsLocked(true);
+			const interval = setInterval(() => {
+				const remainingTime = lockoutTime - Date.now();
+				if (remainingTime <= 0) {
+					clearInterval(interval);
+					setIsLocked(false);
+					setTimeLeft(0);
+					localStorage.removeItem("lockoutTime");
+					setAttempts(0);
+					localStorage.removeItem("loginAttempts");
+				} else {
+					setTimeLeft(remainingTime);
+				}
+			}, 1000);
+
+			return () => clearInterval(interval);
+		} else {
+			setIsLocked(false);
+			localStorage.removeItem("lockoutTime");
+		}
+	}, [lockoutTime]);
+
 	const onSubmit = async (data) => {
+		if (isLocked) {
+			toast({
+				title: "Account locked.",
+				description: `Please wait ${Math.ceil(timeLeft / 1000)} seconds before trying again.`,
+				status: "error",
+				duration: 3000,
+				isClosable: true,
+				position: "top",
+			});
+			return;
+		}
+
 		const res = await login(data);
-		console.log(res);
-		
-		if (res) {
-			if (res.error) {
+		if (res.error) {
+			const newAttempts = attempts + 1;
+			setAttempts(newAttempts);
+			localStorage.setItem("loginAttempts", newAttempts);
+
+			if (newAttempts >= MAX_ATTEMPTS) {
+				const lockoutExpiration = Date.now() + LOCKOUT_DURATION;
+				setLockoutTime(lockoutExpiration);
+				localStorage.setItem("lockoutTime", lockoutExpiration);
+				setIsLocked(true);
+				setTimeLeft(LOCKOUT_DURATION);
+				toast({
+					title: "Too many attempts.",
+					description: `Account locked. Please wait ${Math.ceil(LOCKOUT_DURATION / 1000)} seconds before trying again.`,
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+					position: "top",
+				});
+			} else {
 				toast({
 					title: "Login failed.",
-					description: "Please try again with valid credentials.",
+					description: `You have ${MAX_ATTEMPTS - newAttempts} attempts left.`,
 					status: "error",
 					duration: 3000,
 					isClosable: true,
-					position: "top"
+					position: "top",
 				});
 			}
+		} else {
+			setAttempts(0);
+			localStorage.removeItem("loginAttempts");
 		}
-	}
+	};
 
 	return (
 		<Center h="full" bg={"#f4f4f4"}>

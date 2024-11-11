@@ -22,6 +22,7 @@ import AdminLayout from "./components/layouts/AdminLayout.jsx";
 import ClinicRegistryApproval from "./pages/admin/ClinicRegistryApproval.jsx";
 import ClinicRegistryDetails from './pages/admin/ClinicRegistryDetails';
 import ApprovedClinicDetails from './pages/admin/ApprovedClinicDetails';
+import EditApprovedClinicDetails from './pages/admin/EditApprovedClinicDetails.jsx';
 import ApprovedClinicList from './pages/admin/ApprovedClinicList';
 import PatientDashboard from './pages/patient/PatientDashboard';
 import ClinicDashboard from './pages/clinic/ClinicDashboard';
@@ -41,6 +42,7 @@ import PatientAppointmentCard from './pages/admin/PatientAppointmentCard';
 import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
 import StaffList from "./pages/clinic/StaffList.jsx";
 import DoctorClinicLayout from "./components/layouts/DoctorClinicLayout.jsx";
+import ManageStaff from "./pages/clinic/ManageStaff.jsx";
 import PatientHistory from './pages/doctor/PatientHistory.jsx';
 import PatientPrescription from './pages/doctor/PatientPrescription.jsx';
 import PatientSchedule from './pages/doctor/PatientSchedule.jsx';
@@ -76,11 +78,12 @@ const router = createBrowserRouter(
 			<Route path="forgot" element={<ForgotPassword/>}/>
 			<Route path="register-clinic" element={<ClinicRegistry/>}/>
 			<Route path="profile" element={<Profile/>}/>
+			<Route path="clinic" element={<Clinic/>}/>
 			<Route element={<PatientLayout/>}>
 				<Route path="clinics" element={<ClinicList/>}/>
 				<Route path="clinics/:id" element={<ClinicDetails/>}/>
 				<Route path="requests" element={<PatientAppointmentHistory asPatient={true}/>}/>
-				<Route path="request/:id" element={<PatientAppointmentCard/>}/>
+				<Route path="requests/:id" element={<PatientAppointmentCard/>}/>
 				<Route path="clinics/:id/request" element={<DoctorRequestForm/>}/>
 			</Route>
 			<Route element={<DoctorClinicLayout/>}>
@@ -98,8 +101,9 @@ const router = createBrowserRouter(
 				<Route path="my-clinic/:id/patients/:id/requests/:id" element={<DoctorApointmentTable/>}/>
 			</Route>
 			<Route element={<ClinicLayout/>}>
-				<Route path="clinic" element={<Clinic/>}/>
 				<Route path="staff" element={<StaffList/>}/>
+				<Route path="staff/add" element={<ManageStaff/>}/>
+				<Route path="staff/:id/edit" element={<ManageStaff/>}/>
 				<Route path="patient-requests" element={<PatientRequests/>}/>
 				<Route path="doctor/:id" element={<EditDoctor/>}/>
 				<Route path="doctors/add" element={<AddDoctorToList/>}/>
@@ -107,13 +111,14 @@ const router = createBrowserRouter(
 			<Route path='/admin' element={<AdminLayout/>}>
 				<Route path="clinics" element={<ApprovedClinicList/>}/>
 				<Route path="clinics/:id" element={<ApprovedClinicDetails/>}/>
+				<Route path="clinics/:id/edit" element={<EditApprovedClinicDetails/>}/>
 				<Route path="clinics/:id/doctors" element={<></>}/>
 				<Route path="clinics/:id/patients" element={<></>}/>
 				<Route path="approve-clinics" element={<ClinicRegistryApproval/>}/>
 				<Route path="approve-clinics/:id" element={<ClinicRegistryDetails/>}/>
 				<Route path="users" element={<UserList/>}/>
 				<Route path="users/add" element={<ManageUser/>}/>
-				<Route path="users/edit/:id" element={<ManageUser/>}/>
+				<Route path="users/:id/edit" element={<ManageUser/>}/>
 				<Route path="doctors" element={<></>}/>
 				<Route path="doctors/:id" element={<></>}/>
 				<Route path="doctors/:id/schedule" element={<></>}/>
@@ -152,3 +157,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 		</AuthProvider>
 	</ChakraProvider>
 )
+
+const loadGoogleMaps = () => {
+	const script = document.createElement('script');
+	script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&libraries=places`;
+	script.async = true;
+	document.head.appendChild(script);
+  };
+  
+loadGoogleMaps();

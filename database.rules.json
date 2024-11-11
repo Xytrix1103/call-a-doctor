@@ -1,0 +1,41 @@
+{
+	"rules": {
+		"users": {
+			".indexOn": [
+				"email",
+				"role"
+			],
+			"$uid": {
+				".read": "auth != null && (auth.uid == $uid || root.child('users').child(auth.uid).child('role').val() == 'Admin' || (root.child('users').child(auth.uid).child('role').val() == 'Doctor' && root.child('users').child($uid).child('role').val() == 'ClinicAdmin'))",
+				".write": "(auth != null && (auth.uid == $uid || root.child('users').child(auth.uid).child('role').val() == 'Admin')) || (auth == null && !data.exists() && newData.exists() && newData.child('role').val() == 'ClinicAdmin')"
+			}
+		},
+		"clinics": {
+			".indexOn": [
+				"uid",
+				"clinic"
+			],
+			"$clinicId": {
+				".read": "auth != null && (root.child('users').child(auth.uid).child('role').val() == 'Admin' || root.child('clinics').child($clinicId).child('doctors').child(auth.uid).exists() || root.child('clinics').child($clinicId).child('admins').child(auth.uid).exists())",
+				".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() == 'Admin' || root.child('clinics').child($clinicId).child('admins').child(auth.uid).exists())"
+			}
+		},
+		"requests": {
+			".indexOn": [
+				"uid",
+				"clinic",
+				"doctor"
+			],
+			"$requestId": {
+				".read": "auth != null",
+				".write": "auth != null || (!data.exists() && newData.exists())"
+			}
+		},
+		"clinic_requests": {
+			"$requestId": {
+				".read": "auth != null",
+				".write": "(auth != null && data.child('admin').val() == auth.uid) || (auth == null && !data.exists() && newData.exists())"
+			}
+		}
+	}
+}

@@ -21,11 +21,11 @@ import {
 import {memo, useEffect, useRef, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {db} from "../../../api/firebase.js";
-import {onValue, ref} from "firebase/database";
+import {onValue, ref, query, get, orderByChild, equalTo} from "firebase/database";
 import {useForm} from "react-hook-form";
 import {BsFillCloudArrowDownFill} from "react-icons/bs";
 import {useAuth} from "../../components/AuthCtx.jsx";
-import {Autocomplete, GoogleMap, InfoWindow, LoadScript, Marker} from "@react-google-maps/api";
+import {Autocomplete, GoogleMap, InfoWindow, Marker} from "@react-google-maps/api";
 import {BiLinkExternal, BiSearchAlt2} from "react-icons/bi";
 import {update_clinic} from "../../../api/clinic.js";
 
@@ -173,10 +173,7 @@ const Map = ({clinic, place, setPlace}) => {
 	}, []);
 	
 	return (
-		<LoadScript
-			googleMapsApiKey="AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A"
-			libraries={libs}
-		>
+		<>
 			<Box
 				mb={3}
 				mt={2}
@@ -237,7 +234,7 @@ const Map = ({clinic, place, setPlace}) => {
 					</>
 				)}
 			</GoogleMap>
-		</LoadScript>
+		</>
 	);
 }
 
@@ -333,6 +330,13 @@ function Clinic() {
 					id: snapshot.key,
 				});
 			});
+		} else if (!user?.clinic) {
+			onValue(query(ref(db, `clinic_requests`), orderByChild('admin'), equalTo(user.uid)), (snapshot) => {
+				const data = snapshot.val();
+				const clinicId = Object.keys(data)[0];
+				const singleClinic = data[clinicId];
+				setClinic(singleClinic);
+			});
 		} else {
 			onValue(ref(db, `clinics/${user?.clinic}`), (snapshot) => {
 				setClinic({
@@ -396,6 +400,9 @@ function Clinic() {
 		for (const key in data) {
 			if (data[key] !== clinic[key]) {
 				console.log(key, data[key], clinic[key]);
+				if (key === "image" && data[key] === null) {
+					continue;
+				}
 				if (key === "specialist_clinic" && data[key] === "") {
 					update[key] = null;
 				} else {
@@ -452,6 +459,66 @@ function Clinic() {
 			console.error(err);
 		});
 	}
+
+	const onUpdateRequest = async (data) => {
+		alert("Updating unverified clinic");
+
+		console.log(data);
+		
+		if (!place?.place_id) {
+			toast({
+				title: "Error",
+				description: "Please select a valid address in the map",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+				position: "top",
+			});
+			return;
+		} else {
+			data.place_id = place.place_id;
+		}
+		
+		if (imageSrc !== clinic?.image && imageRef.current.files.length > 0) {
+			data['image'] = imageRef.current.files[0];
+		} else {
+			data['image'] = null;
+		}
+		
+		data['start_time'] = selectedStartTime;
+		data['end_time'] = selectedEndTime;
+		data['start_day'] = selectedStartDay;
+		data['end_day'] = selectedEndDay;
+		
+		let update = {};
+		
+		for (const key in data) {
+			if (data[key] !== clinic[key]) {
+				console.log(key, data[key], clinic[key]);
+				if (key === "specialist_clinic" && data[key] === "") {
+					update[key] = null;
+				} else {
+					update[key] = data[key];
+				}
+			}
+		}
+		
+		if (Object.keys(update).length > 0) {
+			console.log(update);
+		} else {
+			toast({
+				title: "Error",
+				description: "No changes detected",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+				position: "top",
+			});
+			
+			return;
+		}
+		
+	}
 	
 	return (
 		<Center w="100%" h="auto" bg="#f4f4f4">
@@ -473,7 +540,7 @@ function Clinic() {
 					</Box>
 				</Flex>
 				<Flex w="full" h="full" grow={1} direction="column">
-					<form onSubmit={handleSubmit(onSubmit)}>
+					<form onSubmit={user.clinic ? handleSubmit(onSubmit) : handleSubmit(onUpdateRequest)}>
 						<Grid templateColumns="repeat(2, 1fr)" gap={6} w="full" h="full">
 							<Box w="full" h="full">
 								<Box w="full">

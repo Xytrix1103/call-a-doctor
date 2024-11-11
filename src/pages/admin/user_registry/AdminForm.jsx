@@ -49,6 +49,12 @@ export const AdminForm = ({user, self=false}) => {
         let data = getValues();
         console.log("Submitting admin form", data);
         
+        for (const [key, value] of Object.entries(data)) {
+            if(key === "new_email" || key === "new_password" || key === "new_confirm_password") {
+                delete data[key];
+            }
+        }
+        
         if (!user) {
             const valid = await trigger(['name', 'contact', 'email', 'password', 'confirm_password']);
             const password = data["password"];

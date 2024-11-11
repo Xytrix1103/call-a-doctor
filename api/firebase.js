@@ -4,13 +4,13 @@ import {getAuth} from "firebase/auth";
 import {getStorage} from "firebase/storage";
 
 const firebaseConfig = {
-	apiKey: "AIzaSyDZYAUmSWuZ26oY-FYcfLGtP4DhyQLaSWA",
-	authDomain: "call-a-doctor-iicp.firebaseapp.com",
-	databaseURL: "https://call-a-doctor-iicp-default-rtdb.asia-southeast1.firebasedatabase.app",
-	projectId: "call-a-doctor-iicp",
-	storageBucket: "call-a-doctor-iicp.appspot.com",
-	messagingSenderId: "798593654783",
-	appId: "1:798593654783:web:b3afd64d4978e6b9b611ca"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 export const app = initializeApp(firebaseConfig);

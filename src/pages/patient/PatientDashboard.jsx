@@ -1,28 +1,22 @@
-import {
-	Box,
-	Flex,
-	Image,
-	Text,
-    Badge,
-    Link,
-    Divider,
-    VStack,
-} from '@chakra-ui/react';
-import {useState, useEffect} from "react";
-import {onValue, query, ref, limitToFirst, orderByChild, equalTo, get} from "firebase/database";
+import {Badge, Box, Divider, Flex, Image, Link, Text, VStack,} from '@chakra-ui/react';
+import {useEffect, useState} from "react";
+import {equalTo, get, limitToFirst, onValue, orderByChild, query, ref} from "firebase/database";
 import {db} from "../../../api/firebase.js";
 import {useAuth} from "../../components/AuthCtx.jsx";
 import {NavLink} from "react-router-dom";
 import {AiFillStar} from "react-icons/ai";
-import { BsGenderFemale, BsGenderMale } from "react-icons/bs";
-import { GoDotFill } from "react-icons/go";
+import {BsGenderFemale, BsGenderMale} from "react-icons/bs";
+import {GoDotFill} from "react-icons/go";
+import CryptoJS from 'crypto-js';
 import {AppointmentTimelineChart} from "../../components/charts/AppointmentTimelineChart.jsx"
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import {GoogleMap, LoadScript, Marker, useLoadScript, InfoWindow, DirectionsRenderer} from '@react-google-maps/api';
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
 
 const PatientRequests = ({ request }) => {
+    const privateKey = import.meta.env.VITE_SECRET_KEY;
+	const decryptField = (encryptedValue) => {
+		if (!encryptedValue) return null;  // Handle null or undefined values
+		return CryptoJS.AES.decrypt(encryptedValue, privateKey).toString(CryptoJS.enc.Utf8);
+	};
     return (
         <Box w='20rem' h='9rem' border='2px' rounded='lg' borderColor='pink.200' p={2} justifyContent='center' alignItems='center'>
             <Box w='19rem' h='6rem'>
@@ -33,7 +27,7 @@ const PatientRequests = ({ request }) => {
                                 <Flex alignItems='center' gap={1}>
                                     {request.patient ? request.patient.gender === "Male" ? <BsGenderMale size={15} color='blue'/> : <BsGenderFemale size={15} color='pink'/> : request.gender === "Male" ? <BsGenderMale size={15} color='blue'/> : <BsGenderFemale size={15} color='pink'/>}
                                     <Text fontSize="sm" fontWeight="semibold" isTruncated>
-                                        {request.patient ? request.patient.name : request.name}
+                                        {request.patient ? decryptField(request.patient.name) : request.name}
                                     </Text>       
                                     <GoDotFill size='7' color='gray'/>
                                     <Text fontSize="2xs" fontWeight='medium' color="gray.700">
@@ -45,7 +39,7 @@ const PatientRequests = ({ request }) => {
                                     </Text>                                                                           
                                 </Flex>
                                 <Text fontSize="xs" fontWeight='medium' color="gray.700" maxW='95%' isTruncated>
-                                    {request.patient ? request.patient.address : request.address}
+                                    {request.patient ? decryptField(request.patient.address) : request.address}
                                 </Text>                          
                             </Box>
                         </Flex>
@@ -62,17 +56,17 @@ const PatientRequests = ({ request }) => {
 
 function PatientDashboard() {
     const {user} = useAuth();
+    const privateKey = import.meta.env.VITE_SECRET_KEY;
+	const decryptField = (encryptedValue) => {
+		if (!encryptedValue) return null;  // Handle null or undefined values
+		return CryptoJS.AES.decrypt(encryptedValue, privateKey).toString(CryptoJS.enc.Utf8);
+	};
+
     const [clinic, setClinic] = useState([]);
     const [requests, setRequests] = useState([]);
     const [appointments, setAppointments] = useState([]);
     const [ratings, setRatings] = useState([]);
     const [filteredAppointments, setFilteredAppointments] = useState([]);
-
-    const libs = ['places'];
-    const { isLoaded, loadError } = useLoadScript({
-		googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
-		libraries: libs,
-	});
 
     function formatDate(isoDate) {
         const date = new Date(isoDate);
@@ -242,7 +236,7 @@ function PatientDashboard() {
                                 Welcome to your Dashboard!
                             </Text>
                             <Text fontSize='lg' fontWeight='semibold' color='white' letterSpacing='wide' mb={3}>
-                                Hello, {user.name}
+                                Hello, {decryptField(user.name)}
                             </Text>
                             <Text fontSize='md' fontWeight='medium' color='white' letterSpacing='wide'>
                                 We're delighted to have you here! Your health and well-being are our top priorities.

@@ -42,7 +42,6 @@ import {BarChart} from '../../components/charts/BarChart';
 import {DoughnutChart} from '../../components/charts/DoughnutChart';
 import {AppointmentTimelineChart} from "../../components/charts/AppointmentTimelineChart.jsx"
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
-import {useLoadScript} from '@react-google-maps/api';
 import {delete_user} from "../../../api/admin.js";
 
 const TimeSlotDoughnutChart = memo(({ appointments }) => {
@@ -282,11 +281,6 @@ function ClinicDashboard() {
     const [isOpenApprove, setIsOpenApprove] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
 
-    const libs = ['places'];
-    const { isLoaded, loadError } = useLoadScript({
-		googleMapsApiKey: 'AIzaSyCxkZ_qonH-WY9cbiHZsUgp9lE3PdkWH_A',
-		libraries: libs,
-	});
 
     const [doctorFilters, setDoctorFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -394,7 +388,7 @@ function ClinicDashboard() {
                 let appointmentCount = 0;
                 const data = snapshot.val();
                 for (let id in data) {
-                    if (!data[id].approved) {
+                    if (!data[id].approved && !data[id].rejected) {
                         if (data[id].patient == null) {
                             get(ref(db, `users/${data[id].uid}`)).then((userSnapshot) => {
                                 data[id] = {
@@ -458,8 +452,6 @@ function ClinicDashboard() {
         );
     }, [clinicId]);
 
-    if (loadError) return 'Error loading maps';
-    if (!isLoaded) return 'Loading maps';
 
     const nameBodyTemplate = (rowData) => {
         return (
