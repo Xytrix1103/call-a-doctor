@@ -21,6 +21,7 @@ import {FaMapLocationDot, FaUser} from "react-icons/fa6";
 import {GiMedicines, GiSandsOfTime} from "react-icons/gi";
 import {GoDotFill} from "react-icons/go";
 import {MdEmail, MdOutlineAccessTime } from "react-icons/md";
+import CryptoJS from 'crypto-js';
 import {NavLink, useParams} from "react-router-dom";
 import "../../../node_modules/primereact/resources/themes/lara-light-blue/theme.css";
 
@@ -28,6 +29,11 @@ function PatientAppointmentHistory({ asAdmin=false, asPatient=false }) {
     console.log("asAdmin", asAdmin);
     console.log("asPatient", asPatient);
     console.log("PatientAppointmentHistory");
+    const privateKey = import.meta.env.VITE_SECRET_KEY;
+	const decryptField = (encryptedValue) => {
+		if (!encryptedValue) return null;  // Handle null or undefined values
+		return CryptoJS.AES.decrypt(encryptedValue, privateKey).toString(CryptoJS.enc.Utf8);
+	};
     const {user} = useAuth();
     const {id} = useParams();
 
@@ -142,7 +148,7 @@ function PatientAppointmentHistory({ asAdmin=false, asPatient=false }) {
                                 <Flex alignItems='center'>
                                     <FaUser size={25} color='#3f2975'/>
                                     <Text fontSize='lg' fontWeight='bold' letterSpacing='wide' ml={4}>
-                                        {patient.name}
+                                        {decryptField(patient.name)}
                                     </Text>
                                 </Flex>
                             </Flex>
@@ -151,7 +157,7 @@ function PatientAppointmentHistory({ asAdmin=false, asPatient=false }) {
                             <Flex alignItems='center' mx={3}>
                                 <FaMapLocationDot size={25} color='#3176de'/>
                                 <Text fontSize='lg' fontWeight='semibold' letterSpacing='wide' ml={4}>
-                                    {patient.address}
+                                    {decryptField(patient.address)}
                                 </Text>
                             </Flex>
                         </Box>
@@ -182,7 +188,7 @@ function PatientAppointmentHistory({ asAdmin=false, asPatient=false }) {
                                 <BiSolidPhone size={25} color='#3d98ff'/>
                                 <Text fontSize='md' letterSpacing='wide' ml={4}>
                                     <Text fontWeight='medium'
-                                            color='grey'>Contact</Text> {patient.contact}
+                                            color='grey'>Contact</Text> {decryptField(patient.contact)}
                                 </Text>
                             </Flex>
                         </Box>
@@ -192,7 +198,7 @@ function PatientAppointmentHistory({ asAdmin=false, asPatient=false }) {
                                 <MdEmail size={25} color='#f58d42'/>
                                 <Text fontSize='md' letterSpacing='wide' ml={4}>
                                     <Text fontWeight='medium'
-                                            color='grey'>Email</Text> {patient.email}
+                                            color='grey'>Email</Text> {decryptField(patient.email)}
                                 </Text>
                             </Flex>
                         </Box>
