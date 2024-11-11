@@ -24,10 +24,13 @@ function ClinicList() {
     const [destinationCoordinates, setDestinationCoordinates] = useState(null);
 
     useEffect(() => {
+        console.log('ClinicList component mounted');
         // Fetch clinic details from Realtime Database
         const clinicsRef = ref(db, 'clinics');
+        console.log(clinicsRef);
     
         onValue(clinicsRef, (snapshot) => {
+            console.log('Clinic data fetched');
             const clinics = [];
             snapshot.forEach((childSnapshot) => {
                 const clinic = {
@@ -36,6 +39,8 @@ function ClinicList() {
                 };
                 clinics.push(clinic);
             });
+
+            console.log(clinics);
         
             // Extract all placeIds from clinics
             const placeIds = clinics.map((clinic) => clinic.place_id);
