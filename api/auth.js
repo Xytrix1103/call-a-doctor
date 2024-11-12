@@ -5,12 +5,33 @@ import {
 	signOut
 } from "firebase/auth";
 import {auth, db, secondaryAuth, storage} from "./firebase.js";
-import {ref, set} from "firebase/database";
+import {ref, set, push} from "firebase/database";
 import {getDownloadURL, ref as sRef, uploadBytes} from "firebase/storage";
 import bcrypt from 'bcryptjs';
 import CryptoJS from 'crypto-js';
 
 const privateKey = import.meta.env.VITE_SECRET_KEY;
+
+const logActivity = async (message) => {
+	const dateNode = new Date().toISOString().split('T')[0]; // Get current date in 'YYYY-MM-DD' format
+	const timestamp = new Date().toISOString(); // Full timestamp for more precision
+
+	// Reference to the logs node for the current date
+	const logRef = ref(db, `logs/${dateNode}`);
+
+	// Create a new log entry with a unique key
+	const newLogRef = push(logRef);
+
+	// Set the log entry data with just the message and timestamp
+	return await set(newLogRef, {
+		timestamp: timestamp,
+		message: message
+	})
+	.catch(error => {
+		console.error("Error logging activity:", error);
+		throw error;
+	});
+};
 
 export const register = async (data, asAdmin = false) => {
 	const { email, place_id, password, name, gender = "", dob = "", contact = "", address = "", role = "Patient" } = data;
@@ -28,6 +49,9 @@ export const register = async (data, asAdmin = false) => {
 	return await createUserWithEmailAndPassword(authObj, email, password)
 		.then(async (newUser) => {
 			if (newUser) {
+				await logActivity(`User registered with email: ${email} and role: ${role} by ${asAdmin ? "admin" : "user"}`);
+				
+				// Step 3: Store user data in database
 				return await set(ref(db, `users/${newUser.user.uid}`), {
 					uid: newUser.user.uid,
 					created_on: new Date().toISOString(),
