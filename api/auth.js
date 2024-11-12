@@ -200,7 +200,8 @@ export const register_admin = async (data) => {
 
 export const login = async (cred) => {
 	const {email, password} = cred;
-	return await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+	return await signInWithEmailAndPassword(auth, email, password).then(async (userCredential) => {
+		await logActivity(`User logged in with email: ${email}`);
 		return userCredential.user;
 	}).catch((error) => {
 		console.log(error);
@@ -209,12 +210,17 @@ export const login = async (cred) => {
 }
 
 export const logout = async () => {
-	signOut(auth).then(() => {
+	const userEmail = auth.currentUser?.email; // Retrieve email before signing out
+
+	return signOut(auth).then(async () => {
+		if (userEmail) {
+			await logActivity(`User logged out with email: ${userEmail}`);
+		}
 		console.log("logged out");
 	}).catch((error) => {
 		console.log(error);
 	});
-}
+};
 
 export const forgot_password = async (email) => {
 	return await sendPasswordResetEmail(auth, email).then(() => {
