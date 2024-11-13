@@ -5,6 +5,7 @@ import {
 	InputGroup,
 	Text,
     InputLeftElement,
+    VStack,
     Button,
 } from '@chakra-ui/react';
 import {useRef, useState, useEffect, memo, useCallback} from "react";
@@ -215,6 +216,7 @@ const PatientActivityBarChart = memo(({ appointments }) => {
 
 function AdminDashboard() {
     const [clinics, setClinics] = useState([]);
+    const [logs, setLogs] = useState([]);
     const [clinicCount, setClinicCount] = useState(0);
     const [patientCount, setPatientCount] = useState(0);
     const [doctorCount, setDoctorCount] = useState(0);
@@ -236,6 +238,19 @@ function AdminDashboard() {
             console.log(clinics);
             setClinics(clinics);
             setClinicCount(numOfClinic);
+        });
+
+        onValue(query(ref(db, "logs")), (snapshot) => {
+            const logs = [];
+            snapshot.forEach((childSnapshot) => {
+                console.log(childSnapshot.val());
+                logs.push({
+                    id: childSnapshot.key,
+                    ...childSnapshot.val(),
+                });
+            });
+            console.log(logs);
+            setLogs(logs);
         });
 
         onValue(query(ref(db, "users")), (snapshot) => {
@@ -470,6 +485,34 @@ function AdminDashboard() {
                         <Column field="address" sortable header="Address"></Column>
                         <Column field="action" header="Action" body={actionBodyTemplate} ></Column>
                     </DataTable>                        
+                </Box>
+                <Box w="full" bg="white" p={5} rounded="lg" boxShadow="md">
+                    <Flex alignItems="center" justifyContent="space-between" mb={4}>
+                        <Text fontSize="lg" fontWeight="semibold" letterSpacing="wide">
+                            Activity Logs
+                        </Text>
+                    </Flex>
+
+                    <VStack align="start" spacing={4}>
+                        {logs.map((logGroup, index) => (
+                            <Box key={index} w="full">
+                                <Text fontSize="md" fontWeight="bold" mb={2}>
+                                    {logGroup.id}
+                                </Text>
+                                {Object.entries(logGroup).map(([logId, log]) => {
+                                    if (logId === 'id') return null;
+                                    return (
+                                        <Box key={logId} pl={4} py={2} borderBottom="1px solid" borderColor="gray.200">
+                                            <Text fontSize="sm">{log.message}</Text>
+                                            <Text fontSize="xs" color="gray.500">
+                                                {new Date(log.timestamp).toLocaleString()}
+                                            </Text>
+                                        </Box>
+                                    );
+                                })}
+                            </Box>
+                        ))}
+                    </VStack>
                 </Box>
             </Flex>
             <Flex
