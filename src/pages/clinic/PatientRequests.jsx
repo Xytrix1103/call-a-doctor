@@ -268,6 +268,7 @@ function PatientRequests() {
     }
 
     useEffect(() => {
+        console.log("fetching patient requests");
         const today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
         const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -277,6 +278,7 @@ function PatientRequests() {
 
         onValue(query(ref(db, 'requests'), orderByChild('clinic'), equalTo(user?.clinic)), (snapshot) => {
             const data = snapshot.val();
+
             const requests = [];
 
             const addAgeAndDate = (request) => {
@@ -328,7 +330,7 @@ function PatientRequests() {
                 processRequest({...data[id], id: id});
             }
 
-            console.log(requests);
+            console.log("REQUETSS",requests);
             setPatientRequests(requests);
         });
     }, []);

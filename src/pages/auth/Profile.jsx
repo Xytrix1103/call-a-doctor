@@ -8,6 +8,7 @@ import {useAuth} from "../../components/AuthCtx.jsx";
 
 function Profile() {
 	const {user} = useAuth();
+	console.log("User", user);
 	const navigate = useNavigate();
 	const renderForm = () => {
 		switch (user?.role) {

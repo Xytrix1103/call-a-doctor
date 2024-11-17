@@ -33,6 +33,8 @@ export const AuthProvider = ({children}) => {
 			}
 		});
 	}, []);
+
+	console.log("AUTH USER:", user);
 	
 	const value = {
 		user,

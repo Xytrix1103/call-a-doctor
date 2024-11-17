@@ -64,10 +64,13 @@ const VerificationPending = () => {
 		console.log(user, loading);
 		
 		onValue(query(ref(db, `clinic_requests`), orderByChild('admin'), equalTo(user.uid)), (snapshot) => {
+			console.log("MEOW",snapshot.val());
 			const data = snapshot.val();
 			const clinicId = Object.keys(data)[0];
 			const singleClinic = data[clinicId];
 			setClinic(singleClinic);
+		}, (error) => {
+			console.error(error);
 		});
 	}, []);
 

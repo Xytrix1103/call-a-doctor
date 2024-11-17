@@ -63,7 +63,7 @@ export const ClinicAdminForm = ({user, self=false}) => {
                     ...childSnapshot.val(),
                 });
             });
-            console.log(clinics);
+            console.log("CLINICS", clinics);
             setClinics(clinics);
         });
     }, []);

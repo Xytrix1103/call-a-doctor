@@ -26,6 +26,7 @@ import {BiLinkExternal, BiSearchAlt2} from "react-icons/bi";
 import {db} from "../../../api/firebase.js";
 import {onValue, query, ref} from "firebase/database";
 import {request_doctor} from "../../../api/patient.js";
+import CryptoJS from 'crypto-js';
 
 const Map = (props) => {
     const { place_id, setUserHomePlace, usePersonalDetails, user } = props;
@@ -588,6 +589,11 @@ const FormSection = (props) => {
 const MemoFormSection = memo(FormSection);
 
 const DoctorRequestForm = () => {
+    const privateKey = import.meta.env.VITE_SECRET_KEY;
+	const decryptField = (encryptedValue) => {
+		if (!encryptedValue) return null;  // Handle null or undefined values
+		return CryptoJS.AES.decrypt(encryptedValue, privateKey).toString(CryptoJS.enc.Utf8);
+	};
     const form = useForm();
     const {
         handleSubmit,
@@ -687,10 +693,10 @@ const DoctorRequestForm = () => {
     
     useEffect(() => {
         if (usePersonalDetails) {
-            setValue("patient_name", user.name);
+            setValue("patient_name", decryptField(user.name));
             setValue("dob", user.dob);
-            setValue("address", user.address);
-            setValue("contact", user.contact);
+            setValue("address", decryptField(user.address));
+            setValue("contact", decryptField(user.contact));
         } else {
             resetField("patient_name");
             resetField("dob");

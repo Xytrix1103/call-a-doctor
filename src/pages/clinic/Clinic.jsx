@@ -28,6 +28,7 @@ import {useAuth} from "../../components/AuthCtx.jsx";
 import {Autocomplete, GoogleMap, InfoWindow, Marker} from "@react-google-maps/api";
 import {BiLinkExternal, BiSearchAlt2} from "react-icons/bi";
 import {update_clinic} from "../../../api/clinic.js";
+import { update_clinic_request } from '../../../api/clinic_registry.js';
 
 const Map = ({clinic, place, setPlace}) => {
 	const mapStyle = {
@@ -331,11 +332,16 @@ function Clinic() {
 				});
 			});
 		} else if (!user?.clinic) {
+			console.log("NO CLINIC MF")
 			onValue(query(ref(db, `clinic_requests`), orderByChild('admin'), equalTo(user.uid)), (snapshot) => {
 				const data = snapshot.val();
+				console.log("PENDING CLINIC REQUESTS: ", data);
 				const clinicId = Object.keys(data)[0];
 				const singleClinic = data[clinicId];
-				setClinic(singleClinic);
+				setClinic({
+					...singleClinic,
+					id: clinicId,
+				});
 			});
 		} else {
 			onValue(ref(db, `clinics/${user?.clinic}`), (snapshot) => {
@@ -504,7 +510,44 @@ function Clinic() {
 		}
 		
 		if (Object.keys(update).length > 0) {
+			// Update clinic details
 			console.log(update);
+			console.log("CLINIC DATA", clinic);
+			console.log("UPDATEING", clinic.id, update);
+			update_clinic_request({
+				id: clinic.id,
+				requested_on: clinic.requested_on,
+				name: data.name,
+				start_time: data.start_time,
+				end_time: data.end_time,
+				start_day: data.start_day,
+				end_day: data.end_day,
+				specialist_clinic: data.specialist_clinic,
+				contact: data.contact,
+				address: data.address,
+				place_id: data.place_id,
+			}).then((res) => {
+				if (res.error) {
+					toast({
+						title: "Error",
+						description: "An error occurred while updating clinic details",
+						status: "error",
+						duration: 5000,
+						isClosable: true,
+						position: "top",
+					});
+				} else {
+					toast({
+						title: "Success",
+						description: "Clinic details updated successfully",
+						status: "success",
+						duration: 5000,
+						isClosable: true,
+						position: "top",
+					});
+				}
+			});
+
 		} else {
 			toast({
 				title: "Error",

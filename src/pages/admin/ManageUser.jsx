@@ -29,7 +29,7 @@ function ManageUser() {
                         } else {
                             setSelectedRole(childSnapshot.val().role);
                         }
-                        console.log(childSnapshot.val());
+                        console.log("USER:", childSnapshot.val());
                     }
                 });
             });

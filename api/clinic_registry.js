@@ -1,4 +1,4 @@
-import {get, ref, set} from "firebase/database";
+import {get, ref, set, update} from "firebase/database";
 import {getDownloadURL, ref as sRef, uploadBytes} from "firebase/storage";
 import {createUserWithEmailAndPassword} from "firebase/auth";
 import {auth, db, storage} from "./firebase";
@@ -94,6 +94,46 @@ export const register_clinic_request = async (data) => {
 		console.log("Error: " + error);
 		return {error: error};
 	});
+}
+
+// Update clinic req
+export const update_clinic_request = async (data) => {
+	const {
+		id,
+		requested_on,
+		name,
+		start_time,
+		end_time,
+		start_day,
+		end_day,
+		specialist_clinic,
+		contact,
+		address,
+		place_id,
+	} = data;
+	
+	const clinicRequestRef = ref(db, `clinic_requests/${id}`);
+	
+	return await update(clinicRequestRef, {
+			requested_on: requested_on,
+			name: name,
+			start_time: start_time,
+			end_time: end_time,
+			start_day: start_day,
+			end_day: end_day,
+			contact: contact,
+			address: address,
+			specialist_clinic: specialist_clinic !== "" ? specialist_clinic : null,
+			place_id: place_id,
+		})
+		.then(() => {
+			console.log("Clinic request updated");
+			return {success: true};
+		})
+		.catch(error => {
+			console.log("Error: " + error);
+			return {error: error};
+		});
 }
 
 export const register_clinic = async (data) => {

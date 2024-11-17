@@ -74,6 +74,7 @@ function Login() {
 
 		const res = await login(data);
 		if (res.error) {
+			console.log(res.error);
 			const newAttempts = attempts + 1;
 			setAttempts(newAttempts);
 			localStorage.setItem("loginAttempts", newAttempts);
