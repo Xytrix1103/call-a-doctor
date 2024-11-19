@@ -13,8 +13,9 @@ export const AuthProvider = ({children}) => {
 			if (user) {
 				const userRef = ref(db, `users/${user.uid}`);
 				
-				onValue(userRef, (snapshot) => {
+				onValue(userRef, async (snapshot) => {
 					const data = snapshot.val();
+					console.log(await user.getIdToken());
 					
 					if (data) {
 						setUser({
